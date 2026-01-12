@@ -29,6 +29,7 @@
 <button class="menu-button" data-mode="i2i" id="btnModeI2I" data-i18n="modes.i2i">I2I生成</button>
 <button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop" data-i18n="modes.i2iLoop">I2Iループ生成</button>
 <button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle" data-i18n="modes.i2iAngle">I2Iアングル生成</button>
+<button class="menu-button" data-mode="upscaleloop" id="btnModeUpscaleLoop" data-i18n="modes.upscaleLoop">Upscaleループ</button>
 </div>
 </div>
 <div class="mode-config-panel" id="modeConfigPanel">
@@ -155,6 +156,23 @@
 </div>
 <button class="generate-button" id="btnGenerateI2IAngle" style="flex-shrink:0;" data-i18n="config.angleGenerate">アングル生成</button>
 <button class="generate-button cancel-button" id="btnCancelI2IAngle" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+<div id="upscaleloopModeConfig" class="mode-config-content">
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.workflowUpscale">ワークフロー (Upscale)</label>
+<div class="workflow-display" id="upscaleloopWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group" style="flex-shrink:0;">
+<label><span data-i18n="config.inputImage">入力画像</span> <span class="i2i-image-count" id="upscaleloopImageCount"></span></label>
+<div class="i2i-image-upload-area" id="upscaleloopImageUploadArea">
+<input type="file" id="upscaleloopImageInput" accept="image/*" multiple style="display:none;">
+<div class="i2i-image-preview-grid" id="upscaleloopImagePreview">
+<div class="i2i-image-placeholder" data-i18n="config.dropImage">クリックまたはドラッグ&ドロップで画像を選択（複数可）</div>
+</div>
+</div>
+</div>
+<button class="generate-button" id="btnGenerateUpscaleLoop" style="flex-shrink:0;" data-i18n="config.upscaleGenerate">アップスケール生成</button>
+<button class="generate-button cancel-button" id="btnCancelUpscaleLoop" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
 </div>
 </div>
 <div class="center-container">

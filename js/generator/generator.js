@@ -5,6 +5,7 @@ let workflowEditorInitialized = false;
 let i2iUploadedFileNames = [];
 let i2iloopUploadedFileNames = [];
 let i2iangleUploadedFileNames = [];
+let upscaleloopUploadedFileNames = [];
 function showCancelButton(mode) {
 const btnId = 'btnCancel' + mode.charAt(0).toUpperCase() + mode.slice(1);
 const btn = $(btnId);
@@ -590,4 +591,50 @@ ErrorGuideDialog.showForError(error, { errorDetail: error.message });
 $('generationStatus').textContent = I18nManager.t('status.error');
 $('generationStatus').style.color = '#f44336';
 } finally { isGenerating = false; isCancelled = false; hideCancelButton('i2IAngle'); setGenerateButtonGenerating('i2IAngle', false); }
+}
+function generateImageUpscaleLoop() {
+if (upscaleloopUploadedFileNames.length === 0) { createToastError(I18nManager.t('toast.inputError'), I18nManager.t('toast.uploadImage')); return; }
+generateImageUpscaleLoopExec();
+}
+async function generateImageUpscaleLoopExec() {
+if (isGenerating) return;
+if (upscaleloopUploadedFileNames.length === 0) { createToastError(I18nManager.t('toast.inputError'), I18nManager.t('toast.uploadImage')); return; }
+isGenerating = true;
+isCancelled = false;
+showCancelButton('upscaleLoop');
+setGenerateButtonGenerating('upscaleLoop', true);
+try {
+const baseWorkflow = await comfyUIWorkflowRepository.getEnabledWorkflowByType("Upscaler");
+if (!baseWorkflow) {
+ErrorGuideDialog.show(ErrorGuideDialog.ERROR_TYPES.WORKFLOW_NOT_FOUND, { workflowType: 'Upscaler' });
+$('generationStatus').textContent = I18nManager.t('status.workflowNotSet');
+$('generationStatus').style.color = '#f44336';
+return;
+}
+const imageCount = upscaleloopUploadedFileNames.length;
+$('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', 0).replace('{total}', imageCount);
+$('generationStatus').style.color = '#ff9800';
+resetGenerationTimeStats();
+for (let imgIdx = 0; imgIdx < imageCount; imgIdx++) {
+if (isCancelled) { $('generationStatus').textContent = I18nManager.t('status.cancelled'); $('generationStatus').style.color = '#ff9800'; break; }
+const uploadFileName = upscaleloopUploadedFileNames[imgIdx];
+$('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', imgIdx + 1).replace('{total}', imageCount);
+const requestData = { uploadFileName: uploadFileName };
+const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'Upscaler');
+console.log('Generated Upscale Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
+const startTime = performance.now();
+const result = await executeWorkflow(workflow);
+const endTime = performance.now();
+updateGenerationTimeStats(Math.round(endTime - startTime));
+if (result && result.image) {
+const historyConfig = [];
+displayGeneratedImage(result.image, imgIdx + 1, 'Upscale: ' + uploadFileName, historyConfig);
+}
+}
+if (!isCancelled) { $('generationStatus').textContent = I18nManager.t('status.completed'); $('generationStatus').style.color = '#4caf50'; }
+} catch (error) {
+ErrorGuideDialog.showForError(error, { errorDetail: error.message });
+$('generationStatus').textContent = I18nManager.t('status.error');
+$('generationStatus').style.color = '#f44336';
+} finally { isGenerating = false; isCancelled = false; hideCancelButton('upscaleLoop'); setGenerateButtonGenerating('upscaleLoop', false); }
 }

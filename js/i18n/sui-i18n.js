@@ -19,13 +19,15 @@ const I18nManager = (function() {
                 t2iLoop: "T2Iプロンプトループ",
                 i2i: "I2I",
                 i2iLoop: "I2Iプロンプトループ",
-                i2iAngle: "I2Iアングル"
+                i2iAngle: "I2Iアングル",
+                upscaleLoop: "Upscaleループ"
             },
             config: {
                 normalGeneration: "通常生成",
                 workflow: "ワークフロー",
                 workflowT2I: "ワークフロー (T2I)",
                 workflowI2I: "ワークフロー (I2I)",
+                workflowUpscale: "ワークフロー (Upscale)",
                 notSelected: "未選択",
                 generateCount: "生成枚数",
                 generateCountPerImage: "各画像の生成枚数",
@@ -33,6 +35,7 @@ const I18nManager = (function() {
                 cancel: "キャンセル",
                 loopGenerate: "ループ生成",
                 angleGenerate: "アングル生成",
+                upscaleGenerate: "アップスケール生成",
                 promptPosition: "追加プロンプト位置",
                 positionStart: "Start（先頭に追加）",
                 positionEnd: "End（末尾に追加）",
@@ -299,13 +302,15 @@ const I18nManager = (function() {
                 t2iLoop: "T2I Prompt Loop",
                 i2i: "I2I",
                 i2iLoop: "I2I Prompt Loop",
-                i2iAngle: "I2I Angle"
+                i2iAngle: "I2I Angle",
+                upscaleLoop: "Upscale Loop"
             },
             config: {
                 normalGeneration: "Normal Generation",
                 workflow: "Workflow",
                 workflowT2I: "Workflow (T2I)",
                 workflowI2I: "Workflow (I2I)",
+                workflowUpscale: "Workflow (Upscale)",
                 notSelected: "Not Selected",
                 generateCount: "Generate Count",
                 generateCountPerImage: "Generate Count Per Image",
@@ -313,6 +318,7 @@ const I18nManager = (function() {
                 cancel: "Cancel",
                 loopGenerate: "Loop Generate",
                 angleGenerate: "Angle Generate",
+                upscaleGenerate: "Upscale Generate",
                 promptPosition: "Additional Prompt Position",
                 positionStart: "Start (Add to beginning)",
                 positionEnd: "End (Add to end)",
@@ -579,13 +585,15 @@ const I18nManager = (function() {
                 t2iLoop: "T2I提示词循环",
                 i2i: "I2I",
                 i2iLoop: "I2I提示词循环",
-                i2iAngle: "I2I角度"
+                i2iAngle: "I2I角度",
+                upscaleLoop: "Upscale循环"
             },
             config: {
                 normalGeneration: "普通生成",
                 workflow: "工作流",
                 workflowT2I: "工作流 (T2I)",
                 workflowI2I: "工作流 (I2I)",
+                workflowUpscale: "工作流 (Upscale)",
                 notSelected: "未选择",
                 generateCount: "生成数量",
                 generateCountPerImage: "每张图片生成数量",
@@ -593,6 +601,7 @@ const I18nManager = (function() {
                 cancel: "取消",
                 loopGenerate: "循环生成",
                 angleGenerate: "角度生成",
+                upscaleGenerate: "放大生成",
                 promptPosition: "附加提示词位置",
                 positionStart: "Start（添加到开头）",
                 positionEnd: "End（添加到末尾）",

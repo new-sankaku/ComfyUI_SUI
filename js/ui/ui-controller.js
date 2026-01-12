@@ -3,9 +3,9 @@ currentMode = mode;
 document.querySelectorAll('.menu-button[data-mode]').forEach(btn => btn.classList.remove('active'));
 document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
 document.querySelectorAll('.mode-config-content').forEach(el => el.classList.remove('active'));
-const modeNameKeys = { 'normal': 'modes.t2i', 'loop': 'modes.t2iLoop', 'wildcard': 'modes.t2i', 'i2i': 'modes.i2i', 'i2iloop': 'modes.i2iLoop', 'i2iangle': 'modes.i2iAngle' };
+const modeNameKeys = { 'normal': 'modes.t2i', 'loop': 'modes.t2iLoop', 'wildcard': 'modes.t2i', 'i2i': 'modes.i2i', 'i2iloop': 'modes.i2iLoop', 'i2iangle': 'modes.i2iAngle', 'upscaleloop': 'modes.upscaleLoop' };
 $('modeConfigTitle').textContent = I18nManager.t(modeNameKeys[mode]);
-const configMap = { 'normal': 'normalModeConfig', 'loop': 'loopModeConfig', 'wildcard': 'wildcardModeConfig', 'i2i': 'i2iModeConfig', 'i2iloop': 'i2iloopModeConfig', 'i2iangle': 'i2iangleModeConfig' };
+const configMap = { 'normal': 'normalModeConfig', 'loop': 'loopModeConfig', 'wildcard': 'wildcardModeConfig', 'i2i': 'i2iModeConfig', 'i2iloop': 'i2iloopModeConfig', 'i2iangle': 'i2iangleModeConfig', 'upscaleloop': 'upscaleloopModeConfig' };
 if (configMap[mode]) $(configMap[mode]).classList.add('active');
 }
 async function openWorkflowEditor() {
@@ -47,14 +47,17 @@ try {
 const workflows = await comfyUIWorkflowRepository.getAllWorkflows();
 const t2iWorkflow = workflows.find(w => w.type === 'T2I' && w.enabled);
 const i2iWorkflow = workflows.find(w => w.type === 'I2I' && w.enabled);
+const upscaleWorkflow = workflows.find(w => w.type === 'Upscaler' && w.enabled);
 const t2iName = t2iWorkflow ? t2iWorkflow.name : I18nManager.t('config.notSelected');
 const i2iName = i2iWorkflow ? i2iWorkflow.name : I18nManager.t('config.notSelected');
+const upscaleName = upscaleWorkflow ? upscaleWorkflow.name : I18nManager.t('config.notSelected');
 $('normalWorkflowDisplay').textContent = t2iName;
 $('loopWorkflowDisplay').textContent = t2iName;
 $('i2iWorkflowDisplay').textContent = i2iName;
 $('i2iloopWorkflowDisplay').textContent = i2iName;
 $('i2iangleWorkflowDisplay').textContent = i2iName;
-$('activeWorkflow').textContent = currentMode.startsWith('i2i') ? i2iName : t2iName;
+$('upscaleloopWorkflowDisplay').textContent = upscaleName;
+$('activeWorkflow').textContent = currentMode.startsWith('i2i') ? i2iName : (currentMode === 'upscaleloop' ? upscaleName : t2iName);
 } catch (error) { console.error('ワークフロー表示更新エラー:', error); }
 }
 function hookWorkflowRepository() {
