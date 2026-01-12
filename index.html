@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComfyUI UI</title>
+<link rel="stylesheet" href="css/comfyui-variables.min.css">
+<link rel="stylesheet" href="css/comfyui-layout.min.css">
+<link rel="stylesheet" href="css/comfyui-components.min.css">
+<link rel="stylesheet" href="css/comfyui-modal.min.css">
+<link rel="stylesheet" href="css/comfyui-workflow-editor.min.css">
+<link rel="stylesheet" href="css/comfyui-wildcard.min.css">
+<link rel="stylesheet" href="css/language-selector.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.31.3/tagify.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/toast.css">
+<link rel="stylesheet" href="css/error-guide-dialog.css">
+<link rel="stylesheet" href="css/prompt-history.css">
+</head>
+<body>
+<div class="root-container">
+<div class="sidebar">
+<div class="sidebar-title" data-i18n="menu.title">メニュー</div>
+<div class="menu-section">
+<div class="menu-section-title" data-i18n="menu.generationMode">生成モード</div>
+<button class="menu-button active" data-mode="normal" id="btnModeNormal" data-i18n="modes.t2i">T2I生成</button>
+<button class="menu-button" data-mode="loop" id="btnModeLoop" data-i18n="modes.t2iLoop">T2Iループ生成</button>
+<button class="menu-button" data-mode="i2i" id="btnModeI2I" data-i18n="modes.i2i">I2I生成</button>
+<button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop" data-i18n="modes.i2iLoop">I2Iループ生成</button>
+<button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle" data-i18n="modes.i2iAngle">I2Iアングル生成</button>
+</div>
+</div>
+<div class="mode-config-panel" id="modeConfigPanel">
+<div class="mode-config-title" id="modeConfigTitle" data-i18n="config.normalGeneration">通常生成</div>
+<div id="normalModeConfig" class="mode-config-content active">
+<div class="form-section" style="margin-top:0;">
+<div class="form-group">
+<label data-i18n="config.workflowT2I">ワークフロー (T2I)</label>
+<div class="workflow-display" id="normalWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group">
+<label data-i18n="config.generateCount">生成枚数</label>
+<input type="number" id="normalGenerateCount" value="1" min="1" max="10">
+</div>
+</div>
+<button class="generate-button" id="btnGenerateNormal" data-i18n="config.generate">生成</button>
+<button class="generate-button cancel-button" id="btnCancelNormal" style="margin-top:8px;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+<div id="loopModeConfig" class="mode-config-content">
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.workflowT2I">ワークフロー (T2I)</label>
+<div class="workflow-display" id="loopWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.promptPosition">追加プロンプト位置</label>
+<div class="radio-group">
+<label class="radio-label"><input type="radio" name="loopPromptPosition" value="start" checked><span data-i18n="config.positionStart">Start（先頭に追加）</span></label>
+<label class="radio-label"><input type="radio" name="loopPromptPosition" value="end"><span data-i18n="config.positionEnd">End（末尾に追加）</span></label>
+</div>
+</div>
+<div class="form-group loop-textarea-group">
+<div class="loop-textarea-label"><span data-i18n="config.positivePromptList">ポジティブプロンプトリスト</span><span class="loop-line-count" id="loopPositiveLineCount">0 行</span></div>
+<textarea id="loopPositivePrompts" data-i18n-placeholder="config.promptPerLine" placeholder="各行に1つのプロンプトを入力"></textarea>
+</div>
+<div class="form-group loop-textarea-group">
+<div class="loop-textarea-label"><span data-i18n="config.negativePromptList">ネガティブプロンプトリスト</span><span class="loop-line-count" id="loopNegativeLineCount">0 行</span></div>
+<textarea id="loopNegativePrompts" data-i18n-placeholder="config.promptPerLine" placeholder="各行に1つのプロンプトを入力"></textarea>
+</div>
+<button class="generate-button" id="btnGenerateLoop" style="flex-shrink:0;" data-i18n="config.loopGenerate">ループ生成</button>
+<button class="generate-button cancel-button" id="btnCancelLoop" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+<div id="i2iModeConfig" class="mode-config-content">
+<div class="form-section" style="margin-top:0;">
+<div class="form-group">
+<label data-i18n="config.workflowI2I">ワークフロー (I2I)</label>
+<div class="workflow-display" id="i2iWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group">
+<label><span data-i18n="config.inputImage">入力画像</span> <span class="i2i-image-count" id="i2iImageCount"></span></label>
+<div class="i2i-image-upload-area" id="i2iImageUploadArea">
+<input type="file" id="i2iImageInput" accept="image/*" multiple style="display:none;">
+<div class="i2i-image-preview-grid" id="i2iImagePreview">
+<div class="i2i-image-placeholder" data-i18n="config.dropImage">クリックまたはドラッグ&ドロップで画像を選択（複数可）</div>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label data-i18n="config.generateCountPerImage">各画像の生成枚数</label>
+<input type="number" id="i2iGenerateCount" value="1" min="1" max="10">
+</div>
+</div>
+<button class="generate-button" id="btnGenerateI2I" data-i18n="config.generate">生成</button>
+<button class="generate-button cancel-button" id="btnCancelI2I" style="margin-top:8px;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+<div id="i2iloopModeConfig" class="mode-config-content">
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.workflowI2I">ワークフロー (I2I)</label>
+<div class="workflow-display" id="i2iloopWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group" style="flex-shrink:0;">
+<label><span data-i18n="config.inputImage">入力画像</span> <span class="i2i-image-count" id="i2iloopImageCount"></span></label>
+<div class="i2i-image-upload-area" id="i2iloopImageUploadArea">
+<input type="file" id="i2iloopImageInput" accept="image/*" multiple style="display:none;">
+<div class="i2i-image-preview-grid" id="i2iloopImagePreview">
+<div class="i2i-image-placeholder" data-i18n="config.dropImage">クリックまたはドラッグ&ドロップで画像を選択（複数可）</div>
+</div>
+</div>
+</div>
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.promptPosition">追加プロンプト位置</label>
+<div class="radio-group">
+<label class="radio-label"><input type="radio" name="i2iloopPromptPosition" value="start" checked><span data-i18n="config.positionStart">Start（先頭に追加）</span></label>
+<label class="radio-label"><input type="radio" name="i2iloopPromptPosition" value="end"><span data-i18n="config.positionEnd">End（末尾に追加）</span></label>
+</div>
+</div>
+<div class="form-group loop-textarea-group">
+<div class="loop-textarea-label"><span data-i18n="config.positivePromptList">ポジティブプロンプトリスト</span><span class="loop-line-count" id="i2iloopPositiveLineCount">0 行</span></div>
+<textarea id="i2iloopPositivePrompts" data-i18n-placeholder="config.promptPerLine" placeholder="各行に1つのプロンプトを入力"></textarea>
+</div>
+<div class="form-group loop-textarea-group">
+<div class="loop-textarea-label"><span data-i18n="config.negativePromptList">ネガティブプロンプトリスト</span><span class="loop-line-count" id="i2iloopNegativeLineCount">0 行</span></div>
+<textarea id="i2iloopNegativePrompts" data-i18n-placeholder="config.promptPerLine" placeholder="各行に1つのプロンプトを入力"></textarea>
+</div>
+<button class="generate-button" id="btnGenerateI2ILoop" style="flex-shrink:0;" data-i18n="config.loopGenerate">ループ生成</button>
+<button class="generate-button cancel-button" id="btnCancelI2ILoop" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+<div id="i2iangleModeConfig" class="mode-config-content">
+<div class="form-group" style="flex-shrink:0;">
+<label data-i18n="config.workflowI2I">ワークフロー (I2I)</label>
+<div class="workflow-display" id="i2iangleWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group" style="flex-shrink:0;">
+<label><span data-i18n="config.inputImage">入力画像</span> <span class="i2i-image-count" id="i2iangleImageCount"></span></label>
+<div class="i2i-image-upload-area" id="i2iangleImageUploadArea">
+<input type="file" id="i2iangleImageInput" accept="image/*" multiple style="display:none;">
+<div class="i2i-image-preview-grid" id="i2iangleImagePreview">
+<div class="i2i-image-placeholder" data-i18n="config.dropImage">クリックまたはドラッグ&ドロップで画像を選択（複数可）</div>
+</div>
+</div>
+</div>
+<div class="form-group loop-textarea-group">
+<div class="loop-textarea-label"><span data-i18n="config.anglePrompt">アングルプロンプト</span><span class="loop-line-count" id="i2ianglePromptLineCount">0 行</span></div>
+<textarea id="i2ianglePrompts" data-i18n-placeholder="config.anglePromptPerLine" placeholder="各行に1つのアングルプロンプトを入力&#10;例: front view&#10;side view&#10;back view"></textarea>
+</div>
+<div class="form-group" style="margin-bottom:8px;">
+<button class="angle-add-button-small" id="btnAddAnglePrompt" data-i18n="config.sendToAngle">Angle↑送信</button>
+<div class="qwen-multiangle-prompt-external" id="cameraWidgetPrompt">&lt;sks&gt; front view eye-level shot medium shot</div>
+<div class="qwen-multiangle-wrapper">
+<div class="qwen-multiangle-container">
+<div class="qwen-multiangle-canvas" id="cameraWidgetCanvas"></div>
+<button class="qwen-multiangle-reset-corner" id="cameraWidgetReset" title="Reset to defaults">↺</button>
+</div>
+</div>
+</div>
+<button class="generate-button" id="btnGenerateI2IAngle" style="flex-shrink:0;" data-i18n="config.angleGenerate">アングル生成</button>
+<button class="generate-button cancel-button" id="btnCancelI2IAngle" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
+</div>
+<div class="center-container">
+<div class="center-tabs">
+<button class="center-tab active" data-tab="basic" id="btnTabBasic" data-i18n="tabs.basic">基本設定</button>
+<button class="center-tab" data-tab="advanced" id="btnTabAdvanced" data-i18n="tabs.advanced">詳細設定</button>
+<button class="center-tab" data-tab="wildcard" id="btnTabWildcard" data-i18n="tabs.wildcard">WildCard設定</button>
+</div>
+<div id="tabBasicContent" class="tab-content active">
+<div class="form-section">
+<div class="form-group">
+<label><span data-i18n="basic.prompt">プロンプト</span> <span style="font-size:11px;color:#888;" data-i18n="basic.promptHint">（__name__でワイルドカード挿入）</span></label>
+<textarea id="prompt" style="min-height:150px;" data-i18n-placeholder="basic.promptPlaceholder" placeholder="生成したい内容を記入&#10;例: __quality__, 1girl, __hair_color__, __expression__">1girl, beautiful face, smile, looking at viewer</textarea>
+</div>
+<div class="form-group">
+<label data-i18n="basic.negativePrompt">ネガティブプロンプト</label>
+<textarea id="negative_prompt" style="min-height:120px;" data-i18n-placeholder="basic.negativePlaceholder" placeholder="除外したい内容を記入">bad quality, blurry, low resolution</textarea>
+</div>
+</div>
+<div class="form-section">
+<div class="form-section-title" data-i18n="basic.imageSettings">画像設定</div>
+<div class="form-row-three">
+<div class="form-group">
+<label data-i18n="basic.width">幅</label>
+<input type="number" id="width" value="1024" min="512" step="8">
+</div>
+<div class="form-group">
+<label data-i18n="basic.height">高さ</label>
+<input type="number" id="height" value="1024" min="512" step="8">
+</div>
+<div class="form-group">
+<label data-i18n="basic.seed">シード</label>
+<div class="seed-group">
+<input type="number" id="seed" value="-1">
+<button class="seed-button" id="btnRandomSeed">🔄</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabAdvancedContent" class="tab-content">
+<div class="form-section">
+<div class="form-section-title" data-i18n="advanced.connectionSettings">接続設定</div>
+<div class="form-group">
+<label data-i18n="advanced.comfyuiUrl">ComfyUI URL</label>
+<input type="text" id="comfyUIPageUrl" value="http://localhost:8188">
+</div>
+</div>
+<div class="form-section">
+<div class="form-section-title"><span data-i18n="advanced.metadataMarker">Metadata Marker</span><span style="font-size:12px;font-weight:normal;color:#888;margin-left:8px;" data-i18n="advanced.metadataDescription">（プロンプト等を画像に追記・オリジナル画像も保存）</span></div>
+<div class="form-group">
+<label class="checkbox-label"><input type="checkbox" id="metadataEnabled"> <span data-i18n="advanced.outputEnabled">Output Image Enabled</span></label>
+</div>
+<div class="form-group">
+<label class="checkbox-label"><input type="checkbox" id="metadataFirstLineOnly"> <span data-i18n="advanced.firstLineOnly">プロンプト1行目のみ設定</span></label>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="advanced.position">位置</label>
+<select id="metadataPosition">
+<option value="overlay" data-i18n="advanced.posOverlay">Overlay（中央）</option>
+<option value="top" selected data-i18n="advanced.posTop">Top（上部）</option>
+<option value="bottom" data-i18n="advanced.posBottom">Bottom（下部）</option>
+<option value="right" data-i18n="advanced.posRight">Right（右）</option>
+<option value="left" data-i18n="advanced.posLeft">Left（左）</option>
+</select>
+</div>
+<div class="form-group">
+<label data-i18n="advanced.fontSize">Font Size</label>
+<input type="number" id="metadataFontSize" value="14" min="8" max="72">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="advanced.font">フォント</label>
+<select id="metadataFont">
+<option value="Arial" style="font-family:Arial;">Arial</option>
+<option value="Helvetica" style="font-family:Helvetica;">Helvetica</option>
+<option value="Times New Roman" style="font-family:'Times New Roman';">Times New Roman</option>
+<option value="Georgia" style="font-family:Georgia;">Georgia</option>
+<option value="Verdana" style="font-family:Verdana;">Verdana</option>
+<option value="Courier New" style="font-family:'Courier New';">Courier New</option>
+<option value="Impact" style="font-family:Impact;">Impact</option>
+<option value="Comic Sans MS" style="font-family:'Comic Sans MS';">Comic Sans MS</option>
+</select>
+</div>
+<div class="form-group">
+<label data-i18n="advanced.opacity">Opacity</label>
+<div style="display:flex;align-items:center;gap:8px;">
+<input type="range" id="metadataOpacity" min="0" max="100" value="80" style="flex:1;">
+<span id="metadataOpacityValue" style="min-width:40px;text-align:right;">80%</span>
+</div>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label data-i18n="advanced.fontColor">フォントカラー</label>
+<input type="color" id="metadataFontColor" value="#000000" style="width:100%;height:36px;padding:2px;">
+</div>
+<div class="form-group">
+<label data-i18n="advanced.bgColor">背景色</label>
+<input type="color" id="metadataBgColor" value="#ffffff" style="width:100%;height:36px;padding:2px;">
+</div>
+</div>
+<div class="form-group">
+<label data-i18n="advanced.footerText">Footer Text</label>
+<input type="text" id="metadataFooterText" data-i18n-placeholder="advanced.footerPlaceholder" placeholder="追加テキスト（任意）">
+</div>
+</div>
+</div>
+<div id="tabWildcardContent" class="tab-content">
+<div class="form-section">
+<div class="form-section-title" data-i18n="wildcard.management">ワイルドカード管理</div>
+<div class="wildcard-search-box">
+<input type="text" class="wildcard-search-input" id="wildcardSearchInput" data-i18n-placeholder="wildcard.search" placeholder="検索..." oninput="wildcardFilterList()">
+<button class="wildcard-btn wildcard-btn-primary" onclick="wildcardOpenEditor()" data-i18n="wildcard.new">+ 新規</button>
+</div>
+<div class="wildcard-list-container" id="wildcardListContainer"></div>
+<div class="wildcard-actions">
+<button class="wildcard-btn" onclick="wildcardImportData()" data-i18n="wildcard.import">インポート</button>
+<button class="wildcard-btn" onclick="wildcardExportData()" data-i18n="wildcard.export">エクスポート</button>
+<button class="wildcard-btn wildcard-btn-danger" onclick="wildcardClearAll()" data-i18n="wildcard.deleteAll">全削除</button>
+</div>
+</div>
+<div class="form-section">
+<div class="form-section-title" data-i18n="wildcard.usage">使い方</div>
+<div style="font-size:12px;color:#888;line-height:1.8;">
+<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__name__</code> <span data-i18n="wildcard.reference">ワイルドカード参照</span></div>
+<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__path/name__</code> <span data-i18n="wildcard.hierarchy">階層構造</span></div>
+<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__name*__</code> <span data-i18n="wildcard.wildcardSearch">ワイルドカード検索</span></div>
+<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">{a|b|c}</code> <span data-i18n="wildcard.randomSelect">ランダム選択</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="right-sidebar">
+<div class="right-sidebar-title" data-i18n="sidebar.workflow">ワークフロー</div>
+<button class="workflow-button" id="btnOpenWorkflow" data-i18n="sidebar.comfyuiWorkflows">ComfyUI Workflows</button>
+<div class="status-display">
+<div class="status-item">
+<span class="status-label" data-i18n="sidebar.connectionStatus">接続状態:</span>
+<span class="status-value">
+<span class="connection-indicator" id="connectionIndicator"></span>
+<span id="connectionStatus" data-i18n="sidebar.offline">オフライン</span>
+</span>
+</div>
+<div class="status-item">
+<span class="status-label" data-i18n="sidebar.currentWorkflow">ワークフロー:</span>
+<span class="status-value" id="activeWorkflow" data-i18n="config.notSelected">未選択</span>
+</div>
+<div class="status-item">
+<span class="status-label" data-i18n="sidebar.generationStatus">生成状態:</span>
+<span class="status-value" id="generationStatus" data-i18n="sidebar.ready">準備完了</span>
+</div>
+<div class="status-item">
+<span class="status-label" data-i18n="sidebar.generationTime">生成時間:</span>
+<span class="status-value" id="generationTimeStats">-</span>
+</div>
+</div>
+<div class="generated-image-header">
+<span data-i18n="sidebar.generatedImages">生成画像</span>
+<div style="display:flex;gap:4px;">
+<button id="btnDownloadAll" class="clear-images-button" data-i18n="sidebar.downloadAll">一括DL</button>
+<button id="btnClearImages" class="clear-images-button" data-i18n="sidebar.clear">クリア</button>
+</div>
+</div>
+<div style="font-size:11px;color:#888;padding:4px 8px;margin-bottom:4px;" data-i18n="sidebar.generatedImagesDesc">※ComfyUIの出力フォルダにも保存されます</div>
+<div class="generated-image-container" id="generatedImageContainer">
+<div id="noImagePlaceholder" style="color:#666;text-align:center;padding:20px;">
+<div style="font-size:48px;margin-bottom:12px;">🖼️</div>
+<div data-i18n="sidebar.noImages">生成された画像がここに表示されます</div>
+</div>
+</div>
+</div>
+</div>
+<div id="imageModal" class="image-modal">
+<span class="image-modal-close">&times;</span>
+<div id="imageModalInner" class="image-modal-inner">
+<img id="modalImage" src="" alt="拡大画像">
+</div>
+</div>
+<div id="wildcardEditorModal" class="wildcard-modal-overlay">
+<div class="wildcard-modal">
+<div class="wildcard-modal-header">
+<span class="wildcard-modal-title" id="wildcardEditorTitle" data-i18n="wildcard.newWildcard">新規ワイルドカード</span>
+<button class="wildcard-modal-close" onclick="wildcardCloseEditor()">×</button>
+</div>
+<div class="wildcard-modal-body">
+<div class="wildcard-form-group">
+<label class="wildcard-form-label" data-i18n="wildcard.name">名前</label>
+<input type="text" class="wildcard-form-input" id="wildcardEditName" data-i18n-placeholder="wildcard.namePlaceholder" placeholder="例: colors, artists/japanese">
+</div>
+<div class="wildcard-form-group">
+<label class="wildcard-form-label" data-i18n="wildcard.values">値（1行に1つ）</label>
+<textarea class="wildcard-form-input wildcard-form-textarea" id="wildcardEditValues" data-i18n-placeholder="wildcard.valuesPlaceholder" placeholder="red&#10;blue&#10;green"></textarea>
+</div>
+</div>
+<div class="wildcard-modal-footer">
+<button class="wildcard-btn wildcard-btn-danger" id="wildcardDeleteBtn" onclick="wildcardDelete()" style="margin-right:auto;display:none" data-i18n="wildcard.delete">削除</button>
+<button class="wildcard-btn" onclick="wildcardCloseEditor()" data-i18n="common.cancel">キャンセル</button>
+<button class="wildcard-btn wildcard-btn-primary" onclick="wildcardSave()" data-i18n="wildcard.save">保存</button>
+</div>
+</div>
+</div>
+<div id="wildcardImportModal" class="wildcard-modal-overlay">
+<div class="wildcard-modal">
+<div class="wildcard-modal-header">
+<span class="wildcard-modal-title" data-i18n="wildcard.import">ワイルドカードインポート</span>
+<button class="wildcard-modal-close" onclick="wildcardCloseImport()">×</button>
+</div>
+<div class="wildcard-modal-body">
+<textarea class="wildcard-import-textarea" id="wildcardImportData" placeholder='{"version":1,"wildcards":{"colors":["red","blue"]}}'></textarea>
+</div>
+<div class="wildcard-modal-footer">
+<button class="wildcard-btn" onclick="wildcardCloseImport()" data-i18n="common.cancel">キャンセル</button>
+<button class="wildcard-btn wildcard-btn-primary" onclick="wildcardDoImport()" data-i18n="wildcard.import">インポート</button>
+</div>
+</div>
+</div>
+<div class="wildcard-toast" id="wildcardToast"></div>
+<div id="sp-manga-toastContainer" style="position:fixed;bottom:20px;right:20px;z-index:9999;"></div>
+
+<!-- Language Selector -->
+<div class="language-selector-container">
+<span class="language-selector-label" data-i18n="language.select">言語</span>
+<div class="language-dropdown" id="languageDropdown">
+<button class="language-dropdown-btn" id="languageDropdownBtn" type="button">
+<span class="fi fi-jp"></span>
+<span class="language-text">日本語</span>
+<span class="dropdown-arrow"></span>
+</button>
+<div class="language-dropdown-menu" id="languageDropdownMenu">
+<div class="language-option" data-value="ja">
+<span class="fi fi-jp"></span>
+<span>日本語</span>
+</div>
+<div class="language-option" data-value="en">
+<span class="fi fi-us"></span>
+<span>English</span>
+</div>
+<div class="language-option" data-value="zh">
+<span class="fi fi-cn"></span>
+<span>中文</span>
+</div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>const uiLogger={debug:function(){},error:function(msg){console.error(msg)}};</script>
+<script src="js/i18n/sui-i18n.js"></script>
+<script src="js/ui/toast.js"></script>
+<script src="js/ui/error-guide-dialog.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.31.3/tagify.min.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-workflow-builder.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-util.js"></script>
+
+<script src="js/settings/settings-storage.js"></script>
+<script src="js/prompt/prompt-util.js"></script>
+<script src="js/prompt/prompt-history.js"></script>
+<script src="js/connection/connection.js"></script>
+<script src="js/prompt/metadata-marker.js"></script>
+<script src="js/image/image-display.js"></script>
+<script src="js/generator/generator.js"></script>
+<script src="js/ui/ui-controller.js"></script>
+
+<script src="js/ai/ComfyUI/v2/comfyui-object-info-repository.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-workflow-repository.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-workflow-editor.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-util-v2.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-workflow-editor-tab.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui-workflow-interact.js"></script>
+
+<script src="js/wildcard/wildcard-default.js"></script>
+<script src="js/wildcard/wildcard-manager.js"></script>
+<script src="js/image/camera-widget.js"></script>
+
+<script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-t2i-default-workflows.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-rembg-default-workflows.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-upscale-default-workflows.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-default-workflows.js"></script>
+<script src="js/core/app-init.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+wildcardInit();
+var tabWildcardBtn=$('btnTabWildcard');
+if(tabWildcardBtn){
+tabWildcardBtn.addEventListener('click',function(){
+var tabs=document.querySelectorAll('.center-tab');
+var contents=document.querySelectorAll('.tab-content');
+tabs.forEach(function(t){t.classList.remove('active')});
+contents.forEach(function(c){c.classList.remove('active')});
+tabWildcardBtn.classList.add('active');
+$('tabWildcardContent').classList.add('active');
+});
+}
+});
+</script>
+</body>
+</html>

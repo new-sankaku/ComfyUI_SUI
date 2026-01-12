@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(move \"css_comfyui-layout.min.css\" \"css\\\\comfyui-layout.min.css\")",
+      "Bash(move \"css_comfyui-variables.min.css\" \"css\\\\comfyui-variables.min.css\")",
+      "Bash(move:*)",
+      "Bash(ls:*)"
+    ]
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\tada.wav').PlaySync()\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\tada.wav').PlaySync()\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,126 @@
+/* Language Selector Styles */
+.language-selector-container {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(30, 30, 30, 0.95);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.language-selector-label {
+    font-size: 12px;
+    color: #888;
+    white-space: nowrap;
+}
+
+/* Custom Dropdown */
+.language-dropdown {
+    position: relative;
+}
+
+.language-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+    min-width: 100px;
+    transition: all 0.2s ease;
+}
+
+.language-dropdown-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: #333;
+}
+
+.language-dropdown-btn:focus {
+    border-color: #00bcd4;
+    box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+}
+
+.language-dropdown-btn .fi {
+    width: 18px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.language-text {
+    flex: 1;
+    text-align: left;
+}
+
+.dropdown-arrow {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #888;
+    transition: transform 0.2s ease;
+}
+
+.language-dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.language-dropdown-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 4px;
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    min-width: 100%;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.2s ease;
+}
+
+.language-dropdown.open .language-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.language-option:hover {
+    background: #3a3a3a;
+}
+
+.language-option.selected {
+    background: rgba(0, 188, 212, 0.2);
+}
+
+.language-option .fi {
+    width: 18px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
