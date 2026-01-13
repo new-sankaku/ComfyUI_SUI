@@ -1,9 +1,10 @@
 // Dashboard UI Component
 const DashboardUI = (function() {
     let isInitialized = false;
-    let chartCanvas = null;
-    let chartCtx = null;
+    let generationTimeChart = null;
+    let trendChart = null;
     let currentChartMode = 'T2I';
+    let currentTrendPeriod = 'daily';
 
     // Mode display names (will use i18n)
     const MODE_LABELS = {
@@ -25,14 +26,12 @@ const DashboardUI = (function() {
         'Upscale': '#607d8b'
     };
 
+    // Day labels for heatmap
+    const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
     // Initialize dashboard
     async function init() {
         if (isInitialized) return;
-
-        chartCanvas = document.getElementById('dashboardChart');
-        if (chartCanvas) {
-            chartCtx = chartCanvas.getContext('2d');
-        }
 
         setupEventListeners();
         await refresh();
@@ -46,7 +45,16 @@ const DashboardUI = (function() {
         if (modeSelector) {
             modeSelector.addEventListener('change', async (e) => {
                 currentChartMode = e.target.value;
-                await refreshChart();
+                await refreshGenerationTimeChart();
+            });
+        }
+
+        // Trend period selector
+        const trendSelector = document.getElementById('dashboardTrendSelector');
+        if (trendSelector) {
+            trendSelector.addEventListener('change', async (e) => {
+                currentTrendPeriod = e.target.value;
+                await refreshTrendChart();
             });
         }
 
@@ -67,7 +75,9 @@ const DashboardUI = (function() {
     async function refresh() {
         await Promise.all([
             refreshStats(),
-            refreshChart(),
+            refreshGenerationTimeChart(),
+            refreshHeatmap(),
+            refreshTrendChart(),
             refreshTopTags()
         ]);
     }
@@ -106,96 +116,224 @@ const DashboardUI = (function() {
         }
     }
 
-    // Draw chart
-    async function refreshChart() {
-        if (!chartCanvas || !chartCtx) return;
+    // Refresh generation time chart using Chart.js
+    async function refreshGenerationTimeChart() {
+        const canvas = document.getElementById('dashboardChart');
+        if (!canvas) return;
 
         const history = await PerformanceStorage.getHistory(currentChartMode);
-        drawLineChart(history, MODE_COLORS[currentChartMode]);
-    }
+        const color = MODE_COLORS[currentChartMode];
 
-    // Draw line chart using Canvas API
-    function drawLineChart(history, color) {
-        const canvas = chartCanvas;
-        const ctx = chartCtx;
-        const width = canvas.width;
-        const height = canvas.height;
-
-        // Clear canvas
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(0, 0, width, height);
-
-        if (history.length === 0) {
-            ctx.fillStyle = '#666';
-            ctx.font = '14px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(I18nManager.t('dashboard.noData'), width / 2, height / 2);
-            return;
+        // Destroy existing chart if exists
+        if (generationTimeChart) {
+            generationTimeChart.destroy();
         }
 
-        const padding = { top: 20, right: 20, bottom: 30, left: 50 };
-        const chartWidth = width - padding.left - padding.right;
-        const chartHeight = height - padding.top - padding.bottom;
+        const labels = history.map((_, i) => i + 1);
+        const data = history.map(h => h.time);
 
-        // Find min/max values
-        const times = history.map(h => h.time);
-        const minTime = Math.min(...times);
-        const maxTime = Math.max(...times);
-        const timeRange = maxTime - minTime || 1;
-
-        // Draw grid lines
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 1;
-        const gridLines = 5;
-        for (let i = 0; i <= gridLines; i++) {
-            const y = padding.top + (chartHeight / gridLines) * i;
-            ctx.beginPath();
-            ctx.moveTo(padding.left, y);
-            ctx.lineTo(width - padding.right, y);
-            ctx.stroke();
-
-            // Y-axis labels
-            const value = maxTime - (timeRange / gridLines) * i;
-            ctx.fillStyle = '#888';
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText(Math.round(value) + 'ms', padding.left - 5, y + 3);
-        }
-
-        // Draw data line
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-
-        const pointGap = chartWidth / Math.max(history.length - 1, 1);
-
-        history.forEach((point, index) => {
-            const x = padding.left + index * pointGap;
-            const y = padding.top + chartHeight - ((point.time - minTime) / timeRange) * chartHeight;
-
-            if (index === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
+        generationTimeChart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: I18nManager.t('dashboard.generationTime') || 'Generation Time (ms)',
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color + '20',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.parsed.y} ms`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: I18nManager.t('dashboard.recentGenerations') || 'Recent Generations',
+                            color: '#888'
+                        },
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#888'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'ms',
+                            color: '#888'
+                        },
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#888'
+                        }
+                    }
+                }
             }
         });
-        ctx.stroke();
+    }
 
-        // Draw data points
-        ctx.fillStyle = color;
-        history.forEach((point, index) => {
-            const x = padding.left + index * pointGap;
-            const y = padding.top + chartHeight - ((point.time - minTime) / timeRange) * chartHeight;
-            ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2);
-            ctx.fill();
+    // Refresh hourly heatmap
+    async function refreshHeatmap() {
+        const container = document.getElementById('dashboardHeatmap');
+        if (!container) return;
+
+        const hourlyData = await PerformanceStorage.getHourlyStats();
+
+        // Find max value for color scaling
+        let maxCount = 0;
+        for (let day = 0; day < 7; day++) {
+            for (let hour = 0; hour < 24; hour++) {
+                const count = hourlyData[day]?.[hour] || 0;
+                maxCount = Math.max(maxCount, count);
+            }
+        }
+
+        // Build heatmap HTML
+        let html = '<div class="heatmap-grid">';
+
+        // Header row (hours)
+        html += '<div class="heatmap-row heatmap-header">';
+        html += '<div class="heatmap-label"></div>';
+        for (let hour = 0; hour < 24; hour++) {
+            html += `<div class="heatmap-hour">${hour}</div>`;
+        }
+        html += '</div>';
+
+        // Data rows (days)
+        for (let day = 0; day < 7; day++) {
+            html += '<div class="heatmap-row">';
+            html += `<div class="heatmap-label">${I18nManager.t('dashboard.day' + day) || DAY_LABELS[day]}</div>`;
+
+            for (let hour = 0; hour < 24; hour++) {
+                const count = hourlyData[day]?.[hour] || 0;
+                const intensity = maxCount > 0 ? count / maxCount : 0;
+                const bgColor = getHeatmapColor(intensity);
+                html += `<div class="heatmap-cell" style="background-color:${bgColor}" title="${DAY_LABELS[day]} ${hour}:00 - ${count} ${I18nManager.t('dashboard.generations') || 'generations'}"></div>`;
+            }
+            html += '</div>';
+        }
+        html += '</div>';
+
+        container.innerHTML = html;
+    }
+
+    // Get heatmap color based on intensity (0-1)
+    function getHeatmapColor(intensity) {
+        if (intensity === 0) return '#1a1a1a';
+        // Gradient from dark cyan to bright cyan
+        const r = Math.round(0 + intensity * 0);
+        const g = Math.round(40 + intensity * 148);
+        const b = Math.round(50 + intensity * 162);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // Refresh trend chart
+    async function refreshTrendChart() {
+        const canvas = document.getElementById('dashboardTrendChart');
+        if (!canvas) return;
+
+        let data;
+        let labels;
+        let chartLabel;
+
+        if (currentTrendPeriod === 'daily') {
+            const dailyData = await PerformanceStorage.getDailyStats();
+            const sorted = Object.entries(dailyData).sort((a, b) => a[0].localeCompare(b[0]));
+            labels = sorted.map(([date]) => date.substring(5)); // MM-DD
+            data = sorted.map(([, count]) => count);
+            chartLabel = I18nManager.t('dashboard.daily') || 'Daily';
+        } else if (currentTrendPeriod === 'weekly') {
+            const weeklyData = await PerformanceStorage.getWeeklyStats();
+            const sorted = Object.entries(weeklyData).sort((a, b) => a[0].localeCompare(b[0]));
+            labels = sorted.map(([date]) => date.substring(5)); // MM-DD (week start)
+            data = sorted.map(([, count]) => count);
+            chartLabel = I18nManager.t('dashboard.weekly') || 'Weekly';
+        } else {
+            const monthlyData = await PerformanceStorage.getMonthlyStats();
+            const sorted = Object.entries(monthlyData).sort((a, b) => a[0].localeCompare(b[0]));
+            labels = sorted.map(([date]) => date); // YYYY-MM
+            data = sorted.map(([, count]) => count);
+            chartLabel = I18nManager.t('dashboard.monthly') || 'Monthly';
+        }
+
+        // Destroy existing chart if exists
+        if (trendChart) {
+            trendChart.destroy();
+        }
+
+        trendChart = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: chartLabel,
+                    data: data,
+                    backgroundColor: '#00bcd480',
+                    borderColor: '#00bcd4',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#888',
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    },
+                    y: {
+                        display: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: I18nManager.t('dashboard.count') || 'Count',
+                            color: '#888'
+                        },
+                        grid: {
+                            color: '#333'
+                        },
+                        ticks: {
+                            color: '#888',
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
         });
-
-        // Draw X-axis label
-        ctx.fillStyle = '#888';
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(I18nManager.t('dashboard.recentGenerations'), width / 2, height - 5);
     }
 
     // Refresh top tags display

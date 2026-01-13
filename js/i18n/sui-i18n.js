@@ -254,10 +254,24 @@ const I18nManager = (function() {
                 min: "MIN (ms)",
                 max: "MAX (ms)",
                 timeGraph: "生成時間グラフ",
+                generationTime: "生成時間 (ms)",
                 recentGenerations: "直近の生成",
                 topTags: "よく使われるタグ",
                 noTags: "タグがありません",
-                noData: "データがありません"
+                noData: "データがありません",
+                hourlyHeatmap: "時間帯別アクティビティ",
+                trendGraph: "生成トレンド",
+                daily: "日別",
+                weekly: "週別",
+                monthly: "月別",
+                generations: "回",
+                day0: "日",
+                day1: "月",
+                day2: "火",
+                day3: "水",
+                day4: "木",
+                day5: "金",
+                day6: "土"
             },
             errorGuide: {
                 // Common
@@ -559,10 +573,24 @@ const I18nManager = (function() {
                 min: "MIN (ms)",
                 max: "MAX (ms)",
                 timeGraph: "Generation Time Graph",
+                generationTime: "Generation Time (ms)",
                 recentGenerations: "Recent Generations",
                 topTags: "Most Used Tags",
                 noTags: "No tags recorded",
-                noData: "No data available"
+                noData: "No data available",
+                hourlyHeatmap: "Hourly Activity Heatmap",
+                trendGraph: "Generation Trend",
+                daily: "Daily",
+                weekly: "Weekly",
+                monthly: "Monthly",
+                generations: "generations",
+                day0: "Sun",
+                day1: "Mon",
+                day2: "Tue",
+                day3: "Wed",
+                day4: "Thu",
+                day5: "Fri",
+                day6: "Sat"
             },
             errorGuide: {
                 // Common
@@ -864,10 +892,24 @@ const I18nManager = (function() {
                 min: "最小 (ms)",
                 max: "最大 (ms)",
                 timeGraph: "生成时间图表",
+                generationTime: "生成时间 (ms)",
                 recentGenerations: "最近生成",
                 topTags: "常用标签",
                 noTags: "暂无标签",
-                noData: "暂无数据"
+                noData: "暂无数据",
+                hourlyHeatmap: "时段活动热力图",
+                trendGraph: "生成趋势",
+                daily: "按日",
+                weekly: "按周",
+                monthly: "按月",
+                generations: "次",
+                day0: "周日",
+                day1: "周一",
+                day2: "周二",
+                day3: "周三",
+                day4: "周四",
+                day5: "周五",
+                day6: "周六"
             },
             errorGuide: {
                 // Common

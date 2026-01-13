@@ -212,6 +212,67 @@
     font-size: 13px;
 }
 
+/* Heatmap Styles */
+.heatmap-container {
+    overflow-x: auto;
+    padding: 8px 0;
+}
+
+.heatmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: fit-content;
+}
+
+.heatmap-row {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.heatmap-header {
+    margin-bottom: 4px;
+}
+
+.heatmap-label {
+    width: 40px;
+    font-size: 10px;
+    color: #888;
+    text-align: right;
+    padding-right: 8px;
+    flex-shrink: 0;
+}
+
+.heatmap-hour {
+    width: 20px;
+    height: 16px;
+    font-size: 9px;
+    color: #666;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.heatmap-cell {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.2);
+    z-index: 1;
+}
+
+/* Trend Chart */
+#dashboardTrendChart {
+    width: 100%;
+    height: 200px;
+}
+
 /* Scrollbar Styles */
 .dashboard-container::-webkit-scrollbar,
 .top-tags-container::-webkit-scrollbar {
