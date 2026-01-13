@@ -14,7 +14,7 @@ throw new Error(`ObjectInfo取得失敗: ステータス ${response.status}`);
 
 this.nodeTypes = await response.json();
 await objectInfoRepository.saveObjectInfo(this.nodeTypes);
-console.log("updateObjectInfoAndWorkflows --------------", );
+workflowLogger.debug("updateObjectInfoAndWorkflows");
 
 this.tabs.forEach((tab) => {
 tab.renderNodes();
@@ -226,7 +226,7 @@ newTab.activate();
 async closeTab(tabId) {
 const tab = this.tabs.get(tabId);
 if (!tab){
-console.log("closeTab tab is null");
+workflowLogger.debug("closeTab tab is null");
 return;
 } 
 

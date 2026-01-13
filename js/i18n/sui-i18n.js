@@ -1129,54 +1129,11 @@ const I18nManager = (function() {
         return true;
     }
 
-    // Show toast with reload button when language changes
+    // Show toast when language changes
     function showLanguageChangeToast() {
-        const container = document.getElementById('sp-manga-toastContainer');
-        if (!container) return;
-
-        const toastId = `sp-manga-toast-lang-${Date.now()}`;
-        const toast = document.createElement('div');
-        toast.className = 'toast-achievement toast-nier';
-        toast.id = toastId;
-        toast.style.height = 'auto';
-        toast.innerHTML = `
-            <div class="toast-title">${getTranslation('toast.languageChanged')}</div>
-            <div class="toast-message">
-                <div class="sp-manga-line">${getTranslation('toast.reloadRequired')}</div>
-                <button id="reloadBtn-${toastId}" style="margin-top:8px;padding:6px 16px;background:#00bcd4;border:none;border-radius:4px;color:#1a1a1a;font-weight:bold;cursor:pointer;">${getTranslation('toast.reload')}</button>
-            </div>
-            <div class="progress" style="height: 5px; margin-top: 5px;">
-                <div class="toast-progress-bar" role="progressbar" style="width: 100%;"></div>
-            </div>
-        `;
-
-        container.appendChild(toast);
-
-        const bsToast = new bootstrap.Toast(toast, { autohide: false });
-        bsToast.show();
-
-        // Add reload button click handler
-        document.getElementById(`reloadBtn-${toastId}`).addEventListener('click', () => {
-            location.reload();
-        });
-
-        // Start progress bar (8 seconds)
-        const progressBar = toast.querySelector('.toast-progress-bar');
-        const totalDuration = 8000;
-        let width = 100;
-        const timer = setInterval(() => {
-            width -= (10 / totalDuration * 100);
-            progressBar.style.width = `${width}%`;
-            if (width <= 0) {
-                clearInterval(timer);
-                bsToast.hide();
-            }
-        }, 10);
-
-        toast.addEventListener('hidden.bs.toast', function() {
-            toast.style.animation = 'sp-manga-fade-out 1s forwards';
-            toast.remove();
-        });
+        if (typeof createToast === 'function') {
+            createToast(getTranslation('toast.languageChanged'), '');
+        }
     }
 
     // Update custom language dropdown display
@@ -1261,7 +1218,7 @@ const I18nManager = (function() {
         }
 
         initialized = true;
-        console.log(`i18n initialized with language: ${currentLanguage}`);
+        i18nLogger.debug(`i18n initialized with language: ${currentLanguage}`);
     }
 
     // Get current language

@@ -10,8 +10,6 @@ const keyMap = {
 };
 return I18nManager.t(keyMap[key] || key);
 }
-const workflowlLogger = { trace: function() {} };
-const logger = { trace: function() {} };
 function updateLoopLineCount() {
 const positiveText = $('loopPositivePrompts').value;
 const negativeText = $('loopNegativePrompts').value;

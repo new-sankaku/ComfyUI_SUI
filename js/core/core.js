@@ -33,7 +33,7 @@ const comfyUIUrls = comfyUIEndpointsInstance.urls;
 function Comfyui_connect() {
 try {
 socket = new WebSocket(comfyUIUrls.ws + '?clientId=' + comfyUIuuid);
-socket.addEventListener("open", () => { console.log("WebSocket接続成功"); });
+socket.addEventListener("open", () => { logger.debug("WebSocket connection established"); });
 socket.addEventListener("close", () => { socket = null; });
 socket.addEventListener("error", () => { socket = null; });
 } catch (error) { socket = null; }

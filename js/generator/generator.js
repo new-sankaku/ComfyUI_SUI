@@ -112,7 +112,7 @@ const currentSeed = baseSeed === -1 ? Math.floor(Math.random() * 0xFFFFFFFF) : b
 $('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', i + 1).replace('{total}', count);
 const requestData = { prompt: prompt, negative_prompt: negativePrompt, seed: currentSeed, width: width, height: height };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'T2I');
-console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -121,8 +121,8 @@ updateGenerationTimeStats(genTime);
 DashboardUI.recordGeneration('T2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
-{ fieldId: 'prompt', text: $('prompt')?.value?.trim() },
-{ fieldId: 'negative_prompt', text: $('negative_prompt')?.value?.trim() }
+{ fieldId: 'prompt', text: getRawPromptText() },
+{ fieldId: 'negative_prompt', text: getRawNegativePromptText() }
 ];
 displayGeneratedImage(result.image, i + 1, prompt, historyConfig);
 }
@@ -175,7 +175,7 @@ negative = await processPromptWithWildcard(negative.trim());
 $('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', i + 1).replace('{total}', total);
 const requestData = { prompt: positive, negative_prompt: negative, seed: currentSeed, width: width, height: height };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'T2I');
-console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -225,7 +225,7 @@ const currentSeed = baseSeed === -1 ? Math.floor(Math.random() * 0xFFFFFFFF) : b
 $('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', i + 1).replace('{total}', count);
 const requestData = { prompt: prompt, negative_prompt: negativePrompt, seed: currentSeed, width: width, height: height };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'T2I');
-console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -234,8 +234,8 @@ updateGenerationTimeStats(genTime);
 DashboardUI.recordGeneration('T2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
-{ fieldId: 'prompt', text: $('prompt')?.value?.trim() },
-{ fieldId: 'negative_prompt', text: $('negative_prompt')?.value?.trim() }
+{ fieldId: 'prompt', text: getRawPromptText() },
+{ fieldId: 'negative_prompt', text: getRawNegativePromptText() }
 ];
 displayGeneratedImage(result.image, i + 1, prompt, historyConfig);
 }
@@ -442,7 +442,7 @@ generationIndex++;
 $('generationStatus').textContent = I18nManager.t('status.generatingWithImage').replace('{current}', generationIndex).replace('{total}', totalGenerations).replace('{imgCurrent}', imgIdx + 1).replace('{imgTotal}', totalImages);
 const requestData = { prompt: prompt, negative_prompt: negativePrompt, seed: currentSeed, width: width, height: height, uploadFileName: uploadFileName };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'I2I');
-console.log('Generated I2I Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated I2I Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -451,8 +451,8 @@ updateGenerationTimeStats(genTime);
 DashboardUI.recordGeneration('I2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
-{ fieldId: 'prompt', text: $('prompt')?.value?.trim() },
-{ fieldId: 'negative_prompt', text: $('negative_prompt')?.value?.trim() }
+{ fieldId: 'prompt', text: getRawPromptText() },
+{ fieldId: 'negative_prompt', text: getRawNegativePromptText() }
 ];
 displayGeneratedImage(result.image, generationIndex, prompt, historyConfig);
 }
@@ -514,7 +514,7 @@ generationIndex++;
 $('generationStatus').textContent = I18nManager.t('status.generatingWithImage').replace('{current}', generationIndex).replace('{total}', total).replace('{imgCurrent}', imgIdx + 1).replace('{imgTotal}', imageCount);
 const requestData = { prompt: positive, negative_prompt: negative, seed: currentSeed, width: width, height: height, uploadFileName: uploadFileName };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'I2I');
-console.log('Generated I2I Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated I2I Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -581,7 +581,7 @@ generationIndex++;
 $('generationStatus').textContent = I18nManager.t('status.generatingWithImage').replace('{current}', generationIndex).replace('{total}', total).replace('{imgCurrent}', imgIdx + 1).replace('{imgTotal}', imageCount);
 const requestData = { prompt: prompt, negative_prompt: negativePrompt, seed: currentSeed, width: width, height: height, uploadFileName: uploadFileName, anglePrompt: anglePrompt };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'I2I');
-console.log('Generated I2I Angle Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated I2I Angle Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
@@ -633,7 +633,7 @@ const uploadFileName = upscaleloopUploadedFileNames[imgIdx];
 $('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', imgIdx + 1).replace('{total}', imageCount);
 const requestData = { uploadFileName: uploadFileName };
 const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'Upscaler');
-console.log('Generated Upscale Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
+generatorLogger.debug('Generated Upscale Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();

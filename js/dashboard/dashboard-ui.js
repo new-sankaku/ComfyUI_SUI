@@ -34,7 +34,11 @@ const DashboardUI = (function() {
 
     // Initialize dashboard
     async function init() {
-        if (isInitialized) return;
+        if (isInitialized) {
+            // Already initialized, just refresh the data
+            await refresh();
+            return;
+        }
 
         setupEventListeners();
         await refresh();

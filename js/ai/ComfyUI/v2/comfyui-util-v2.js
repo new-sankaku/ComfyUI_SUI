@@ -52,7 +52,7 @@ return false;
 
 let isOnline=false;
 async function comfyui_monitorConnection_v2() {
-console.log("comfyui_monitorConnection_v2");
+comfyuiLogger.debug("comfyui_monitorConnection_v2");
 while (true) {
 const currentStatus=await comfyui_apiHeartbeat_v2();
 if (currentStatus!==isOnline) {
@@ -255,10 +255,10 @@ subfolder: imageDataToReceive.subfolder,
 type: imageDataToReceive.type,
 });
 const response=await fetch(comfyUIUrls.view+"?"+params.toString());
-console.log("画像データをサーバーから取得しました。",
+comfyuiLogger.debug("Image data retrieved from server:",
 imageDataToReceive.filename,
 imageDataToReceive.subfolder,
-imageDataToReceive.type,);
+imageDataToReceive.type);
 
 if (!response.ok) {
 throw new Error(`HTTPエラー! ステータス: ${response.status}`);
@@ -266,7 +266,7 @@ throw new Error(`HTTPエラー! ステータス: ${response.status}`);
 
 const blob=await response.blob();
 const imageSrc=URL.createObjectURL(blob);
-console.log("画像ソース:",imageSrc);
+comfyuiLogger.debug("Image source:", imageSrc);
 
 return imageSrc;
 } catch (error) {
@@ -276,8 +276,6 @@ return null;
 }
 
 function comfyui_getErrorMessage_v2(response) {
-// console.log('comfyui_getErrorMessage_v2 called with:', JSON.stringify(response));
-
 if (comfyui_isError_v2(response)) {
 const promptId=Object.keys(response)[0];
 const status=response[promptId].status;
@@ -307,10 +305,10 @@ errorMessage.traceback=Array.isArray(errorDetails.traceback)
 }
 }
 
-console.log("comfyui_getErrorMessage_v2 returning:",errorMessage);
+comfyuiLogger.debug("comfyui_getErrorMessage_v2 returning:", errorMessage);
 return errorMessage;
 }
-console.log("comfyui_getErrorMessage_v2 returning null");
+comfyuiLogger.debug("comfyui_getErrorMessage_v2 returning null");
 return null;
 }
 
@@ -355,8 +353,8 @@ return null;
 }
 
 async function comfyui_get_history_v2(promptId) {
-console.log(
-"comfyui_get_history_v2関数が呼び出されました。プロンプトID:",
+comfyuiLogger.debug(
+"comfyui_get_history_v2 called. promptId:",
 promptId
 );
 try {
@@ -366,12 +364,12 @@ headers: {
 accept: "application/json",
 },
 });
-console.log("サーバーに履歴データをリクエストしました。");
+comfyuiLogger.debug("History data requested from server");
 const data=await response.json();
-console.log("履歴データ:",data);
+comfyuiLogger.debug("History data:", data);
 return data;
 } catch (error) {
-console.log("Text2Imageエラー:",error);
+comfyuiLogger.error("Text2Image error:", error);
 createToastError(I18nManager.t('toast.text2imageError'), I18nManager.t('toast.checkComfyui'));
 return null;
 }
@@ -386,7 +384,6 @@ if (event.data instanceof Blob) {
 //akip
 } else {
 const message=JSON.parse(event.data);
-// console.log('WebSocketメッセージ:', message);
 if (
 message.type==="executing"&&
 message.data.node===null&&
@@ -411,11 +408,11 @@ const promptId=Object.keys(response)[0];
 if (promptId&&response[promptId]&&response[promptId].status) {
 const status=response[promptId].status;
 const result=status.status_str==="error";
-console.log("comfyui_isError_v2 return",result);
+comfyuiLogger.debug("comfyui_isError_v2 return", result);
 return result;
 }
 }
-console.log("comfyui_isError_v2 return false");
+comfyuiLogger.debug("comfyui_isError_v2 return false");
 return false;
 }
 

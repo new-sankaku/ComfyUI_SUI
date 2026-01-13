@@ -57,7 +57,7 @@ function comfyuiConnect() {
 try {
 socket=new WebSocket(comfyUIUrls.ws+'?clientId='+comfyUIuuid);
 socket.addEventListener("open",(event)=>{
-console.log("ComfyUIへの接続に成功しました。");
+comfyuiLogger.debug("ComfyUI connection established");
 });
 socket.addEventListener("close",(event)=>{
 socket=null;
@@ -228,7 +228,6 @@ throw new Error(`HTTP error! status: ${response.status}`);
 }
 
 const result=await response.json();
-// console.log("Upload successful:", result);
 return result;
 } catch (error) {
 console.error("Error uploading image:",error);
@@ -321,7 +320,6 @@ if (!response.ok) {
 throw new Error(`HTTP error! status: ${response.status}`);
 }
 const data=await response.json();
-// console.log("comfyuiFetchObjectInfo:", data);
 return data;
 } catch (error) {
 console.error("Comfyui_Fetch: Fetch error",nodeName);
@@ -338,7 +336,6 @@ throw new Error(`HTTP error! status: ${response.status}`);
 const data=await response.json();
 
 const nodeNames=Object.keys(data);
-// console.log("Node names:", nodeNames);
 comfyObjectInfoList=nodeNames;
 return nodeNames;
 } catch (error) {

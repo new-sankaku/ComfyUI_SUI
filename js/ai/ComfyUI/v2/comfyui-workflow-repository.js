@@ -16,7 +16,7 @@ throw new Error("Workflow ID is required for saving.");
 }
 
 if (enabled) {
-console.log("saveWorkflow: disableWorkflowsByType");
+workflowLogger.debug("saveWorkflow: disableWorkflowsByType");
 await this.disableWorkflowsByType(type);
 }
 
@@ -144,7 +144,7 @@ async getEnabledWorkflowByType(type) {
 try {
 let enabledWorkflow = null;
 await this.store.iterate((value) => {
-console.log("value.type value.enabled", value.type, value.enabled);
+workflowLogger.debug("value.type value.enabled", value.type, value.enabled);
 if (value.type === type && value.enabled) {
 enabledWorkflow = value;
 return false;

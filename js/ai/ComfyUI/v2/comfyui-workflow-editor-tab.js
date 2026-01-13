@@ -117,7 +117,7 @@ return button;
 }
 
 async saveWorkflow() {
-console.log("saveWorkflow() start");
+workflowLogger.debug("saveWorkflow() start");
 const cleanWorkflow = { ...this.workflow };
 
 await comfyUIWorkflowRepository
@@ -129,7 +129,7 @@ cleanWorkflow,
 this.enabled
 )
 .then(() => {
-console.log("Workflow saved successfully");
+workflowLogger.debug("Workflow saved successfully");
 this.clearUnsavedState();
 })
 .catch((error) => {
@@ -456,7 +456,7 @@ const previewContainer = this.contentElement.querySelector(`[data-preview-id="${
 if (previewContainer) {
 const previewImage = previewContainer.querySelector("img");
 if (previewImage) {
-console.log("selectedValue", selectedValue);
+workflowLogger.debug("selectedValue", selectedValue);
 const imageUrl = await comfyui_view_image_v2(selectedValue);
 if (imageUrl) {
 previewImage.src = imageUrl;
