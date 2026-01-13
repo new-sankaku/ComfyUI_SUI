@@ -29,6 +29,9 @@ const DashboardUI = (function() {
     // Day labels for heatmap
     const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+    // Wordcloud colors
+    const WORDCLOUD_COLORS = ['#00bcd4', '#4caf50', '#ff9800', '#e91e63', '#9c27b0', '#607d8b', '#03a9f4', '#8bc34a'];
+
     // Initialize dashboard
     async function init() {
         if (isInitialized) return;
@@ -58,7 +61,7 @@ const DashboardUI = (function() {
             });
         }
 
-        // Clear stats button
+        // Clear all stats button
         const clearBtn = document.getElementById('dashboardClearStats');
         if (clearBtn) {
             clearBtn.addEventListener('click', async () => {
@@ -69,6 +72,25 @@ const DashboardUI = (function() {
                 }
             });
         }
+
+        // Clear tags button
+        const clearTagsBtn = document.getElementById('dashboardClearTags');
+        if (clearTagsBtn) {
+            clearTagsBtn.addEventListener('click', async () => {
+                if (confirm(I18nManager.t('dashboard.confirmClearTags'))) {
+                    await PromptFrequencyStorage.clearAll();
+                    await refreshTopTags();
+                    await refreshWordcloud();
+                    await refreshStats();
+                }
+            });
+        }
+
+        // Download wordcloud button
+        const downloadBtn = document.getElementById('dashboardDownloadWordcloud');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', downloadWordcloud);
+        }
     }
 
     // Refresh all dashboard data
@@ -78,7 +100,8 @@ const DashboardUI = (function() {
             refreshGenerationTimeChart(),
             refreshHeatmap(),
             refreshTrendChart(),
-            refreshTopTags()
+            refreshTopTags(),
+            refreshWordcloud()
         ]);
     }
 
@@ -366,6 +389,68 @@ const DashboardUI = (function() {
             `;
         });
         container.innerHTML = html;
+    }
+
+    // Refresh wordcloud
+    async function refreshWordcloud() {
+        const canvas = document.getElementById('dashboardWordcloud');
+        if (!canvas || typeof WordCloud === 'undefined') return;
+
+        const topTags = await PromptFrequencyStorage.getTopTags(100);
+
+        if (topTags.length === 0) {
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#666';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(I18nManager.t('dashboard.noTags') || 'No tags recorded', canvas.width / 2, canvas.height / 2);
+            return;
+        }
+
+        // Find max count for scaling
+        const maxCount = topTags[0]?.count || 1;
+        const minSize = 12;
+        const maxSize = 60;
+
+        // Prepare word list for wordcloud2.js: [[word, size], ...]
+        const wordList = topTags.map(({ tag, count }) => {
+            const size = minSize + ((count / maxCount) * (maxSize - minSize));
+            return [tag, size];
+        });
+
+        // Clear canvas with dark background
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Generate wordcloud
+        WordCloud(canvas, {
+            list: wordList,
+            gridSize: 8,
+            weightFactor: 1,
+            fontFamily: 'sans-serif',
+            color: function() {
+                return WORDCLOUD_COLORS[Math.floor(Math.random() * WORDCLOUD_COLORS.length)];
+            },
+            backgroundColor: '#1a1a1a',
+            rotateRatio: 0.3,
+            rotationSteps: 2,
+            shuffle: true,
+            drawOutOfBound: false
+        });
+    }
+
+    // Download wordcloud as PNG
+    function downloadWordcloud() {
+        const canvas = document.getElementById('dashboardWordcloud');
+        if (!canvas) return;
+
+        const link = document.createElement('a');
+        link.download = `wordcloud_${new Date().toISOString().slice(0, 10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
     }
 
     // Helper: Update element text content

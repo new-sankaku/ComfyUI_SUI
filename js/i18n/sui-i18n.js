@@ -271,7 +271,11 @@ const I18nManager = (function() {
                 day3: "水",
                 day4: "木",
                 day5: "金",
-                day6: "土"
+                day6: "土",
+                wordcloud: "ワードクラウド",
+                download: "ダウンロード",
+                clearTags: "タグ削除",
+                confirmClearTags: "タグ履歴を削除しますか？"
             },
             errorGuide: {
                 // Common
@@ -590,7 +594,11 @@ const I18nManager = (function() {
                 day3: "Wed",
                 day4: "Thu",
                 day5: "Fri",
-                day6: "Sat"
+                day6: "Sat",
+                wordcloud: "Word Cloud",
+                download: "Download",
+                clearTags: "Clear Tags",
+                confirmClearTags: "Delete tag history?"
             },
             errorGuide: {
                 // Common
@@ -909,7 +917,11 @@ const I18nManager = (function() {
                 day3: "周三",
                 day4: "周四",
                 day5: "周五",
-                day6: "周六"
+                day6: "周六",
+                wordcloud: "词云",
+                download: "下载",
+                clearTags: "清除标签",
+                confirmClearTags: "确定要删除标签历史吗？"
             },
             errorGuide: {
                 // Common
