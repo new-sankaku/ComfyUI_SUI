@@ -15,6 +15,7 @@ const PromptFrequencyStorage = (function() {
         const tags = prompt
             .split(',')
             .map(tag => tag.trim().toLowerCase())
+            .map(tag => tag.replace(/\s{2,}/g, ' ')) // Replace 2+ spaces with single space
             .filter(tag => tag.length > 0 && tag.length < 100); // Filter empty and very long strings
 
         // Remove duplicates within same prompt
