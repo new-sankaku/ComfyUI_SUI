@@ -476,6 +476,10 @@ const DashboardUI = (function() {
         // Auto-refresh if dashboard is visible
         const dashboardTab = document.getElementById('tabDashboardContent');
         if (dashboardTab && dashboardTab.classList.contains('active')) {
+            // Ensure initialized before refresh
+            if (!isInitialized) {
+                await init();
+            }
             await refresh();
         }
     }
