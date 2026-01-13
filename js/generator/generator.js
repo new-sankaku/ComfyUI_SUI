@@ -116,7 +116,9 @@ console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('T2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'prompt', text: $('prompt')?.value?.trim() },
@@ -177,7 +179,9 @@ console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('T2I_Loop', genTime, positive);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'loopPositivePrompts', text: $('loopPositivePrompts')?.value?.trim() },
@@ -225,7 +229,9 @@ console.log('Generated Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('T2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'prompt', text: $('prompt')?.value?.trim() },
@@ -440,7 +446,9 @@ console.log('Generated I2I Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('I2I', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'prompt', text: $('prompt')?.value?.trim() },
@@ -510,7 +518,9 @@ console.log('Generated I2I Loop Workflow JSON:', JSON.stringify(workflow, null, 
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('I2I_Loop', genTime, positive);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'i2iloopPositivePrompts', text: $('i2iloopPositivePrompts')?.value?.trim() },
@@ -575,7 +585,9 @@ console.log('Generated I2I Angle Workflow JSON:', JSON.stringify(workflow, null,
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('I2I_Angle', genTime, prompt);
 if (result && result.image) {
 const historyConfig = [
 { fieldId: 'i2ianglePrompts', text: $('i2ianglePrompts')?.value?.trim() }
@@ -625,7 +637,9 @@ console.log('Generated Upscale Loop Workflow JSON:', JSON.stringify(workflow, nu
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);
 const endTime = performance.now();
-updateGenerationTimeStats(Math.round(endTime - startTime));
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('Upscale', genTime, null);
 if (result && result.image) {
 const historyConfig = [];
 displayGeneratedImage(result.image, imgIdx + 1, 'Upscale: ' + uploadFileName, historyConfig);

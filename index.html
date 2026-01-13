@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="css/toast.css">
 <link rel="stylesheet" href="css/error-guide-dialog.css">
 <link rel="stylesheet" href="css/prompt-history.css">
+<link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 <div class="root-container">
@@ -180,6 +181,7 @@
 <button class="center-tab active" data-tab="basic" id="btnTabBasic" data-i18n="tabs.basic">基本設定</button>
 <button class="center-tab" data-tab="advanced" id="btnTabAdvanced" data-i18n="tabs.advanced">詳細設定</button>
 <button class="center-tab" data-tab="wildcard" id="btnTabWildcard" data-i18n="tabs.wildcard">WildCard設定</button>
+<button class="center-tab" data-tab="dashboard" id="btnTabDashboard" data-i18n="tabs.dashboard">Dashboard</button>
 </div>
 <div id="tabBasicContent" class="tab-content active">
 <div class="form-section">
@@ -304,6 +306,79 @@
 <div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__path/name__</code> <span data-i18n="wildcard.hierarchy">階層構造</span></div>
 <div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__name*__</code> <span data-i18n="wildcard.wildcardSearch">ワイルドカード検索</span></div>
 <div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">{a|b|c}</code> <span data-i18n="wildcard.randomSelect">ランダム選択</span></div>
+</div>
+</div>
+</div>
+<div id="tabDashboardContent" class="tab-content">
+<div class="dashboard-container">
+<div class="dashboard-header">
+<h3 data-i18n="dashboard.title">Performance Dashboard</h3>
+<button class="dashboard-clear-btn" id="dashboardClearStats" data-i18n="dashboard.clearAll">Clear All</button>
+</div>
+<div class="dashboard-summary">
+<div class="summary-card">
+<div class="summary-value" id="dashboardTotalGenerations">0</div>
+<div class="summary-label" data-i18n="dashboard.totalGenerations">Total Generations</div>
+</div>
+<div class="summary-card">
+<div class="summary-value" id="dashboardGlobalAvg">-</div>
+<div class="summary-label" data-i18n="dashboard.globalAvg">Global AVG</div>
+</div>
+<div class="summary-card">
+<div class="summary-value" id="dashboardGlobalMin">-</div>
+<div class="summary-label" data-i18n="dashboard.globalMin">Global MIN</div>
+</div>
+<div class="summary-card">
+<div class="summary-value" id="dashboardGlobalMax">-</div>
+<div class="summary-label" data-i18n="dashboard.globalMax">Global MAX</div>
+</div>
+<div class="summary-card">
+<div class="summary-value" id="dashboardUniqueTags">0</div>
+<div class="summary-label" data-i18n="dashboard.uniqueTags">Unique Tags</div>
+</div>
+</div>
+<div class="dashboard-section">
+<div class="section-header">
+<h4 data-i18n="dashboard.modeStats">Mode Statistics</h4>
+</div>
+<div class="stats-table-container">
+<table class="stats-table">
+<thead>
+<tr>
+<th data-i18n="dashboard.mode">Mode</th>
+<th data-i18n="dashboard.count">Count</th>
+<th data-i18n="dashboard.avg">AVG (ms)</th>
+<th data-i18n="dashboard.min">MIN (ms)</th>
+<th data-i18n="dashboard.max">MAX (ms)</th>
+</tr>
+</thead>
+<tbody id="dashboardStatsTable"></tbody>
+</table>
+</div>
+</div>
+<div class="dashboard-section">
+<div class="section-header">
+<h4 data-i18n="dashboard.timeGraph">Generation Time Graph</h4>
+<select id="dashboardModeSelector" class="mode-selector">
+<option value="T2I">T2I</option>
+<option value="T2I_Loop">T2I Loop</option>
+<option value="I2I">I2I</option>
+<option value="I2I_Loop">I2I Loop</option>
+<option value="I2I_Angle">I2I Angle</option>
+<option value="Upscale">Upscale</option>
+</select>
+</div>
+<div class="chart-container">
+<canvas id="dashboardChart" width="600" height="200"></canvas>
+</div>
+</div>
+<div class="dashboard-section">
+<div class="section-header">
+<h4 data-i18n="dashboard.topTags">Most Used Tags</h4>
+</div>
+<div class="top-tags-container" id="dashboardTopTags">
+<div class="no-tags" data-i18n="dashboard.noTags">No tags recorded</div>
+</div>
 </div>
 </div>
 </div>
@@ -454,6 +529,9 @@
 <script src="js/wildcard/wildcard-default.js"></script>
 <script src="js/wildcard/wildcard-manager.js"></script>
 <script src="js/image/camera-widget.js"></script>
+<script src="js/dashboard/performance-storage.js"></script>
+<script src="js/dashboard/prompt-frequency-storage.js"></script>
+<script src="js/dashboard/dashboard-ui.js"></script>
 
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-t2i-default-workflows.js"></script>
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-rembg-default-workflows.js"></script>
@@ -472,6 +550,18 @@ tabs.forEach(function(t){t.classList.remove('active')});
 contents.forEach(function(c){c.classList.remove('active')});
 tabWildcardBtn.classList.add('active');
 $('tabWildcardContent').classList.add('active');
+});
+}
+var tabDashboardBtn=$('btnTabDashboard');
+if(tabDashboardBtn){
+tabDashboardBtn.addEventListener('click',function(){
+var tabs=document.querySelectorAll('.center-tab');
+var contents=document.querySelectorAll('.tab-content');
+tabs.forEach(function(t){t.classList.remove('active')});
+contents.forEach(function(c){c.classList.remove('active')});
+tabDashboardBtn.classList.add('active');
+$('tabDashboardContent').classList.add('active');
+DashboardUI.init();
 });
 }
 });

@@ -51,7 +51,8 @@ const I18nManager = (function() {
             tabs: {
                 basic: "基本設定",
                 advanced: "詳細設定",
-                wildcard: "WildCard設定"
+                wildcard: "WildCard設定",
+                dashboard: "ダッシュボード"
             },
             basic: {
                 prompt: "プロンプト",
@@ -237,6 +238,27 @@ const I18nManager = (function() {
                 noticeItem3: "・seed, noise_seedに0を指定するとランダムになります。",
                 noticeItem4: "・テキストに以下を指定すると置き換えます。%prompt%→ポジティブプロンプト、%negative%→ネガティブプロンプト"
             },
+            dashboard: {
+                title: "パフォーマンスダッシュボード",
+                clearAll: "全てクリア",
+                confirmClear: "全ての統計データを削除しますか？",
+                totalGenerations: "総生成回数",
+                globalAvg: "全体平均",
+                globalMin: "全体最小",
+                globalMax: "全体最大",
+                uniqueTags: "ユニークタグ数",
+                modeStats: "モード別統計",
+                mode: "モード",
+                count: "回数",
+                avg: "AVG (ms)",
+                min: "MIN (ms)",
+                max: "MAX (ms)",
+                timeGraph: "生成時間グラフ",
+                recentGenerations: "直近の生成",
+                topTags: "よく使われるタグ",
+                noTags: "タグがありません",
+                noData: "データがありません"
+            },
             errorGuide: {
                 // Common
                 close: "閉じる",
@@ -334,7 +356,8 @@ const I18nManager = (function() {
             tabs: {
                 basic: "Basic Settings",
                 advanced: "Advanced Settings",
-                wildcard: "WildCard Settings"
+                wildcard: "WildCard Settings",
+                dashboard: "Dashboard"
             },
             basic: {
                 prompt: "Prompt",
@@ -520,6 +543,27 @@ const I18nManager = (function() {
                 noticeItem3: "- Setting seed or noise_seed to 0 makes it random.",
                 noticeItem4: "- Text replacements: %prompt% → positive prompt, %negative% → negative prompt"
             },
+            dashboard: {
+                title: "Performance Dashboard",
+                clearAll: "Clear All",
+                confirmClear: "Delete all statistics data?",
+                totalGenerations: "Total Generations",
+                globalAvg: "Global AVG",
+                globalMin: "Global MIN",
+                globalMax: "Global MAX",
+                uniqueTags: "Unique Tags",
+                modeStats: "Mode Statistics",
+                mode: "Mode",
+                count: "Count",
+                avg: "AVG (ms)",
+                min: "MIN (ms)",
+                max: "MAX (ms)",
+                timeGraph: "Generation Time Graph",
+                recentGenerations: "Recent Generations",
+                topTags: "Most Used Tags",
+                noTags: "No tags recorded",
+                noData: "No data available"
+            },
             errorGuide: {
                 // Common
                 close: "Close",
@@ -617,7 +661,8 @@ const I18nManager = (function() {
             tabs: {
                 basic: "基本设置",
                 advanced: "高级设置",
-                wildcard: "WildCard设置"
+                wildcard: "WildCard设置",
+                dashboard: "仪表板"
             },
             basic: {
                 prompt: "提示词",
@@ -802,6 +847,27 @@ const I18nManager = (function() {
                 noticeItem2: "・ComfyUI上线后会自动更新模型列表等。更新后，ComfyUI的模型列表会存储在浏览器中。",
                 noticeItem3: "・将seed或noise_seed设为0时会随机生成。",
                 noticeItem4: "・文本替换：%prompt%→正向提示词，%negative%→负向提示词"
+            },
+            dashboard: {
+                title: "性能仪表板",
+                clearAll: "全部清除",
+                confirmClear: "确定要删除所有统计数据吗？",
+                totalGenerations: "总生成次数",
+                globalAvg: "全局平均",
+                globalMin: "全局最小",
+                globalMax: "全局最大",
+                uniqueTags: "唯一标签数",
+                modeStats: "模式统计",
+                mode: "模式",
+                count: "次数",
+                avg: "平均 (ms)",
+                min: "最小 (ms)",
+                max: "最大 (ms)",
+                timeGraph: "生成时间图表",
+                recentGenerations: "最近生成",
+                topTags: "常用标签",
+                noTags: "暂无标签",
+                noData: "暂无数据"
             },
             errorGuide: {
                 // Common
