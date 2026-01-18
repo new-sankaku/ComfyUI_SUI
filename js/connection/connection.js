@@ -33,6 +33,8 @@ try {
 const response = await fetch(comfyUIUrls.settings);
 if (response.ok) {
 updateConnectionStatus(true);
+const currentUrl = $('comfyUIPageUrl')?.value;
+if (currentUrl) addUrlToHistory(currentUrl);
 if (firstComfyConnection) { await loadObjectInfo(); firstComfyConnection = false; }
 return true;
 }

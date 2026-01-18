@@ -68,6 +68,11 @@ const I18nManager = (function() {
             advanced: {
                 connectionSettings: "接続設定",
                 comfyuiUrl: "ComfyUI URL",
+                showHistory: "履歴を表示",
+                resetToDefault: "デフォルトに戻す",
+                urlHistory: "URL履歴",
+                noHistory: "履歴がありません",
+                removeFromHistory: "履歴から削除",
                 metadataMarker: "Metadata Marker",
                 metadataDescription: "（プロンプト等を画像に追記・オリジナル画像も保存）",
                 outputEnabled: "Output Image Enabled",
@@ -108,6 +113,8 @@ const I18nManager = (function() {
                 save: "保存"
             },
             sidebar: {
+                collapse: "メニューを折りたたむ",
+                expand: "メニューを展開する",
                 workflow: "ワークフロー",
                 comfyuiWorkflows: "ComfyUI Workflows",
                 connectionStatus: "接続状態:",
@@ -238,15 +245,23 @@ const I18nManager = (function() {
                 noticeItem3: "・seed, noise_seedに0を指定するとランダムになります。",
                 noticeItem4: "・テキストに以下を指定すると置き換えます。%prompt%→ポジティブプロンプト、%negative%→ネガティブプロンプト"
             },
+            settings: {
+                title: "設定",
+                theme: "テーマ",
+                beige: "ベージュ",
+                dark: "ダーク",
+                light: "ライト",
+                language: "言語"
+            },
             dashboard: {
                 title: "パフォーマンスダッシュボード",
                 clearAll: "全てクリア",
                 confirmClear: "全ての統計データを削除しますか？",
-                totalGenerations: "総生成回数",
-                globalAvg: "全体平均",
-                globalMin: "全体最小",
-                globalMax: "全体最大",
-                uniqueTags: "ユニークタグ数",
+                totalGenerations: "生成数",
+                globalAvg: "平均",
+                globalMin: "最小",
+                globalMax: "最大",
+                uniqueTags: "タグ",
                 modeStats: "モード別統計",
                 mode: "モード",
                 count: "回数",
@@ -275,7 +290,9 @@ const I18nManager = (function() {
                 wordcloud: "ワードクラウド",
                 download: "ダウンロード",
                 clearTags: "タグ削除",
-                confirmClearTags: "タグ履歴を削除しますか？"
+                confirmClearTags: "タグ履歴を削除しますか？",
+                launchCount: "起動",
+                firstLaunch: "初回"
             },
             errorGuide: {
                 // Common
@@ -391,6 +408,11 @@ const I18nManager = (function() {
             advanced: {
                 connectionSettings: "Connection Settings",
                 comfyuiUrl: "ComfyUI URL",
+                showHistory: "Show history",
+                resetToDefault: "Reset to default",
+                urlHistory: "URL History",
+                noHistory: "No history",
+                removeFromHistory: "Remove from history",
                 metadataMarker: "Metadata Marker",
                 metadataDescription: "(Adds prompt info to image, original also saved)",
                 outputEnabled: "Output Image Enabled",
@@ -431,6 +453,8 @@ const I18nManager = (function() {
                 save: "Save"
             },
             sidebar: {
+                collapse: "Collapse menu",
+                expand: "Expand menu",
                 workflow: "Workflow",
                 comfyuiWorkflows: "ComfyUI Workflows",
                 connectionStatus: "Connection Status:",
@@ -561,15 +585,23 @@ const I18nManager = (function() {
                 noticeItem3: "- Setting seed or noise_seed to 0 makes it random.",
                 noticeItem4: "- Text replacements: %prompt% → positive prompt, %negative% → negative prompt"
             },
+            settings: {
+                title: "Settings",
+                theme: "Theme",
+                beige: "Beige",
+                dark: "Dark",
+                light: "Light",
+                language: "Language"
+            },
             dashboard: {
                 title: "Performance Dashboard",
                 clearAll: "Clear All",
                 confirmClear: "Delete all statistics data?",
-                totalGenerations: "Total Generations",
-                globalAvg: "Global AVG",
-                globalMin: "Global MIN",
-                globalMax: "Global MAX",
-                uniqueTags: "Unique Tags",
+                totalGenerations: "Total",
+                globalAvg: "AVG",
+                globalMin: "MIN",
+                globalMax: "MAX",
+                uniqueTags: "Tags",
                 modeStats: "Mode Statistics",
                 mode: "Mode",
                 count: "Count",
@@ -598,7 +630,9 @@ const I18nManager = (function() {
                 wordcloud: "Word Cloud",
                 download: "Download",
                 clearTags: "Clear Tags",
-                confirmClearTags: "Delete tag history?"
+                confirmClearTags: "Delete tag history?",
+                launchCount: "Launch",
+                firstLaunch: "Since"
             },
             errorGuide: {
                 // Common
@@ -714,6 +748,11 @@ const I18nManager = (function() {
             advanced: {
                 connectionSettings: "连接设置",
                 comfyuiUrl: "ComfyUI URL",
+                showHistory: "显示历史",
+                resetToDefault: "重置为默认",
+                urlHistory: "URL历史",
+                noHistory: "没有历史记录",
+                removeFromHistory: "从历史中删除",
                 metadataMarker: "Metadata Marker",
                 metadataDescription: "（将提示词等添加到图片・原图也会保存）",
                 outputEnabled: "启用输出图片",
@@ -754,6 +793,8 @@ const I18nManager = (function() {
                 save: "保存"
             },
             sidebar: {
+                collapse: "折叠菜单",
+                expand: "展开菜单",
                 workflow: "工作流",
                 comfyuiWorkflows: "ComfyUI工作流",
                 connectionStatus: "连接状态:",
@@ -884,15 +925,23 @@ const I18nManager = (function() {
                 noticeItem3: "・将seed或noise_seed设为0时会随机生成。",
                 noticeItem4: "・文本替换：%prompt%→正向提示词，%negative%→负向提示词"
             },
+            settings: {
+                title: "设置",
+                theme: "主题",
+                beige: "米色",
+                dark: "深色",
+                light: "浅色",
+                language: "语言"
+            },
             dashboard: {
                 title: "性能仪表板",
                 clearAll: "全部清除",
                 confirmClear: "确定要删除所有统计数据吗？",
-                totalGenerations: "总生成次数",
-                globalAvg: "全局平均",
-                globalMin: "全局最小",
-                globalMax: "全局最大",
-                uniqueTags: "唯一标签数",
+                totalGenerations: "生成",
+                globalAvg: "平均",
+                globalMin: "最小",
+                globalMax: "最大",
+                uniqueTags: "标签",
                 modeStats: "模式统计",
                 mode: "模式",
                 count: "次数",
@@ -921,7 +970,9 @@ const I18nManager = (function() {
                 wordcloud: "词云",
                 download: "下载",
                 clearTags: "清除标签",
-                confirmClearTags: "确定要删除标签历史吗？"
+                confirmClearTags: "确定要删除标签历史吗？",
+                launchCount: "启动",
+                firstLaunch: "首次"
             },
             errorGuide: {
                 // Common

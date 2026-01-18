@@ -97,7 +97,7 @@ enabled: true
 },
 {
 name: "ImageEdit_MultiAngle.json",
-type: "I2I",
+type: "I2I_Angle",
 workflow: ComfyUI_I2I_ImageEdit_MultiAngle,
 enabled: true
 },

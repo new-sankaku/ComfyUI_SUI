@@ -1,3 +1,12 @@
+// Workflow type definitions
+const comfyuiTypes = ["T2I", "I2I", "I2I_Inpaint", "I2I_Outpaint", "I2I_Text", "I2I_Angle", "REMBG", "Upscaler"];
+
+// Types that require image upload before processing
+const comfyuiImageUploadTypes = new Set(["I2I", "I2I_Inpaint", "I2I_Outpaint", "I2I_Text", "I2I_Angle", "REMBG", "Upscaler"]);
+
+function comfyuiRequiresImageUpload(type) {
+return comfyuiImageUploadTypes.has(type);
+}
 
 function comfyuiReplacePlaceholders(workflow,requestData,Type='T2I') {
 const builder=createWorkflowBuilder(workflow);
@@ -11,7 +20,8 @@ width:      requestData["width"],
 height:     requestData["height"]
 });
 
-if(Type=='I2I'||Type=='Rembg'||Type=='Upscaler'){
+const workflowTypeForImage = Type === 'Rembg' ? 'REMBG' : Type;
+if(comfyuiRequiresImageUpload(workflowTypeForImage)){
 builder.updateNodesByInputName({
 image: requestData["uploadFileName"]
 });
@@ -34,11 +44,6 @@ if (!el) return "";
 return el.type==="checkbox" ? el.checked : el.value;
 }
 
-
-function comfyuiGetUrl(){
-const serverAddress=hostInput.value+":"+portInput.value;
-return `http://${serverAddress}/`;
-}
 
 var generateFilenameIndex=0;
 function generateFilename() {

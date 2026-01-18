@@ -129,18 +129,12 @@ if (basePrompt.text2img_model!=""){
 requestData["model"]=basePrompt.text2img_model;
 }
 
-if (Type=='T2I') {
-selectedWorkflow=await comfyUIWorkflowRepository.getEnabledWorkflowByType("T2I");
-} else if(Type=='I2I') {
-selectedWorkflow=await comfyUIWorkflowRepository.getEnabledWorkflowByType("I2I");
-} else if(Type=='Rembg') {
-selectedWorkflow=await comfyUIWorkflowRepository.getEnabledWorkflowByType("REMBG");
-} else if(Type=='Upscaler') {
-selectedWorkflow=await comfyUIWorkflowRepository.getEnabledWorkflowByType("Upscaler");
-} else{
+const workflowType = Type === 'Rembg' ? 'REMBG' : Type;
+if (!comfyuiTypes.includes(workflowType)) {
 removeSpinner(spinnerId);
 return;
 }
+selectedWorkflow=await comfyUIWorkflowRepository.getEnabledWorkflowByType(workflowType);
 
 var classTypeLists=getClassTypeOnlyByJson(selectedWorkflow);
 if(checkWorkflowNodeVsComfyUI(classTypeLists)){
@@ -150,7 +144,7 @@ return;
 }
 
 
-if (Type=='I2I'||Type=='Rembg'||Type=='Upscaler') {
+if (comfyuiRequiresImageUpload(workflowType)) {
 var uploadFilename=generateFilename();
 await comfyuiUploadImage(layer,uploadFilename);
 requestData["uploadFileName"]=uploadFilename;

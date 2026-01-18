@@ -16,8 +16,8 @@ const DashboardUI = (function() {
         'Upscale': 'Upscale'
     };
 
-    // Colors for each mode
-    const MODE_COLORS = {
+    // Colors for each mode (dark theme)
+    const MODE_COLORS_DARK = {
         'T2I': '#00bcd4',
         'T2I_Loop': '#4caf50',
         'I2I': '#ff9800',
@@ -26,11 +26,82 @@ const DashboardUI = (function() {
         'Upscale': '#607d8b'
     };
 
+    // Colors for each mode (beige theme)
+    const MODE_COLORS_BEIGE = {
+        'T2I': '#57534A',
+        'T2I_Loop': '#7AAA7A',
+        'I2I': '#C4956C',
+        'I2I_Loop': '#B85C5C',
+        'I2I_Angle': '#8B7355',
+        'Upscale': '#7A756A'
+    };
+
+    // Colors for each mode (light theme)
+    const MODE_COLORS_LIGHT = {
+        'T2I': '#0097a7',
+        'T2I_Loop': '#388e3c',
+        'I2I': '#f57c00',
+        'I2I_Loop': '#c2185b',
+        'I2I_Angle': '#7b1fa2',
+        'Upscale': '#455a64'
+    };
+
+    // Get current theme colors
+    function getThemeColors() {
+        const theme = typeof ThemeManager !== 'undefined' ? ThemeManager.getTheme() : 'dark';
+        if (theme === 'beige') {
+            return {
+                modeColors: MODE_COLORS_BEIGE,
+                gridColor: 'rgba(69, 65, 56, 0.08)',
+                textColor: '#9A958A',
+                bgColor: '#E8E4D4',
+                bgSecondary: '#DAD5C3',
+                accentColor: '#8B7355',
+                barColor: '#A8A391'
+            };
+        } else if (theme === 'light') {
+            return {
+                modeColors: MODE_COLORS_LIGHT,
+                gridColor: 'rgba(0, 0, 0, 0.05)',
+                textColor: '#999999',
+                bgColor: '#ffffff',
+                bgSecondary: '#f5f5f5',
+                accentColor: '#0097a7',
+                barColor: '#0097a7'
+            };
+        }
+        return {
+            modeColors: MODE_COLORS_DARK,
+            gridColor: 'rgba(255, 255, 255, 0.08)',
+            textColor: '#888888',
+            bgColor: '#1a1a1a',
+            bgSecondary: '#2a2a2a',
+            accentColor: '#00bcd4',
+            barColor: '#00bcd4'
+        };
+    }
+
+    // For backward compatibility
+    const MODE_COLORS = MODE_COLORS_DARK;
+
     // Day labels for heatmap
     const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Wordcloud colors
-    const WORDCLOUD_COLORS = ['#00bcd4', '#4caf50', '#ff9800', '#e91e63', '#9c27b0', '#607d8b', '#03a9f4', '#8bc34a'];
+    // Wordcloud colors per theme
+    const WORDCLOUD_COLORS_DARK = ['#00bcd4', '#4caf50', '#ff9800', '#e91e63', '#9c27b0', '#607d8b', '#03a9f4', '#8bc34a'];
+    const WORDCLOUD_COLORS_BEIGE = ['#EBE7CF', '#777870', '#8B6F5F', '#6B5D54'];
+    const WORDCLOUD_COLORS_LIGHT = ['#0097a7', '#388e3c', '#f57c00', '#c2185b', '#7b1fa2', '#455a64', '#0288d1', '#689f38'];
+
+    // Get wordcloud colors based on theme
+    function getWordcloudColors() {
+        const theme = typeof ThemeManager !== 'undefined' ? ThemeManager.getTheme() : 'dark';
+        if (theme === 'beige') return WORDCLOUD_COLORS_BEIGE;
+        if (theme === 'light') return WORDCLOUD_COLORS_LIGHT;
+        return WORDCLOUD_COLORS_DARK;
+    }
+
+    // For backward compatibility
+    const WORDCLOUD_COLORS = WORDCLOUD_COLORS_DARK;
 
     // Initialize dashboard
     async function init() {
@@ -109,11 +180,19 @@ const DashboardUI = (function() {
         ]);
     }
 
+    // Format date for display
+    function formatDate(timestamp) {
+        if (!timestamp) return '-';
+        const date = new Date(timestamp);
+        return date.toLocaleDateString();
+    }
+
     // Refresh statistics display
     async function refreshStats() {
         const allStats = await PerformanceStorage.getAllStats();
         const summary = await PerformanceStorage.getSummary();
         const tagStats = await PromptFrequencyStorage.getStats();
+        const launchInfo = await PerformanceStorage.getLaunchInfo();
 
         // Update summary section
         updateElement('dashboardTotalGenerations', summary.totalCount.toLocaleString());
@@ -121,6 +200,8 @@ const DashboardUI = (function() {
         updateElement('dashboardGlobalMin', summary.globalMin ? `${summary.globalMin} ms` : '-');
         updateElement('dashboardGlobalMax', summary.globalMax ? `${summary.globalMax} ms` : '-');
         updateElement('dashboardUniqueTags', tagStats.totalUniqueTags.toLocaleString());
+        updateElement('dashboardLaunchCount', launchInfo.count.toLocaleString());
+        updateElement('dashboardFirstLaunch', formatDate(launchInfo.firstLaunchDate));
 
         // Update per-mode stats table
         const tableBody = document.getElementById('dashboardStatsTable');
@@ -128,10 +209,9 @@ const DashboardUI = (function() {
             let html = '';
             for (const mode of PerformanceStorage.MODES) {
                 const stats = allStats[mode];
-                const color = MODE_COLORS[mode];
                 html += `
                     <tr>
-                        <td><span class="mode-indicator" style="background:${color}"></span>${MODE_LABELS[mode]}</td>
+                        <td>${MODE_LABELS[mode]}</td>
                         <td>${stats.count.toLocaleString()}</td>
                         <td>${stats.avg ? stats.avg.toLocaleString() : '-'}</td>
                         <td>${stats.min !== null ? stats.min.toLocaleString() : '-'}</td>
@@ -149,7 +229,8 @@ const DashboardUI = (function() {
         if (!canvas) return;
 
         const history = await PerformanceStorage.getHistory(currentChartMode);
-        const color = MODE_COLORS[currentChartMode];
+        const themeColors = getThemeColors();
+        const color = themeColors.accentColor;
 
         // Destroy existing chart if exists
         if (generationTimeChart) {
@@ -193,13 +274,13 @@ const DashboardUI = (function() {
                         title: {
                             display: true,
                             text: I18nManager.t('dashboard.recentGenerations') || 'Recent Generations',
-                            color: '#888'
+                            color: themeColors.textColor
                         },
                         grid: {
-                            color: '#333'
+                            color: themeColors.gridColor
                         },
                         ticks: {
-                            color: '#888'
+                            color: themeColors.textColor
                         }
                     },
                     y: {
@@ -207,13 +288,13 @@ const DashboardUI = (function() {
                         title: {
                             display: true,
                             text: 'ms',
-                            color: '#888'
+                            color: themeColors.textColor
                         },
                         grid: {
-                            color: '#333'
+                            color: themeColors.gridColor
                         },
                         ticks: {
-                            color: '#888'
+                            color: themeColors.textColor
                         }
                     }
                 }
@@ -268,11 +349,30 @@ const DashboardUI = (function() {
 
     // Get heatmap color based on intensity (0-1)
     function getHeatmapColor(intensity) {
-        if (intensity === 0) return '#1a1a1a';
-        // Gradient from dark cyan to bright cyan
-        const r = Math.round(0 + intensity * 0);
-        const g = Math.round(40 + intensity * 148);
-        const b = Math.round(50 + intensity * 162);
+        const themeColors = getThemeColors();
+        const theme = typeof ThemeManager !== 'undefined' ? ThemeManager.getTheme() : 'dark';
+
+        if (theme === 'beige') {
+            if (intensity === 0) return '#CCC7B5'; // Light beige for empty cells
+            // Beige theme: gradient from light beige to warm brown
+            const r = Math.round(200 - intensity * 80);
+            const g = Math.round(195 - intensity * 90);
+            const b = Math.round(175 - intensity * 100);
+            return `rgb(${r}, ${g}, ${b})`;
+        } else if (theme === 'light') {
+            if (intensity === 0) return '#e8e8e8'; // Light gray for empty cells
+            // Light theme: gradient from light to teal
+            const r = Math.round(200 - intensity * 200);
+            const g = Math.round(220 - intensity * 69);
+            const b = Math.round(220 - intensity * 53);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        // Dark theme
+        if (intensity === 0) return '#2a2a2a'; // Dark gray for empty cells
+        // Dark theme: gradient from dark to cyan
+        const r = Math.round(30 + intensity * 0);
+        const g = Math.round(50 + intensity * 138);
+        const b = Math.round(60 + intensity * 152);
         return `rgb(${r}, ${g}, ${b})`;
     }
 
@@ -281,6 +381,7 @@ const DashboardUI = (function() {
         const canvas = document.getElementById('dashboardTrendChart');
         if (!canvas) return;
 
+        const themeColors = getThemeColors();
         let data;
         let labels;
         let chartLabel;
@@ -317,8 +418,8 @@ const DashboardUI = (function() {
                 datasets: [{
                     label: chartLabel,
                     data: data,
-                    backgroundColor: '#00bcd480',
-                    borderColor: '#00bcd4',
+                    backgroundColor: themeColors.barColor + '80',
+                    borderColor: themeColors.barColor,
                     borderWidth: 1
                 }]
             },
@@ -334,10 +435,10 @@ const DashboardUI = (function() {
                     x: {
                         display: true,
                         grid: {
-                            color: '#333'
+                            color: themeColors.gridColor
                         },
                         ticks: {
-                            color: '#888',
+                            color: themeColors.textColor,
                             maxRotation: 45,
                             minRotation: 45
                         }
@@ -348,13 +449,13 @@ const DashboardUI = (function() {
                         title: {
                             display: true,
                             text: I18nManager.t('dashboard.count') || 'Count',
-                            color: '#888'
+                            color: themeColors.textColor
                         },
                         grid: {
-                            color: '#333'
+                            color: themeColors.gridColor
                         },
                         ticks: {
-                            color: '#888',
+                            color: themeColors.textColor,
                             stepSize: 1
                         }
                     }
@@ -376,6 +477,21 @@ const DashboardUI = (function() {
         }
 
         const maxCount = topTags[0]?.count || 1;
+        const themeColors = getThemeColors();
+
+        // Get gradient colors based on theme
+        const theme = typeof ThemeManager !== 'undefined' ? ThemeManager.getTheme() : 'dark';
+        let gradientStart, gradientEnd;
+        if (theme === 'beige') {
+            gradientStart = '#8B7355';
+            gradientEnd = '#A8A391';
+        } else if (theme === 'light') {
+            gradientStart = '#0097a7';
+            gradientEnd = '#4db6ac';
+        } else {
+            gradientStart = '#00bcd4';
+            gradientEnd = '#4caf50';
+        }
 
         let html = '';
         topTags.forEach(({ tag, count }) => {
@@ -387,7 +503,7 @@ const DashboardUI = (function() {
                         <span class="tag-count">${count}</span>
                     </div>
                     <div class="tag-bar-container">
-                        <div class="tag-bar" style="width: ${percentage}%"></div>
+                        <div class="tag-bar" style="width: ${percentage}%; background: linear-gradient(90deg, ${gradientStart}, ${gradientEnd})"></div>
                     </div>
                 </div>
             `;
@@ -401,12 +517,23 @@ const DashboardUI = (function() {
         if (!canvas || typeof WordCloud === 'undefined') return;
 
         const topTags = await PromptFrequencyStorage.getTopTags(100);
+        const themeColors = getThemeColors();
+        const wordcloudColors = getWordcloudColors();
+        const bgColor = themeColors.bgSecondary || themeColors.bgColor;
+
+        // Set canvas size to match container
+        const container = canvas.parentElement;
+        if (container) {
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width - 16; // Subtract padding
+            canvas.height = 300;
+        }
 
         if (topTags.length === 0) {
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#1a1a1a';
+            ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#666';
+            ctx.fillStyle = themeColors.textColor;
             ctx.font = '14px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(I18nManager.t('dashboard.noTags') || 'No tags recorded', canvas.width / 2, canvas.height / 2);
@@ -424,9 +551,9 @@ const DashboardUI = (function() {
             return [tag, size];
         });
 
-        // Clear canvas with dark background
+        // Clear canvas with theme background
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#1a1a1a';
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Generate wordcloud
@@ -436,9 +563,9 @@ const DashboardUI = (function() {
             weightFactor: 1,
             fontFamily: 'sans-serif',
             color: function() {
-                return WORDCLOUD_COLORS[Math.floor(Math.random() * WORDCLOUD_COLORS.length)];
+                return wordcloudColors[Math.floor(Math.random() * wordcloudColors.length)];
             },
-            backgroundColor: '#1a1a1a',
+            backgroundColor: bgColor,
             rotateRatio: 0.3,
             rotationSteps: 2,
             shuffle: true,

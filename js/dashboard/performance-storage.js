@@ -269,10 +269,56 @@ const PerformanceStorage = (function() {
             // Also clear time-based stats
             await timeStore.removeItem('hourlyStats');
             await timeStore.removeItem('dailyStats');
+            // Also clear launch info
+            await store.removeItem('launchInfo');
             return true;
         } catch (error) {
             console.error('Error clearing all stats:', error);
             return false;
+        }
+    }
+
+    // Record application launch
+    async function recordLaunch() {
+        try {
+            const now = Date.now();
+            let launchInfo = await store.getItem('launchInfo');
+
+            if (!launchInfo) {
+                launchInfo = {
+                    count: 0,
+                    firstLaunchDate: now,
+                    lastLaunchDate: now
+                };
+            }
+
+            launchInfo.count += 1;
+            launchInfo.lastLaunchDate = now;
+
+            await store.setItem('launchInfo', launchInfo);
+            return launchInfo;
+        } catch (error) {
+            console.error('Error recording launch:', error);
+            return null;
+        }
+    }
+
+    // Get launch information
+    async function getLaunchInfo() {
+        try {
+            const launchInfo = await store.getItem('launchInfo');
+            return launchInfo || {
+                count: 0,
+                firstLaunchDate: null,
+                lastLaunchDate: null
+            };
+        } catch (error) {
+            console.error('Error getting launch info:', error);
+            return {
+                count: 0,
+                firstLaunchDate: null,
+                lastLaunchDate: null
+            };
         }
     }
 
@@ -318,6 +364,8 @@ const PerformanceStorage = (function() {
         getMonthlyStats,
         clearStats,
         clearAllStats,
-        getSummary
+        getSummary,
+        recordLaunch,
+        getLaunchInfo
     };
 })();

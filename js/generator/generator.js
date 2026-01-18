@@ -552,9 +552,9 @@ isCancelled = false;
 showCancelButton('i2IAngle');
 setGenerateButtonGenerating('i2IAngle', true);
 try {
-const baseWorkflow = await comfyUIWorkflowRepository.getEnabledWorkflowByType("I2I");
+const baseWorkflow = await comfyUIWorkflowRepository.getEnabledWorkflowByType("I2I_Angle");
 if (!baseWorkflow) {
-ErrorGuideDialog.show(ErrorGuideDialog.ERROR_TYPES.WORKFLOW_NOT_FOUND, { workflowType: 'I2I' });
+ErrorGuideDialog.show(ErrorGuideDialog.ERROR_TYPES.WORKFLOW_NOT_FOUND, { workflowType: 'I2I_Angle' });
 $('generationStatus').textContent = I18nManager.t('status.workflowNotSet');
 $('generationStatus').style.color = '#f44336';
 return;
@@ -580,7 +580,7 @@ const negativePrompt = await getProcessedNegativePromptForGeneration();
 generationIndex++;
 $('generationStatus').textContent = I18nManager.t('status.generatingWithImage').replace('{current}', generationIndex).replace('{total}', total).replace('{imgCurrent}', imgIdx + 1).replace('{imgTotal}', imageCount);
 const requestData = { prompt: prompt, negative_prompt: negativePrompt, seed: currentSeed, width: width, height: height, uploadFileName: uploadFileName, anglePrompt: anglePrompt };
-const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'I2I');
+const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'I2I_Angle');
 generatorLogger.debug('Generated I2I Angle Workflow JSON:', JSON.stringify(workflow, null, 2));
 const startTime = performance.now();
 const result = await executeWorkflow(workflow);

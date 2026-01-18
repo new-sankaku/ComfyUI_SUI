@@ -32,6 +32,8 @@ const angleLines = angleText.trim() ? angleText.trim().split('\n').filter(p => p
 $('i2ianglePromptLineCount').textContent = angleLines + ' ' + I18nManager.t('common.lines');
 }
 document.addEventListener('DOMContentLoaded', async () => {
+// Record application launch for dashboard
+await PerformanceStorage.recordLaunch();
 await loadFormSettings();
 setupAutoSave();
 $('btnModeNormal').addEventListener('click', () => switchMode('normal'));
@@ -96,5 +98,8 @@ updateI2IAngleLineCount();
 hookWorkflowRepository();
 setupPromptWeightAdjustment();
 promptHistoryManager.setupAllHistoryButtons();
+$('showUrlHistory').addEventListener('click', toggleUrlHistoryPopup);
+$('resetUrlDefault').addEventListener('click', resetUrlToDefault);
+setupUrlHistoryPopup();
 try { await checkComfyUIConnection(); setInterval(checkComfyUIConnection, 5000); Comfyui_connect(); await updateWorkflowDisplays(); } catch (error) { createToastError(I18nManager.t('toast.initError'), I18nManager.t('toast.comfyuiConnectionFailed')); }
 });

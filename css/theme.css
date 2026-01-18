@@ -1,0 +1,1526 @@
+/* Theme CSS Variables */
+
+/* Default (Dark Theme) */
+:root,
+:root[data-theme="dark"] {
+    --bg-body: #1a1a1a;
+    --bg-primary: #2a2a2a;
+    --bg-secondary: #3a3a3a;
+    --bg-hover: #4a4a4a;
+    --bg-input: #1a1a1a;
+
+    --border-color: #404040;
+    --border-focus: #00bcd4;
+
+    --text-primary: #e0e0e0;
+    --text-secondary: #888888;
+    --text-muted: #666666;
+
+    --accent-color: #00bcd4;
+    --accent-hover: #00acc1;
+    --accent-bg: rgba(0, 188, 212, 0.1);
+    --accent-text: #1a1a1a;
+
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --warning-color: #ff9800;
+
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: #4a4a4a;
+    --scrollbar-thumb-hover: #5a5a5a;
+
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme */
+:root[data-theme="light"] {
+    --bg-body: #f5f5f5;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    --bg-hover: #e8e8e8;
+    --bg-input: #ffffff;
+
+    --border-color: #d0d0d0;
+    --border-focus: #0097a7;
+
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+
+    --accent-color: #0097a7;
+    --accent-hover: #00838f;
+    --accent-bg: rgba(0, 151, 167, 0.1);
+    --accent-text: #ffffff;
+
+    --success-color: #388e3c;
+    --error-color: #d32f2f;
+    --warning-color: #f57c00;
+
+    --scrollbar-track: #f0f0f0;
+    --scrollbar-thumb: #c0c0c0;
+    --scrollbar-thumb-hover: #a0a0a0;
+
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Beige Theme (NieR:Automata inspired) */
+:root[data-theme="beige"] {
+    --bg-body: #E8E4D4;
+    --bg-primary: #DAD5C3;
+    --bg-secondary: #CCC7B5;
+    --bg-hover: #C2BDA9;
+    --bg-input: #E8E4D4;
+
+    --border-color: rgba(69, 65, 56, 0.3);
+    --border-focus: #57534A;
+
+    --text-primary: #454138;
+    --text-secondary: #7A756A;
+    --text-muted: #9A958A;
+
+    --accent-color: #57534A;
+    --accent-hover: #3D3A33;
+    --accent-bg: rgba(87, 83, 74, 0.15);
+    --accent-text: #E8E4D4;
+
+    --success-color: #7AAA7A;
+    --error-color: #B85C5C;
+    --warning-color: #C4956C;
+
+    --scrollbar-track: #DAD5C3;
+    --scrollbar-thumb: #A8A391;
+    --scrollbar-thumb-hover: #8A8578;
+
+    --shadow-color: rgba(69, 65, 56, 0.15);
+}
+
+/* Apply theme variables to elements */
+html, body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+}
+
+.root-container {
+    background-color: var(--bg-body);
+}
+
+.sidebar,
+.mode-config-panel,
+.center-container,
+.right-sidebar {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+.sidebar-title,
+.mode-config-title,
+.right-sidebar-title {
+    color: var(--accent-color);
+}
+
+.menu-section-title {
+    color: var(--accent-color);
+}
+
+.menu-button {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.menu-button:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent-color);
+}
+
+.menu-button.active {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border-color: var(--accent-color);
+}
+
+.center-tab {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.center-tab:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent-color);
+}
+
+.center-tab.active {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border-color: var(--accent-color);
+}
+
+/* Form elements */
+input[type="text"],
+input[type="number"],
+input[type="url"],
+textarea,
+select {
+    background-color: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--border-focus);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+label {
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+.generate-button {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+}
+
+.generate-button:hover {
+    background-color: var(--accent-hover);
+}
+
+.cancel-button {
+    background-color: var(--error-color);
+}
+
+/* Status */
+.status-label {
+    color: var(--text-secondary);
+}
+
+.status-value {
+    color: var(--text-primary);
+}
+
+/* Workflow display */
+.workflow-display {
+    background-color: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* Dashboard */
+.dashboard-container {
+    color: var(--text-primary);
+}
+
+.dashboard-header {
+    border-color: var(--border-color);
+}
+
+.dashboard-header h3 {
+    color: var(--accent-color);
+}
+
+.summary-card {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+.summary-value {
+    color: var(--accent-color);
+}
+
+.summary-label {
+    color: var(--text-secondary);
+}
+
+.dashboard-section {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+.section-header h4 {
+    color: var(--text-primary);
+}
+
+.stats-table th {
+    color: var(--text-secondary);
+}
+
+.stats-table td {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.stats-table tbody tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+.mode-selector {
+    background-color: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.mode-selector:focus {
+    border-color: var(--border-focus);
+}
+
+.chart-container,
+.wordcloud-container {
+    background-color: var(--bg-input);
+}
+
+.heatmap-label,
+.heatmap-hour {
+    color: var(--text-secondary);
+}
+
+.tag-name {
+    color: var(--text-primary);
+}
+
+.tag-count {
+    color: var(--accent-color);
+}
+
+.tag-bar-container {
+    background-color: var(--bg-secondary);
+}
+
+.no-tags {
+    color: var(--text-muted);
+}
+
+/* Tagify styling */
+.tagify {
+    --tags-border-color: var(--border-color);
+    --tags-hover-border-color: var(--border-focus);
+    --tags-focus-border-color: var(--border-focus);
+    --tag-bg: var(--bg-secondary);
+    --tag-hover: var(--bg-hover);
+    --tag-text-color: var(--text-primary);
+    --tag-text-color--edit: var(--text-primary);
+    --tag-remove-bg: var(--error-color);
+    --tag-remove-btn-color: var(--text-primary);
+    --tag-invalid-bg: var(--error-color);
+    --tag-invalid-color: #fff;
+    --placeholder-color: var(--text-muted);
+    --input-color: var(--text-primary);
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+.tagify__input::before {
+    color: var(--text-muted) !important;
+}
+
+.tagify__tag {
+    background-color: var(--bg-secondary) !important;
+}
+
+.tagify__tag > div {
+    color: var(--text-primary) !important;
+}
+
+.tagify__tag:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Form group overrides */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--border-focus) !important;
+}
+
+.form-group label {
+    color: var(--text-secondary) !important;
+}
+
+.form-section-title {
+    color: var(--accent-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Status display */
+.status-display {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 3D Canvas containers */
+.qwen-multiangle-container {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+.qwen-multiangle-prompt {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.qwen-multiangle-info {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.qwen-multiangle-select {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.qwen-multiangle-select option {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.qwen-multiangle-reset,
+.qwen-multiangle-reset-corner {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.qwen-multiangle-prompt-external {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* I2I image upload */
+.i2i-image-preview,
+.i2i-image-preview-grid {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+.i2i-image-preview:hover,
+.i2i-image-preview-grid:hover {
+    border-color: var(--border-focus) !important;
+}
+
+.i2i-image-placeholder {
+    color: var(--text-muted) !important;
+}
+
+.i2i-preview-item {
+    border-color: var(--border-color) !important;
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Seed button */
+.seed-button {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.seed-button:hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+}
+
+/* Button group */
+.button-group button {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.button-group button:hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+}
+
+/* Workflow button */
+.workflow-button {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.workflow-button:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+/* Light theme specific adjustments */
+:root[data-theme="light"] .heatmap-cell {
+    border: 1px solid var(--border-color);
+}
+
+:root[data-theme="light"] .chart-container,
+:root[data-theme="light"] .wordcloud-container {
+    background-color: var(--bg-secondary);
+}
+
+/* Beige theme specific adjustments */
+:root[data-theme="beige"] .heatmap-cell {
+    border: 1px solid var(--border-color);
+}
+
+:root[data-theme="beige"] .chart-container,
+:root[data-theme="beige"] .wordcloud-container {
+    background-color: var(--bg-secondary);
+}
+
+:root[data-theme="beige"] .qwen-multiangle-param-value.azimuth {
+    color: var(--error-color);
+}
+
+:root[data-theme="beige"] .qwen-multiangle-param-value.elevation {
+    color: var(--success-color);
+}
+
+:root[data-theme="beige"] .qwen-multiangle-param-value.zoom {
+    color: var(--warning-color);
+}
+
+/* ============================================
+   Override comfyui-variables.min.css for themes
+   ============================================ */
+
+/* Light theme variable overrides */
+:root[data-theme="light"] {
+    --background-color-A: #ffffff;
+    --background-color-B: #f5f5f5;
+    --boader-color-1px-solid-B: 1px solid #d0d0d0;
+    --component-text-color: #333333;
+    --color-accent: #0097a7;
+    --color-accent-hover: #00838f;
+    --button-hover-background: #e8e8e8;
+    --color-tertiary: #999999;
+    --color-border: #d0d0d0;
+    --color-component-minitext: #ffffff;
+}
+
+/* Beige theme variable overrides */
+:root[data-theme="beige"] {
+    --background-color-A: #DAD5C3;
+    --background-color-B: #E8E4D4;
+    --boader-color-1px-solid-B: 1px solid rgba(69, 65, 56, 0.3);
+    --component-text-color: #454138;
+    --color-accent: #57534A;
+    --color-accent-hover: #3D3A33;
+    --button-hover-background: #C2BDA9;
+    --color-tertiary: #9A958A;
+    --color-border: rgba(69, 65, 56, 0.3);
+    --color-component-minitext: #E8E4D4;
+}
+
+/* ============================================
+   Modal styling
+   ============================================ */
+.modal-content {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.modal-header {
+    color: var(--accent-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.modal-close {
+    color: var(--accent-color) !important;
+}
+
+.modal-close:hover {
+    color: var(--accent-hover) !important;
+}
+
+/* Settings modal in comfyui-modal */
+.settings-section-title {
+    color: var(--accent-color) !important;
+}
+
+.settings-row {
+    border-color: var(--border-color) !important;
+}
+
+.settings-row label {
+    color: var(--text-secondary) !important;
+}
+
+.settings-row input,
+.settings-row select {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ============================================
+   Generated image container
+   ============================================ */
+.generated-image-container {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+.generated-image-item {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.generated-image-info {
+    background-color: var(--bg-input) !important;
+    color: var(--text-muted) !important;
+}
+
+.generated-image-header span {
+    color: var(--accent-color) !important;
+}
+
+.download-button {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.download-button:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+/* Clear images button */
+.clear-images-button {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.clear-images-button:hover {
+    background-color: var(--error-color) !important;
+    border-color: var(--error-color) !important;
+    color: #fff !important;
+}
+
+/* ============================================
+   Angle add button
+   ============================================ */
+.angle-add-button {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.angle-add-button:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+.angle-add-button-small {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.angle-add-button-small:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+/* ============================================
+   Menu section styling
+   ============================================ */
+.menu-section {
+    border-color: var(--border-color) !important;
+}
+
+.menu-section-title {
+    color: var(--accent-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Sidebar and panel titles with borders */
+.sidebar-title {
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.mode-config-title {
+    color: var(--accent-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.right-sidebar-title {
+    color: var(--accent-color) !important;
+}
+
+/* Center tabs border */
+.center-tabs {
+    border-color: var(--border-color) !important;
+}
+
+/* Loop mode line count */
+.loop-line-count {
+    color: var(--accent-color) !important;
+}
+
+.loop-textarea-label span {
+    color: var(--text-secondary) !important;
+}
+
+/* Sidebar dividers */
+.sidebar-settings {
+    border-color: var(--border-color) !important;
+}
+
+/* ============================================
+   Placeholder styling
+   ============================================ */
+.form-group textarea::placeholder,
+.form-group input::placeholder,
+textarea::placeholder,
+input::placeholder,
+#prompt::placeholder,
+#negative_prompt::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* ============================================
+   Status and connection indicators
+   ============================================ */
+.status-display {
+    color: var(--accent-color) !important;
+}
+
+.status-item {
+    color: var(--text-primary) !important;
+}
+
+.status-label {
+    color: var(--accent-color) !important;
+}
+
+.status-value {
+    color: var(--accent-color) !important;
+}
+
+/* ============================================
+   Radio and checkbox labels
+   ============================================ */
+.radio-label,
+.checkbox-label {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   Image modal
+   ============================================ */
+.image-modal-close:hover {
+    color: var(--accent-color) !important;
+}
+
+/* ============================================
+   Comfui sidebar button (generate)
+   ============================================ */
+.comfui-sidebar-button {
+    background-color: var(--success-color) !important;
+}
+
+.comfui-sidebar-button:hover {
+    background-color: var(--success-color) !important;
+    filter: brightness(1.1);
+}
+
+/* ============================================
+   Workflow display override
+   ============================================ */
+.workflow-display {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+/* ============================================
+   I2I dragover state
+   ============================================ */
+.i2i-image-preview.dragover,
+.i2i-image-preview-grid.dragover {
+    border-color: var(--border-focus) !important;
+    background-color: var(--accent-bg) !important;
+}
+
+.i2i-image-preview.has-image,
+.i2i-image-preview-grid.has-image {
+    border-color: var(--border-color) !important;
+}
+
+/* ============================================
+   I2I image count
+   ============================================ */
+.i2i-image-count {
+    color: var(--accent-color) !important;
+}
+
+/* I2I preview filename */
+.i2i-preview-item .i2i-preview-filename {
+    color: var(--text-muted) !important;
+}
+
+/* No image placeholder */
+.no-image-placeholder {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 20px;
+}
+
+.no-image-placeholder svg {
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* ============================================
+   Connection indicator - beige theme specific
+   ============================================ */
+:root[data-theme="beige"] .connection-indicator {
+    background-color: var(--error-color) !important;
+}
+
+:root[data-theme="beige"] .connection-indicator.online {
+    background-color: var(--success-color) !important;
+}
+
+:root[data-theme="light"] .connection-indicator {
+    background-color: var(--error-color) !important;
+}
+
+:root[data-theme="light"] .connection-indicator.online {
+    background-color: var(--success-color) !important;
+}
+
+/* ============================================
+   Checkbox and radio accent colors
+   ============================================ */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent-color) !important;
+}
+
+/* ============================================
+   Range slider (Opacity etc.)
+   ============================================ */
+input[type="range"] {
+    accent-color: var(--accent-color) !important;
+}
+
+:root[data-theme="beige"] input[type="range"] {
+    accent-color: var(--accent-color) !important;
+}
+
+:root[data-theme="light"] input[type="range"] {
+    accent-color: var(--accent-color) !important;
+}
+
+/* ============================================
+   WildCard Comprehensive Styling
+   ============================================ */
+.wildcard-list-container {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+.wildcard-item {
+    border-color: var(--border-color) !important;
+}
+
+.wildcard-item:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+.wildcard-item-name {
+    color: var(--accent-color) !important;
+}
+
+.wildcard-item-count {
+    color: var(--text-muted) !important;
+}
+
+.wildcard-search-input {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-search-input:focus {
+    border-color: var(--border-focus) !important;
+}
+
+.wildcard-btn {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-btn:hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+}
+
+.wildcard-btn-primary {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.wildcard-btn-primary:hover {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+}
+
+.wildcard-btn-danger {
+    color: var(--error-color) !important;
+    border-color: var(--error-color) !important;
+}
+
+.wildcard-btn-danger:hover {
+    background-color: var(--error-color) !important;
+    color: #fff !important;
+}
+
+.wildcard-modal {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.wildcard-modal-header {
+    border-color: var(--border-color) !important;
+}
+
+.wildcard-modal-title {
+    color: var(--accent-color) !important;
+}
+
+.wildcard-modal-close {
+    color: var(--text-muted) !important;
+}
+
+.wildcard-modal-close:hover {
+    background-color: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-modal-footer {
+    border-color: var(--border-color) !important;
+}
+
+.wildcard-form-label {
+    color: var(--text-muted) !important;
+}
+
+.wildcard-form-input {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-form-input:focus {
+    border-color: var(--border-focus) !important;
+}
+
+.wildcard-form-input::placeholder,
+.wildcard-search-input::placeholder,
+.wildcard-import-textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+.wildcard-import-textarea {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-toast {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.wildcard-toast.success {
+    border-left-color: var(--success-color) !important;
+}
+
+.wildcard-toast.error {
+    border-left-color: var(--error-color) !important;
+}
+
+/* Wildcard Tagify overrides */
+:root[data-theme="beige"] .tagify,
+:root[data-theme="light"] .tagify {
+    --tags-border-color: var(--border-color) !important;
+    --tags-hover-border-color: var(--border-focus) !important;
+    --tags-focus-border-color: var(--border-focus) !important;
+    --tag-bg: var(--bg-secondary) !important;
+    --tag-hover: var(--bg-hover) !important;
+    --tag-text-color: var(--accent-color) !important;
+    --tag-text-color--edit: var(--accent-color) !important;
+    --placeholder-color: var(--text-muted) !important;
+    --input-color: var(--text-primary) !important;
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+:root[data-theme="beige"] .tagify:hover,
+:root[data-theme="light"] .tagify:hover,
+:root[data-theme="beige"] .tagify:focus-within,
+:root[data-theme="light"] .tagify:focus-within {
+    border-color: var(--border-focus) !important;
+}
+
+:root[data-theme="beige"] .tagify__tag,
+:root[data-theme="light"] .tagify__tag {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+:root[data-theme="beige"] .tagify__tag:hover,
+:root[data-theme="light"] .tagify__tag:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+:root[data-theme="beige"] .tagify__tag > div,
+:root[data-theme="light"] .tagify__tag > div {
+    color: var(--accent-color) !important;
+}
+
+:root[data-theme="beige"] .tagify__input,
+:root[data-theme="light"] .tagify__input {
+    color: var(--text-primary) !important;
+}
+
+:root[data-theme="beige"] .tagify__input::before,
+:root[data-theme="light"] .tagify__input::before {
+    color: var(--text-muted) !important;
+}
+
+:root[data-theme="beige"] .tagify__dropdown,
+:root[data-theme="light"] .tagify__dropdown {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-focus) !important;
+}
+
+:root[data-theme="beige"] .tagify__dropdown__wrapper,
+:root[data-theme="light"] .tagify__dropdown__wrapper {
+    background-color: var(--bg-primary) !important;
+}
+
+:root[data-theme="beige"] .tagify__dropdown__item,
+:root[data-theme="light"] .tagify__dropdown__item {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+:root[data-theme="beige"] .tagify__dropdown__item:hover,
+:root[data-theme="light"] .tagify__dropdown__item:hover {
+    background-color: var(--bg-hover) !important;
+    color: var(--accent-color) !important;
+}
+
+:root[data-theme="beige"] .tagify__dropdown__item--active,
+:root[data-theme="light"] .tagify__dropdown__item--active {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+/* ============================================
+   Dashboard Comprehensive Styling
+   ============================================ */
+.dashboard-header {
+    border-color: var(--border-color) !important;
+}
+
+.dashboard-header h3 {
+    color: var(--accent-color) !important;
+}
+
+.dashboard-clear-btn {
+    background-color: var(--error-color) !important;
+}
+
+.dashboard-clear-btn:hover {
+    filter: brightness(0.9);
+}
+
+.summary-card {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.summary-value {
+    color: var(--accent-color) !important;
+}
+
+.summary-label {
+    color: var(--text-muted) !important;
+}
+
+.dashboard-section {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.section-header h4 {
+    color: var(--text-primary) !important;
+}
+
+.mode-selector {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.mode-selector:focus {
+    border-color: var(--border-focus) !important;
+}
+
+.stats-table th {
+    color: var(--text-muted) !important;
+}
+
+.stats-table td {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.stats-table th,
+.stats-table td {
+    border-color: var(--border-color) !important;
+}
+
+.stats-table tbody tr:hover {
+    background-color: var(--bg-secondary) !important;
+}
+
+.chart-container {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Beige theme chart container */
+:root[data-theme="beige"] .chart-container,
+:root[data-theme="beige"] .wordcloud-container {
+    background-color: #DAD5C3 !important;
+}
+
+/* Light theme chart container */
+:root[data-theme="light"] .chart-container,
+:root[data-theme="light"] .wordcloud-container {
+    background-color: #f5f5f5 !important;
+}
+
+/* Heatmap container */
+.heatmap-container {
+    background-color: var(--bg-secondary) !important;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+:root[data-theme="beige"] .heatmap-container {
+    background-color: #DAD5C3 !important;
+}
+
+:root[data-theme="light"] .heatmap-container {
+    background-color: #f5f5f5 !important;
+}
+
+.tag-item {
+    border-color: var(--border-color) !important;
+}
+
+.tag-name {
+    color: var(--text-primary) !important;
+}
+
+.tag-count {
+    color: var(--accent-color) !important;
+}
+
+.tag-bar-container {
+    background-color: var(--bg-secondary) !important;
+}
+
+.no-tags {
+    color: var(--text-muted) !important;
+}
+
+.heatmap-label {
+    color: var(--text-muted) !important;
+}
+
+.heatmap-hour {
+    color: var(--text-muted) !important;
+}
+
+.dashboard-clear-btn-small {
+    background-color: var(--error-color) !important;
+}
+
+.dashboard-clear-btn-small:hover {
+    filter: brightness(0.9);
+}
+
+.dashboard-download-btn {
+    background-color: var(--accent-color) !important;
+    color: var(--accent-text) !important;
+}
+
+.dashboard-download-btn:hover {
+    background-color: var(--accent-hover) !important;
+}
+
+.wordcloud-container {
+    background-color: var(--bg-input) !important;
+}
+
+/* Dashboard scrollbar */
+.dashboard-container::-webkit-scrollbar-track,
+.top-tags-container::-webkit-scrollbar-track {
+    background: var(--bg-input) !important;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb,
+.top-tags-container::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb) !important;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb:hover,
+.top-tags-container::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover) !important;
+}
+
+/* ============================================
+   WildCard Usage Guide Section
+   ============================================ */
+.wildcard-usage-guide {
+    margin-top: 12px;
+    padding: 10px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.wildcard-usage-guide > div {
+    margin-bottom: 6px;
+}
+
+.wildcard-usage-guide > div:last-child {
+    margin-bottom: 0;
+}
+
+.wildcard-code {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--accent-color);
+}
+
+:root[data-theme="beige"] .wildcard-usage-guide {
+    background-color: #E8E4D4;
+    border-color: rgba(69, 65, 56, 0.3);
+}
+
+:root[data-theme="beige"] .wildcard-code {
+    background-color: #DAD5C3;
+    border-color: rgba(69, 65, 56, 0.3);
+    color: #57534A;
+}
+
+:root[data-theme="light"] .wildcard-usage-guide {
+    background-color: #ffffff;
+    border-color: #d0d0d0;
+}
+
+:root[data-theme="light"] .wildcard-code {
+    background-color: #f0f0f0;
+    border-color: #d0d0d0;
+    color: #0097a7;
+}
+
+/* ============================================
+   URL Input with History
+   ============================================ */
+.url-input-wrapper {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.url-input-wrapper input[type="text"] {
+    flex: 1;
+}
+
+.url-history-btn,
+.url-reset-btn {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 10px;
+    transition: all 0.2s;
+    min-width: 32px;
+}
+
+.url-history-btn:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.url-reset-btn:hover {
+    background-color: var(--warning-color, #f0ad4e);
+    border-color: var(--warning-color, #f0ad4e);
+    color: #fff;
+}
+
+/* URL History Popup */
+.url-history-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.url-history-popup-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+.url-history-list {
+    padding: 4px 0;
+}
+
+.url-history-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.url-history-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.url-history-item-url {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.url-history-item-remove {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: all 0.2s;
+    opacity: 0.6;
+}
+
+.url-history-item-remove:hover {
+    background-color: var(--error-color);
+    color: #fff;
+    opacity: 1;
+}
+
+.url-history-empty {
+    padding: 12px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.form-group {
+    position: relative;
+}
+
+/* ============================================
+   Collapsible Sidebar
+   ============================================ */
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 8px;
+}
+
+.sidebar-header .sidebar-title {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+/* Menu button with icon */
+.menu-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-icon {
+    min-width: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.menu-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar collapsed state */
+.sidebar.collapsed {
+    width: 60px !important;
+    min-width: 60px;
+    padding: 12px 8px;
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-title {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    transform: rotate(180deg);
+}
+
+.sidebar.collapsed .menu-section-title {
+    display: none;
+}
+
+.sidebar.collapsed .menu-label {
+    display: none;
+}
+
+.sidebar.collapsed .menu-button {
+    justify-content: center;
+    padding: 10px 8px;
+}
+
+.sidebar.collapsed .menu-icon {
+    min-width: auto;
+    font-size: 16px;
+}
+
+.sidebar.collapsed .sidebar-settings {
+    display: none;
+}
+
+/* Tooltip for collapsed state */
+.sidebar.collapsed .menu-button {
+    position: relative;
+}
+
+.sidebar.collapsed .menu-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    margin-left: 8px;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.sidebar.collapsed .menu-button:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Smooth transition */
+.sidebar {
+    transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar-title,
+.menu-section-title,
+.menu-label,
+.sidebar-settings {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}

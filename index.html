@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ComfyUI UI</title>
+<title>ComfyUI Sui</title>
 <link rel="stylesheet" href="css/comfyui-variables.min.css">
 <link rel="stylesheet" href="css/comfyui-layout.min.css">
 <link rel="stylesheet" href="css/comfyui-components.min.css">
@@ -20,19 +20,56 @@
 <link rel="stylesheet" href="css/error-guide-dialog.css">
 <link rel="stylesheet" href="css/prompt-history.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
 <div class="root-container">
-<div class="sidebar">
+<div class="sidebar" id="leftSidebar">
+<div class="sidebar-header">
 <div class="sidebar-title" data-i18n="menu.title">メニュー</div>
+<button class="sidebar-toggle" id="sidebarToggle" data-i18n="sidebar.collapse" data-i18n-attr="title">«</button>
+</div>
 <div class="menu-section">
 <div class="menu-section-title" data-i18n="menu.generationMode">生成モード</div>
-<button class="menu-button active" data-mode="normal" id="btnModeNormal" data-i18n="modes.t2i">T2I生成</button>
-<button class="menu-button" data-mode="loop" id="btnModeLoop" data-i18n="modes.t2iLoop">T2Iループ生成</button>
-<button class="menu-button" data-mode="i2i" id="btnModeI2I" data-i18n="modes.i2i">I2I生成</button>
-<button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop" data-i18n="modes.i2iLoop">I2Iループ生成</button>
-<button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle" data-i18n="modes.i2iAngle">I2Iアングル生成</button>
-<button class="menu-button" data-mode="upscaleloop" id="btnModeUpscaleLoop" data-i18n="modes.upscaleLoop">Upscaleループ</button>
+<button class="menu-button active" data-mode="normal" id="btnModeNormal"><span class="menu-icon">T</span><span class="menu-label" data-i18n="modes.t2i">T2I生成</span></button>
+<button class="menu-button" data-mode="loop" id="btnModeLoop"><span class="menu-icon">↻</span><span class="menu-label" data-i18n="modes.t2iLoop">T2Iループ生成</span></button>
+<button class="menu-button" data-mode="i2i" id="btnModeI2I"><span class="menu-icon">I</span><span class="menu-label" data-i18n="modes.i2i">I2I生成</span></button>
+<button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop"><span class="menu-icon">⟳</span><span class="menu-label" data-i18n="modes.i2iLoop">I2Iループ生成</span></button>
+<button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle"><span class="menu-icon">∠</span><span class="menu-label" data-i18n="modes.i2iAngle">I2Iアングル生成</span></button>
+<button class="menu-button" data-mode="upscaleloop" id="btnModeUpscaleLoop"><span class="menu-icon">⤢</span><span class="menu-label" data-i18n="modes.upscaleLoop">Upscaleループ</span></button>
+</div>
+<div class="sidebar-settings">
+<div class="sidebar-lang-selector">
+<div class="language-dropdown" id="sidebarLangDropdown">
+<button type="button" class="language-dropdown-btn" id="sidebarLangBtn">
+<span class="fi fi-jp"></span>
+<span class="language-text">日本語</span>
+<span class="dropdown-arrow"></span>
+</button>
+<div class="language-dropdown-menu">
+<div class="language-option" data-lang="ja">
+<span class="fi fi-jp"></span>
+<span>日本語</span>
+</div>
+<div class="language-option" data-lang="en">
+<span class="fi fi-us"></span>
+<span>English</span>
+</div>
+<div class="language-option" data-lang="zh">
+<span class="fi fi-cn"></span>
+<span>中文</span>
+</div>
+</div>
+</div>
+</div>
+<button class="settings-button" id="btnOpenSettings" title="Settings">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+<span data-i18n="settings.title">設定</span>
+</button>
 </div>
 </div>
 <div class="mode-config-panel" id="modeConfigPanel">
@@ -222,7 +259,15 @@
 <div class="form-section-title" data-i18n="advanced.connectionSettings">接続設定</div>
 <div class="form-group">
 <label data-i18n="advanced.comfyuiUrl">ComfyUI URL</label>
-<input type="text" id="comfyUIPageUrl" value="http://localhost:8188">
+<div class="url-input-wrapper">
+<input type="text" id="comfyUIPageUrl" value="http://localhost:8188" placeholder="http:// or https://">
+<button type="button" id="showUrlHistory" class="url-history-btn" data-i18n="advanced.showHistory" data-i18n-attr="title">☰</button>
+<button type="button" id="resetUrlDefault" class="url-reset-btn" data-i18n="advanced.resetToDefault" data-i18n-attr="title">↺</button>
+</div>
+<div id="urlHistoryPopup" class="url-history-popup" style="display:none;">
+<div class="url-history-popup-header" data-i18n="advanced.urlHistory">URL履歴</div>
+<div id="urlHistoryList" class="url-history-list"></div>
+</div>
 </div>
 </div>
 <div class="form-section">
@@ -303,11 +348,11 @@
 </div>
 <div class="form-section">
 <div class="form-section-title" data-i18n="wildcard.usage">使い方</div>
-<div style="font-size:12px;color:#888;line-height:1.8;">
-<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__name__</code> <span data-i18n="wildcard.reference">ワイルドカード参照</span></div>
-<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__path/name__</code> <span data-i18n="wildcard.hierarchy">階層構造</span></div>
-<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">__name*__</code> <span data-i18n="wildcard.wildcardSearch">ワイルドカード検索</span></div>
-<div><code style="background:#1a1a1a;padding:2px 6px;border-radius:3px;color:#00bcd4;">{a|b|c}</code> <span data-i18n="wildcard.randomSelect">ランダム選択</span></div>
+<div class="wildcard-usage-guide">
+<div><code class="wildcard-code">__name__</code> <span data-i18n="wildcard.reference">ワイルドカード参照</span></div>
+<div><code class="wildcard-code">__path/name__</code> <span data-i18n="wildcard.hierarchy">階層構造</span></div>
+<div><code class="wildcard-code">__name*__</code> <span data-i18n="wildcard.wildcardSearch">ワイルドカード検索</span></div>
+<div><code class="wildcard-code">{a|b|c}</code> <span data-i18n="wildcard.randomSelect">ランダム選択</span></div>
 </div>
 </div>
 </div>
@@ -318,26 +363,13 @@
 <button class="dashboard-clear-btn" id="dashboardClearStats" data-i18n="dashboard.clearAll">Clear All</button>
 </div>
 <div class="dashboard-summary">
-<div class="summary-card">
-<div class="summary-value" id="dashboardTotalGenerations">0</div>
-<div class="summary-label" data-i18n="dashboard.totalGenerations">Total Generations</div>
-</div>
-<div class="summary-card">
-<div class="summary-value" id="dashboardGlobalAvg">-</div>
-<div class="summary-label" data-i18n="dashboard.globalAvg">Global AVG</div>
-</div>
-<div class="summary-card">
-<div class="summary-value" id="dashboardGlobalMin">-</div>
-<div class="summary-label" data-i18n="dashboard.globalMin">Global MIN</div>
-</div>
-<div class="summary-card">
-<div class="summary-value" id="dashboardGlobalMax">-</div>
-<div class="summary-label" data-i18n="dashboard.globalMax">Global MAX</div>
-</div>
-<div class="summary-card">
-<div class="summary-value" id="dashboardUniqueTags">0</div>
-<div class="summary-label" data-i18n="dashboard.uniqueTags">Unique Tags</div>
-</div>
+<div class="summary-card"><div class="summary-value" id="dashboardTotalGenerations">0</div><div class="summary-label" data-i18n="dashboard.totalGenerations">Total</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardGlobalAvg">-</div><div class="summary-label" data-i18n="dashboard.globalAvg">AVG</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardGlobalMin">-</div><div class="summary-label" data-i18n="dashboard.globalMin">MIN</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardGlobalMax">-</div><div class="summary-label" data-i18n="dashboard.globalMax">MAX</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardUniqueTags">0</div><div class="summary-label" data-i18n="dashboard.uniqueTags">Tags</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardLaunchCount">0</div><div class="summary-label" data-i18n="dashboard.launchCount">Launch</div></div>
+<div class="summary-card"><div class="summary-value" id="dashboardFirstLaunch">-</div><div class="summary-label" data-i18n="dashboard.firstLaunch">Since</div></div>
 </div>
 <div class="dashboard-section">
 <div class="section-header">
@@ -447,8 +479,12 @@
 </div>
 <div style="font-size:11px;color:#888;padding:4px 8px;margin-bottom:4px;" data-i18n="sidebar.generatedImagesDesc">※ComfyUIの出力フォルダにも保存されます</div>
 <div class="generated-image-container" id="generatedImageContainer">
-<div id="noImagePlaceholder" style="color:#666;text-align:center;padding:20px;">
-<div style="font-size:48px;margin-bottom:12px;">🖼️</div>
+<div id="noImagePlaceholder" class="no-image-placeholder">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+<circle cx="8.5" cy="8.5" r="1.5"></circle>
+<polyline points="21 15 16 10 5 21"></polyline>
+</svg>
 <div data-i18n="sidebar.noImages">生成された画像がここに表示されます</div>
 </div>
 </div>
@@ -501,37 +537,13 @@
 <div class="wildcard-toast" id="wildcardToast"></div>
 <div id="sp-manga-toastContainer" style="position:fixed;bottom:20px;right:20px;z-index:9999;"></div>
 
-<!-- Language Selector -->
-<div class="language-selector-container">
-<span class="language-selector-label" data-i18n="language.select">言語</span>
-<div class="language-dropdown" id="languageDropdown">
-<button class="language-dropdown-btn" id="languageDropdownBtn" type="button">
-<span class="fi fi-jp"></span>
-<span class="language-text">日本語</span>
-<span class="dropdown-arrow"></span>
-</button>
-<div class="language-dropdown-menu" id="languageDropdownMenu">
-<div class="language-option" data-value="ja">
-<span class="fi fi-jp"></span>
-<span>日本語</span>
-</div>
-<div class="language-option" data-value="en">
-<span class="fi fi-us"></span>
-<span>English</span>
-</div>
-<div class="language-option" data-value="zh">
-<span class="fi fi-cn"></span>
-<span>中文</span>
-</div>
-</div>
-</div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/core/logger.js"></script>
 <script src="js/i18n/sui-i18n.js"></script>
 <script src="js/ui/toast.js"></script>
 <script src="js/ui/error-guide-dialog.js"></script>
+<script src="js/ui/sidebar-toggle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -563,6 +575,44 @@
 <script src="js/dashboard/performance-storage.js"></script>
 <script src="js/dashboard/prompt-frequency-storage.js"></script>
 <script src="js/dashboard/dashboard-ui.js"></script>
+<script src="js/ui/theme-manager.js"></script>
+
+<!-- Settings Modal -->
+<div class="settings-modal-overlay" id="settingsModalOverlay">
+<div class="settings-modal">
+<div class="settings-modal-header">
+<h3 data-i18n="settings.title">設定</h3>
+<button class="settings-modal-close" id="btnCloseSettings">&times;</button>
+</div>
+<div class="settings-modal-body">
+<div class="settings-group">
+<label class="settings-label" data-i18n="settings.theme">テーマ</label>
+<div class="settings-options">
+<button class="theme-option" data-theme="beige" id="btnThemeBeige">
+<span class="theme-icon">◇</span>
+<span data-i18n="settings.beige">ベージュ</span>
+</button>
+<button class="theme-option" data-theme="dark" id="btnThemeDark">
+<span class="theme-icon">🌙</span>
+<span data-i18n="settings.dark">ダーク</span>
+</button>
+<button class="theme-option" data-theme="light" id="btnThemeLight">
+<span class="theme-icon">☀️</span>
+<span data-i18n="settings.light">ライト</span>
+</button>
+</div>
+</div>
+<div class="settings-group">
+<label class="settings-label" data-i18n="settings.language">言語</label>
+<div class="settings-options">
+<button class="lang-option" data-lang="ja" id="btnLangJa">日本語</button>
+<button class="lang-option" data-lang="en" id="btnLangEn">English</button>
+<button class="lang-option" data-lang="zh" id="btnLangZh">中文</button>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-t2i-default-workflows.js"></script>
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-rembg-default-workflows.js"></script>
