@@ -135,6 +135,68 @@ const ErrorGuideDialog = (function() {
                     detail.textContent = I18nManager.t('errorGuide.missingNodesList') + '\n' + missingNodes.join('\n');
                     detail.style.display = 'block';
                 }
+                // Show auto-install button if ComfyUI-Manager is available
+                if (missingNodes.length > 0 && typeof ComfyUIManagerAPI !== 'undefined') {
+                    actionBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+                    actionBtn.style.display = 'inline-flex';
+                    actionBtn.onclick = async function() {
+                        actionBtn.disabled = true;
+                        actionBtn.textContent = I18nManager.t('errorGuide.installing');
+                        try {
+                            const isAvailable = await ComfyUIManagerAPI.isManagerAvailable();
+                            if (!isAvailable) {
+                                createToastError(
+                                    I18nManager.t('errorGuide.managerNotAvailable'),
+                                    I18nManager.t('errorGuide.managerNotAvailableDesc')
+                                );
+                                actionBtn.disabled = false;
+                                actionBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+                                return;
+                            }
+
+                            const result = await ComfyUIManagerAPI.installMissingNodesAndReboot(missingNodes, false);
+
+                            if (result.success) {
+                                let msg = I18nManager.t('errorGuide.installQueued')
+                                    .replace('{count}', result.installed.length);
+                                if (result.notFound.length > 0) {
+                                    msg += '\n' + I18nManager.t('errorGuide.nodesNotFound')
+                                        .replace('{nodes}', result.notFound.join(', '));
+                                }
+                                createToast(I18nManager.t('errorGuide.installSuccess'), msg);
+
+                                // Show reboot button
+                                actionBtn.textContent = I18nManager.t('errorGuide.rebootComfyUI');
+                                actionBtn.disabled = false;
+                                actionBtn.onclick = async function() {
+                                    actionBtn.disabled = true;
+                                    actionBtn.textContent = I18nManager.t('errorGuide.rebooting');
+                                    await ComfyUIManagerAPI.rebootComfyUI();
+                                    createToast(
+                                        I18nManager.t('errorGuide.rebootInitiated'),
+                                        I18nManager.t('errorGuide.rebootInitiatedDesc')
+                                    );
+                                    close();
+                                };
+                            } else {
+                                createToastError(
+                                    I18nManager.t('errorGuide.installFailed'),
+                                    result.message || I18nManager.t('errorGuide.installFailedDesc')
+                                );
+                                actionBtn.disabled = false;
+                                actionBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+                            }
+                        } catch (error) {
+                            console.error('Auto-install error:', error);
+                            createToastError(
+                                I18nManager.t('errorGuide.installFailed'),
+                                error.message
+                            );
+                            actionBtn.disabled = false;
+                            actionBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+                        }
+                    };
+                }
                 break;
 
             case ERROR_TYPES.NETWORK_ERROR:

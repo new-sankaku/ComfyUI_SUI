@@ -346,7 +346,21 @@ const I18nManager = (function() {
                 unknownErrorMessage: "予期しないエラーが発生しました。",
                 unknownErrorCause: "原因を特定できませんでした。",
                 unknownErrorStep1: "ページを再読み込みしてもう一度試してください",
-                unknownErrorStep2: "問題が続く場合は、ブラウザのコンソールでエラーを確認してください"
+                unknownErrorStep2: "問題が続く場合は、ブラウザのコンソールでエラーを確認してください",
+                // Auto-install
+                autoInstallNodes: "不足ノードを自動インストール",
+                installing: "インストール中...",
+                managerNotAvailable: "ComfyUI-Managerが利用できません",
+                managerNotAvailableDesc: "ComfyUI-Managerがインストールされているか確認してください",
+                installQueued: "{count}個のパッケージをインストールキューに追加しました",
+                nodesNotFound: "以下のノードはパッケージが見つかりませんでした: {nodes}",
+                installSuccess: "インストール開始",
+                installFailed: "インストール失敗",
+                installFailedDesc: "パッケージのインストールに失敗しました",
+                rebootComfyUI: "ComfyUIを再起動",
+                rebooting: "再起動中...",
+                rebootInitiated: "再起動を開始しました",
+                rebootInitiatedDesc: "ComfyUIが再起動されます。数秒後に再接続してください。"
             }
         },
         en: {
@@ -686,7 +700,21 @@ const I18nManager = (function() {
                 unknownErrorMessage: "An unexpected error occurred.",
                 unknownErrorCause: "The cause could not be determined.",
                 unknownErrorStep1: "Reload the page and try again",
-                unknownErrorStep2: "If the problem continues, check browser console for errors"
+                unknownErrorStep2: "If the problem continues, check browser console for errors",
+                // Auto-install
+                autoInstallNodes: "Auto-install Missing Nodes",
+                installing: "Installing...",
+                managerNotAvailable: "ComfyUI-Manager Not Available",
+                managerNotAvailableDesc: "Please check if ComfyUI-Manager is installed",
+                installQueued: "{count} package(s) added to install queue",
+                nodesNotFound: "Packages not found for: {nodes}",
+                installSuccess: "Installation Started",
+                installFailed: "Installation Failed",
+                installFailedDesc: "Failed to install packages",
+                rebootComfyUI: "Reboot ComfyUI",
+                rebooting: "Rebooting...",
+                rebootInitiated: "Reboot Initiated",
+                rebootInitiatedDesc: "ComfyUI is restarting. Please reconnect in a few seconds."
             }
         },
         zh: {
@@ -1026,7 +1054,21 @@ const I18nManager = (function() {
                 unknownErrorMessage: "发生了意外错误。",
                 unknownErrorCause: "无法确定原因。",
                 unknownErrorStep1: "刷新页面并重试",
-                unknownErrorStep2: "如果问题持续，请检查浏览器控制台的错误"
+                unknownErrorStep2: "如果问题持续，请检查浏览器控制台的错误",
+                // Auto-install
+                autoInstallNodes: "自动安装缺失节点",
+                installing: "安装中...",
+                managerNotAvailable: "ComfyUI-Manager不可用",
+                managerNotAvailableDesc: "请检查ComfyUI-Manager是否已安装",
+                installQueued: "已将{count}个包添加到安装队列",
+                nodesNotFound: "以下节点未找到对应包: {nodes}",
+                installSuccess: "安装已开始",
+                installFailed: "安装失败",
+                installFailedDesc: "包安装失败",
+                rebootComfyUI: "重启ComfyUI",
+                rebooting: "重启中...",
+                rebootInitiated: "已开始重启",
+                rebootInitiatedDesc: "ComfyUI正在重启，请稍后重新连接。"
             }
         }
     };
