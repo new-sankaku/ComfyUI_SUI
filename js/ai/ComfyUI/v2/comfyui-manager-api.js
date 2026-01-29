@@ -37,8 +37,8 @@ const ComfyUIManagerAPI = (function() {
         if (nodeMappingsCache) return nodeMappingsCache;
 
         try {
-            // First try local API
-            const response = await fetch(`${getBaseUrl()}/customnode/getmappings`, {
+            // First try local API (mode=local uses cached data)
+            const response = await fetch(`${getBaseUrl()}/customnode/getmappings?mode=local`, {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             });
