@@ -125,17 +125,21 @@ const ComfyUIManagerAPI = (function() {
 
     // Find package info for missing nodes
     async function findPackagesForNodes(missingNodeClassTypes) {
+        console.log('[ManagerAPI] findPackagesForNodes called with:', missingNodeClassTypes);
         const mappings = await getNodeMappings();
+        console.log('[ManagerAPI] mappings loaded:', mappings ? `${Object.keys(mappings).length} packages` : 'null');
         if (!mappings) return [];
 
         const packagesToInstall = new Map();
 
         for (const nodeClassType of missingNodeClassTypes) {
+            let found = false;
             // Search in mappings
             for (const [packageUrl, nodeList] of Object.entries(mappings)) {
                 if (Array.isArray(nodeList) && nodeList.includes(nodeClassType)) {
                     if (!packagesToInstall.has(packageUrl)) {
                         const packageId = extractPackageId(packageUrl);
+                        console.log(`[ManagerAPI] Found package for ${nodeClassType}: ${packageUrl} (id: ${packageId})`);
                         packagesToInstall.set(packageUrl, {
                             url: packageUrl,
                             id: packageId,
@@ -143,36 +147,48 @@ const ComfyUIManagerAPI = (function() {
                         });
                     }
                     packagesToInstall.get(packageUrl).nodes.push(nodeClassType);
+                    found = true;
                     break;
                 }
             }
+            if (!found) {
+                console.log(`[ManagerAPI] No package found for node: ${nodeClassType}`);
+            }
         }
 
+        console.log('[ManagerAPI] Packages to install:', Array.from(packagesToInstall.values()));
         return Array.from(packagesToInstall.values());
     }
 
     // Install a custom node package
     async function installNode(nodeId, version = 'latest', options = {}) {
+        console.log(`[ManagerAPI] installNode called: nodeId=${nodeId}, version=${version}`);
         try {
+            const body = {
+                ui_id: generateUiId(),
+                id: nodeId,
+                version: version,
+                channel: options.channel || 'default',
+                mode: options.mode || 'default',
+                skip_post_install: options.skipPostInstall || false
+            };
+            console.log(`[ManagerAPI] POST /manager/queue/install body:`, body);
             const response = await fetch(`${getBaseUrl()}/manager/queue/install`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ui_id: generateUiId(),
-                    id: nodeId,
-                    version: version,
-                    channel: options.channel || 'default',
-                    mode: options.mode || 'default',
-                    skip_post_install: options.skipPostInstall || false
-                })
+                body: JSON.stringify(body)
             });
+            console.log(`[ManagerAPI] installNode response status: ${response.status}`);
             if (!response.ok) {
                 const errorText = await response.text();
+                console.error(`[ManagerAPI] installNode error: ${errorText}`);
                 throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
-            return await response.json();
+            const result = await response.json();
+            console.log(`[ManagerAPI] installNode result:`, result);
+            return result;
         } catch (error) {
-            console.error('Failed to install node:', error);
+            console.error('[ManagerAPI] Failed to install node:', error);
             throw error;
         }
     }
@@ -464,9 +480,12 @@ const ComfyUIManagerAPI = (function() {
 
     // Install missing nodes and optionally reboot
     async function installMissingNodesAndReboot(missingNodeClassTypes, autoReboot = false) {
+        console.log('[ManagerAPI] installMissingNodesAndReboot called with:', missingNodeClassTypes);
         const packages = await findPackagesForNodes(missingNodeClassTypes);
+        console.log('[ManagerAPI] packages found:', packages);
 
         if (packages.length === 0) {
+            console.log('[ManagerAPI] No packages found, returning failure');
             return {
                 success: false,
                 message: 'Could not find packages for the missing nodes',
