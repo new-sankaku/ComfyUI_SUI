@@ -239,40 +239,75 @@ comfyUIFwGenerateButton.textContent = originalText;
 }
 
 show() {
+console.log('[WorkflowWindow] show() called');
 if (!this.element) {
+console.log('[WorkflowWindow] initializeWindow() starting');
 this.initializeWindow();
+console.log('[WorkflowWindow] initializeWindow() completed');
 }
 this.element.style.display = "flex";
+console.log('[WorkflowWindow] calling checkMissingNodes()');
 this.checkMissingNodes();
 }
 
 checkMissingNodes() {
-if (!this.element) return;
+console.log('[WorkflowWindow] checkMissingNodes() called');
+if (!this.element) {
+console.log('[WorkflowWindow] checkMissingNodes: element is null, returning');
+return;
+}
 
 const tabId = comfyUIWorkflowEditor?.activeTabId;
-if (!tabId) return;
+console.log('[WorkflowWindow] checkMissingNodes: tabId =', tabId);
+console.log('[WorkflowWindow] checkMissingNodes: comfyUIWorkflowEditor =', comfyUIWorkflowEditor);
+if (!tabId) {
+console.log('[WorkflowWindow] checkMissingNodes: no tabId, returning');
+return;
+}
 
 const tab = comfyUIWorkflowEditor.tabs.get(tabId);
-if (!tab || !tab.workflow) return;
+console.log('[WorkflowWindow] checkMissingNodes: tab =', tab);
+if (!tab || !tab.workflow) {
+console.log('[WorkflowWindow] checkMissingNodes: no tab or workflow, returning');
+return;
+}
 
 const missingNodesSection = this.element.querySelector("#missingNodesSection");
 const missingNodesList = this.element.querySelector("#missingNodesList");
 const autoInstallBtn = this.element.querySelector("#autoInstallNodesBtn");
 const rebootBtn = this.element.querySelector("#rebootComfyUIBtn");
 
-if (!missingNodesSection || !missingNodesList) return;
+console.log('[WorkflowWindow] checkMissingNodes: missingNodesSection =', missingNodesSection);
+console.log('[WorkflowWindow] checkMissingNodes: autoInstallBtn =', autoInstallBtn);
+
+if (!missingNodesSection || !missingNodesList) {
+console.log('[WorkflowWindow] checkMissingNodes: section or list not found, returning');
+return;
+}
 
 // Get missing nodes from workflow
 const missingNodes = [];
+console.log('[WorkflowWindow] checkMissingNodes: workflow keys =', Object.keys(tab.workflow));
+console.log('[WorkflowWindow] checkMissingNodes: typeof notExistsWorkflowNodeVsComfyUI =', typeof notExistsWorkflowNodeVsComfyUI);
+console.log('[WorkflowWindow] checkMissingNodes: comfyObjectInfoList length =', typeof comfyObjectInfoList !== 'undefined' ? comfyObjectInfoList?.length : 'undefined');
+console.log('[WorkflowWindow] checkMissingNodes: comfyObjectInfoList sample =', typeof comfyObjectInfoList !== 'undefined' && comfyObjectInfoList ? comfyObjectInfoList.slice(0, 5) : 'none');
+
 for (const [nodeId, node] of Object.entries(tab.workflow)) {
-if (node.class_type && notExistsWorkflowNodeVsComfyUI(node.class_type)) {
-if (!missingNodes.includes(node.class_type)) {
+if (node.class_type) {
+const isMissing = typeof notExistsWorkflowNodeVsComfyUI === 'function'
+? notExistsWorkflowNodeVsComfyUI(node.class_type)
+: false;
+console.log(`[WorkflowWindow] checkMissingNodes: node ${nodeId} class_type=${node.class_type}, isMissing=${isMissing}`);
+if (isMissing && !missingNodes.includes(node.class_type)) {
 missingNodes.push(node.class_type);
 }
 }
 }
 
+console.log('[WorkflowWindow] checkMissingNodes: missingNodes =', missingNodes);
+
 if (missingNodes.length > 0) {
+console.log('[WorkflowWindow] checkMissingNodes: showing missing nodes section');
 missingNodesList.innerHTML = missingNodes.map(n => `<div style="padding:2px 0;">• ${n}</div>`).join('');
 autoInstallBtn.dataset.missingNodes = JSON.stringify(missingNodes);
 autoInstallBtn.style.display = 'block';
@@ -281,6 +316,7 @@ autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
 rebootBtn.style.display = 'none';
 missingNodesSection.style.display = 'block';
 } else {
+console.log('[WorkflowWindow] checkMissingNodes: no missing nodes, hiding section');
 missingNodesSection.style.display = 'none';
 }
 }
