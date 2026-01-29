@@ -244,6 +244,14 @@ if (!this.element) {
 console.log('[WorkflowWindow] initializeWindow() starting');
 this.initializeWindow();
 console.log('[WorkflowWindow] initializeWindow() completed');
+
+// Setup event listeners now that DOM elements exist
+if (comfyUIWorkflowEditor) {
+console.log('[WorkflowWindow] setting up editor event listeners');
+comfyUIWorkflowEditor.setupFileInput();
+comfyUIWorkflowEditor.setupTabEvents();
+comfyUIWorkflowEditor.renderTabs();
+}
 }
 this.element.style.display = "flex";
 console.log('[WorkflowWindow] calling checkMissingNodes()');

@@ -128,9 +128,12 @@ workflow.enabled
 }
 
 setupFileInput() {
-document
-.getElementById("workflowFile")
-.addEventListener("change", async (e) => {
+const workflowFileInput = document.getElementById("workflowFile");
+if (!workflowFileInput) {
+console.log('[WorkflowEditor] setupFileInput: workflowFile element not found, skipping');
+return;
+}
+workflowFileInput.addEventListener("change", async (e) => {
 const files = Array.from(e.target.files);
 for (const file of files) {
 await this.createTab(file, null);
@@ -142,6 +145,10 @@ this.renderTabs();
 
 renderTabs() {
 const tabList = document.getElementById("tabList");
+if (!tabList) {
+console.log('[WorkflowEditor] renderTabs: tabList element not found, skipping');
+return;
+}
 tabList.innerHTML = "";
 const groupedTabs = this.groupTabsByType();
 Object.keys(groupedTabs).forEach((type) => {
@@ -164,7 +171,9 @@ const workflow = JSON.parse(text);
 
 const tab = new ComfyUIWorkflowTab(file, workflow, this, id, type, enabled);
 const tabContent = document.getElementById("tabContentContainer");
+if (tabContent) {
 tabContent.appendChild(tab.createContent());
+}
 this.tabs.set(tab.id, tab);
 this.activateTab(tab.id);
 tab.renderNodes();
@@ -195,7 +204,12 @@ this.renderTabs();
 }
 
 setupTabEvents() {
-document.getElementById("tabList").addEventListener("click", (e) => {
+const tabList = document.getElementById("tabList");
+if (!tabList) {
+console.log('[WorkflowEditor] setupTabEvents: tabList element not found, skipping');
+return;
+}
+tabList.addEventListener("click", (e) => {
 const tabButton = e.target.closest(".comfui-tab-button");
 if (!tabButton) return;
 
