@@ -28,19 +28,69 @@ const ComfyUIManagerAPI = (function() {
         }
     }
 
-    // Get node mappings (node class_type -> package name)
+    // Cache for node mappings
+    let nodeMappingsCache = null;
+    let customNodeListCache = null;
+
+    // Get node mappings from GitHub (node class_type -> package URL)
     async function getNodeMappings() {
+        if (nodeMappingsCache) return nodeMappingsCache;
+
         try {
+            // First try local API
             const response = await fetch(`${getBaseUrl()}/customnode/getmappings`, {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
+            if (response.ok) {
+                nodeMappingsCache = await response.json();
+                return nodeMappingsCache;
+            }
         } catch (error) {
-            console.error('Failed to get node mappings:', error);
+            console.warn('Local getmappings failed, trying GitHub:', error);
+        }
+
+        // Fallback to GitHub
+        try {
+            const response = await fetch(
+                'https://raw.githubusercontent.com/ltdrdata/ComfyUI-Manager/main/extension-node-map.json',
+                { headers: { 'Accept': 'application/json' } }
+            );
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            nodeMappingsCache = await response.json();
+            return nodeMappingsCache;
+        } catch (error) {
+            console.error('Failed to get node mappings from GitHub:', error);
             return null;
         }
+    }
+
+    // Get custom node list from GitHub
+    async function getCustomNodeListFromGitHub() {
+        if (customNodeListCache) return customNodeListCache;
+
+        try {
+            const response = await fetch(
+                'https://raw.githubusercontent.com/ltdrdata/ComfyUI-Manager/main/custom-node-list.json',
+                { headers: { 'Accept': 'application/json' } }
+            );
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            customNodeListCache = await response.json();
+            return customNodeListCache;
+        } catch (error) {
+            console.error('Failed to get custom node list from GitHub:', error);
+            return null;
+        }
+    }
+
+    // Extract package ID from GitHub URL
+    function extractPackageId(gitUrl) {
+        // https://github.com/ltdrdata/ComfyUI-Impact-Pack -> comfyui-impact-pack
+        const match = gitUrl.match(/github\.com\/[^\/]+\/([^\/]+)/i);
+        if (match) {
+            return match[1].toLowerCase();
+        }
+        return null;
     }
 
     // Get installed custom nodes
@@ -85,8 +135,10 @@ const ComfyUIManagerAPI = (function() {
             for (const [packageUrl, nodeList] of Object.entries(mappings)) {
                 if (Array.isArray(nodeList) && nodeList.includes(nodeClassType)) {
                     if (!packagesToInstall.has(packageUrl)) {
+                        const packageId = extractPackageId(packageUrl);
                         packagesToInstall.set(packageUrl, {
                             url: packageUrl,
+                            id: packageId,
                             nodes: []
                         });
                     }
@@ -435,20 +487,42 @@ const ComfyUIManagerAPI = (function() {
             if (!foundNodes.has(n)) results.notFound.push(n);
         });
 
-        // Install each package
+        // Install each package - try /manager/queue/install first, then git_url as fallback
         for (const pkg of packages) {
-            try {
-                await installFromGitUrl(pkg.url);
-                results.installed.push({
-                    url: pkg.url,
-                    nodes: pkg.nodes
-                });
-            } catch (error) {
-                results.failed.push({
-                    url: pkg.url,
-                    nodes: pkg.nodes,
-                    error: error.message
-                });
+            let installed = false;
+
+            // Method 1: Try /manager/queue/install with package ID
+            if (pkg.id) {
+                try {
+                    await installNode(pkg.id, 'latest');
+                    results.installed.push({
+                        id: pkg.id,
+                        url: pkg.url,
+                        nodes: pkg.nodes
+                    });
+                    installed = true;
+                    console.log(`Installed ${pkg.id} via queue/install`);
+                } catch (error) {
+                    console.warn(`queue/install failed for ${pkg.id}, trying git_url:`, error);
+                }
+            }
+
+            // Method 2: Fallback to git_url
+            if (!installed) {
+                try {
+                    await installFromGitUrl(pkg.url);
+                    results.installed.push({
+                        url: pkg.url,
+                        nodes: pkg.nodes
+                    });
+                    console.log(`Installed ${pkg.url} via git_url`);
+                } catch (error) {
+                    results.failed.push({
+                        url: pkg.url,
+                        nodes: pkg.nodes,
+                        error: error.message
+                    });
+                }
             }
         }
 
