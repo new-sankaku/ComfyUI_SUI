@@ -264,7 +264,6 @@ let comfyUIWorkflowEditor;
 document.addEventListener("DOMContentLoaded", async () => {
 if (!comfyUIWorkflowEditor) {
 comfyUIWorkflowEditor = new ComfyUIWorkflowEditor();
-await comfyUIWorkflowEditor.addDefaultWorkflows();
-comfyUIWorkflowEditor = null;
+await comfyUIWorkflowEditor.initialize();
 }
 });
