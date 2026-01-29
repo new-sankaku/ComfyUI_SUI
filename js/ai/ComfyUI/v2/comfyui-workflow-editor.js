@@ -151,6 +151,17 @@ return;
 }
 tabList.innerHTML = "";
 const groupedTabs = this.groupTabsByType();
+
+// Also ensure content elements are attached to DOM
+const tabContentContainer = document.getElementById("tabContentContainer");
+if (tabContentContainer) {
+this.tabs.forEach((tab) => {
+if (tab.contentElement && !tab.contentElement.parentElement) {
+tabContentContainer.appendChild(tab.contentElement);
+}
+});
+}
+
 Object.keys(groupedTabs).forEach((type) => {
 const typeSeparator = document.createElement("div");
 typeSeparator.className = "comfui-tab-type-separator";
@@ -170,9 +181,10 @@ const text = await file.text();
 const workflow = JSON.parse(text);
 
 const tab = new ComfyUIWorkflowTab(file, workflow, this, id, type, enabled);
+const content = tab.createContent();
 const tabContent = document.getElementById("tabContentContainer");
 if (tabContent) {
-tabContent.appendChild(tab.createContent());
+tabContent.appendChild(content);
 }
 this.tabs.set(tab.id, tab);
 this.activateTab(tab.id);

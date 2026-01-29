@@ -370,7 +370,15 @@ console.error("画像プレビューの読み込みエラー:", error);
 }
 
 async renderNodes() {
+if (!this.contentElement) {
+console.log('[WorkflowTab] renderNodes: contentElement is null, skipping');
+return;
+}
 const container = this.contentElement.querySelector(".comfui-node-list");
+if (!container) {
+console.log('[WorkflowTab] renderNodes: container not found, skipping');
+return;
+}
 
 container.innerHTML = "";
 const nodes = Object.entries(this.workflow)
