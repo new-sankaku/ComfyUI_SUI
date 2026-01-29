@@ -134,9 +134,14 @@ const ComfyUIManagerAPI = (function() {
 
         for (const nodeClassType of missingNodeClassTypes) {
             let found = false;
-            // Search in mappings
-            for (const [packageUrl, nodeList] of Object.entries(mappings)) {
-                if (Array.isArray(nodeList) && nodeList.includes(nodeClassType)) {
+            // Search in mappings - format is { "url": [["NodeA", "NodeB"], {metadata}] }
+            for (const [packageUrl, packageData] of Object.entries(mappings)) {
+                // packageData[0] is the array of node names
+                const nodeNames = Array.isArray(packageData) && Array.isArray(packageData[0])
+                    ? packageData[0]
+                    : (Array.isArray(packageData) ? packageData : []);
+
+                if (nodeNames.includes(nodeClassType)) {
                     if (!packagesToInstall.has(packageUrl)) {
                         const packageId = extractPackageId(packageUrl);
                         console.log(`[ManagerAPI] Found package for ${nodeClassType}: ${packageUrl} (id: ${packageId})`);
