@@ -51,6 +51,12 @@ this.element.innerHTML = `
 <div id="apiSettingsUrlHelpe">
 <label id="ExternalService_Heartbeat_Label_fw">Connection:</label>
 </div>
+<div id="missingNodesSection" class="comfui-missing-nodes-section" style="display:none;margin-bottom:12px;padding:8px;background:var(--color-error-bg, #3d1f1f);border:1px solid var(--color-error, #ff6b6b);border-radius:4px;">
+<div style="font-weight:bold;margin-bottom:6px;color:var(--color-error, #ff6b6b);">${I18nManager.t('workflowEditor.missingNodesTitle')}</div>
+<div id="missingNodesList" style="font-size:var(--font-size-small);color:var(--component-text-color);margin-bottom:8px;max-height:100px;overflow-y:auto;"></div>
+<button id="autoInstallNodesBtn" class="comfui-sidebar-button" style="background:var(--color-accent);margin-bottom:4px;">${I18nManager.t('errorGuide.autoInstallNodes')}</button>
+<button id="rebootComfyUIBtn" class="comfui-sidebar-button" style="display:none;background:var(--color-warning, #f0ad4e);">${I18nManager.t('errorGuide.rebootComfyUI')}</button>
+</div>
 <div class="comfui-workflow-notice" style="margin-bottom:12px;padding:8px;background:var(--background-color-B);border:var(--boader-color-1px-solid-B);border-radius:4px;font-size:var(--font-size-small);color:var(--component-text-color);line-height:1.5;">
 <div style="font-weight:bold;margin-bottom:6px;color:var(--color-accent);">${I18nManager.t('workflowEditor.noticeTitle')}</div>
 <div style="margin-bottom:4px;">${I18nManager.t('workflowEditor.noticeItem1')}</div>
@@ -125,6 +131,77 @@ height: `${event.rect.height}px`,
 });
 });
 
+// Auto-install nodes button
+const autoInstallBtn = this.element.querySelector("#autoInstallNodesBtn");
+const rebootBtn = this.element.querySelector("#rebootComfyUIBtn");
+const missingNodesSection = this.element.querySelector("#missingNodesSection");
+const missingNodesList = this.element.querySelector("#missingNodesList");
+
+autoInstallBtn.addEventListener("click", async () => {
+const nodes = autoInstallBtn.dataset.missingNodes ? JSON.parse(autoInstallBtn.dataset.missingNodes) : [];
+if (nodes.length === 0) return;
+
+autoInstallBtn.disabled = true;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.installing');
+
+try {
+const isAvailable = await ComfyUIManagerAPI.isManagerAvailable();
+if (!isAvailable) {
+createToastError(
+I18nManager.t('errorGuide.managerNotAvailable'),
+I18nManager.t('errorGuide.managerNotAvailableDesc')
+);
+autoInstallBtn.disabled = false;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+return;
+}
+
+const result = await ComfyUIManagerAPI.installMissingNodesAndReboot(nodes, false);
+
+if (result.success) {
+let msg = I18nManager.t('errorGuide.installQueued').replace('{count}', result.installed.length);
+if (result.notFound.length > 0) {
+msg += '\n' + I18nManager.t('errorGuide.nodesNotFound').replace('{nodes}', result.notFound.join(', '));
+}
+createToast(I18nManager.t('errorGuide.installSuccess'), msg);
+
+autoInstallBtn.style.display = 'none';
+rebootBtn.style.display = 'block';
+} else {
+createToastError(
+I18nManager.t('errorGuide.installFailed'),
+result.message || I18nManager.t('errorGuide.installFailedDesc')
+);
+autoInstallBtn.disabled = false;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+}
+} catch (error) {
+console.error('Auto-install error:', error);
+createToastError(I18nManager.t('errorGuide.installFailed'), error.message);
+autoInstallBtn.disabled = false;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+}
+});
+
+rebootBtn.addEventListener("click", async () => {
+rebootBtn.disabled = true;
+rebootBtn.textContent = I18nManager.t('errorGuide.rebooting');
+await ComfyUIManagerAPI.rebootComfyUI();
+createToast(
+I18nManager.t('errorGuide.rebootInitiated'),
+I18nManager.t('errorGuide.rebootInitiatedDesc')
+);
+setTimeout(() => {
+missingNodesSection.style.display = 'none';
+rebootBtn.style.display = 'none';
+rebootBtn.disabled = false;
+rebootBtn.textContent = I18nManager.t('errorGuide.rebootComfyUI');
+autoInstallBtn.style.display = 'block';
+autoInstallBtn.disabled = false;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+}, 3000);
+});
+
 const comfyUIFwGenerateButton = this.element.querySelector("#comfyUIFwGenerateButton");
 comfyUIFwGenerateButton.addEventListener("click", async () => {
 const tabId = comfyUIWorkflowEditor.activeTabId;
@@ -166,6 +243,46 @@ if (!this.element) {
 this.initializeWindow();
 }
 this.element.style.display = "flex";
+this.checkMissingNodes();
+}
+
+checkMissingNodes() {
+if (!this.element) return;
+
+const tabId = comfyUIWorkflowEditor?.activeTabId;
+if (!tabId) return;
+
+const tab = comfyUIWorkflowEditor.tabs.get(tabId);
+if (!tab || !tab.workflow) return;
+
+const missingNodesSection = this.element.querySelector("#missingNodesSection");
+const missingNodesList = this.element.querySelector("#missingNodesList");
+const autoInstallBtn = this.element.querySelector("#autoInstallNodesBtn");
+const rebootBtn = this.element.querySelector("#rebootComfyUIBtn");
+
+if (!missingNodesSection || !missingNodesList) return;
+
+// Get missing nodes from workflow
+const missingNodes = [];
+for (const [nodeId, node] of Object.entries(tab.workflow)) {
+if (node.class_type && notExistsWorkflowNodeVsComfyUI(node.class_type)) {
+if (!missingNodes.includes(node.class_type)) {
+missingNodes.push(node.class_type);
+}
+}
+}
+
+if (missingNodes.length > 0) {
+missingNodesList.innerHTML = missingNodes.map(n => `<div style="padding:2px 0;">• ${n}</div>`).join('');
+autoInstallBtn.dataset.missingNodes = JSON.stringify(missingNodes);
+autoInstallBtn.style.display = 'block';
+autoInstallBtn.disabled = false;
+autoInstallBtn.textContent = I18nManager.t('errorGuide.autoInstallNodes');
+rebootBtn.style.display = 'none';
+missingNodesSection.style.display = 'block';
+} else {
+missingNodesSection.style.display = 'none';
+}
 }
 
 hide() {
