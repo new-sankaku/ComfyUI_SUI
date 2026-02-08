@@ -572,6 +572,20 @@
     opacity: 0.9;
 }
 
+/* Audio history */
+.prompt-history-audio-area {
+    flex-shrink: 0;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prompt-history-audio-player {
+    width: 120px;
+    height: 40px;
+}
+
 @media (max-width: 700px) {
     .prompt-history-dropdown {
         width: 350px;

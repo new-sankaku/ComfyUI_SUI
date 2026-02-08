@@ -111,4 +111,11 @@ workflow: ComfyUI_Upscaler,
 enabled: true
 },
 
+{
+name: "audio_ace_step_1_5_split.json",
+type: "T2A",
+workflow: ComfyUI_T2A_AudioAce,
+enabled: true
+},
+
 ];

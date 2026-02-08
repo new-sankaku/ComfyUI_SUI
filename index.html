@@ -32,12 +32,13 @@
 </div>
 <div class="menu-section">
 <div class="menu-section-title" data-i18n="menu.generationMode">生成モード</div>
-<button class="menu-button active" data-mode="normal" id="btnModeNormal"><span class="menu-icon">T</span><span class="menu-label" data-i18n="modes.t2i">T2I生成</span></button>
-<button class="menu-button" data-mode="loop" id="btnModeLoop"><span class="menu-icon">↻</span><span class="menu-label" data-i18n="modes.t2iLoop">T2Iループ生成</span></button>
-<button class="menu-button" data-mode="i2i" id="btnModeI2I"><span class="menu-icon">I</span><span class="menu-label" data-i18n="modes.i2i">I2I生成</span></button>
-<button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop"><span class="menu-icon">⟳</span><span class="menu-label" data-i18n="modes.i2iLoop">I2Iループ生成</span></button>
-<button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle"><span class="menu-icon">∠</span><span class="menu-label" data-i18n="modes.i2iAngle">I2Iアングル生成</span></button>
+<button class="menu-button active" data-mode="normal" id="btnModeNormal"><span class="menu-icon">T</span><span class="menu-label" data-i18n="modes.t2i">Text2Image</span></button>
+<button class="menu-button" data-mode="loop" id="btnModeLoop"><span class="menu-icon">↻</span><span class="menu-label" data-i18n="modes.t2iLoop">Text2Imageループ</span></button>
+<button class="menu-button" data-mode="i2i" id="btnModeI2I"><span class="menu-icon">I</span><span class="menu-label" data-i18n="modes.i2i">Image2Image</span></button>
+<button class="menu-button" data-mode="i2iloop" id="btnModeI2ILoop"><span class="menu-icon">⟳</span><span class="menu-label" data-i18n="modes.i2iLoop">Image2Imageループ</span></button>
+<button class="menu-button" data-mode="i2iangle" id="btnModeI2IAngle"><span class="menu-icon">∠</span><span class="menu-label" data-i18n="modes.i2iAngle">Image2Imageアングル</span></button>
 <button class="menu-button" data-mode="upscaleloop" id="btnModeUpscaleLoop"><span class="menu-icon">⤢</span><span class="menu-label" data-i18n="modes.upscaleLoop">Upscaleループ</span></button>
+<button class="menu-button" data-mode="t2a" id="btnModeT2A"><span class="menu-icon">♫</span><span class="menu-label" data-i18n="modes.t2a">Text2Audio</span></button>
 </div>
 <div class="sidebar-settings">
 <div class="sidebar-lang-selector">
@@ -214,10 +215,25 @@
 <button class="generate-button" id="btnGenerateUpscaleLoop" style="flex-shrink:0;" data-i18n="config.upscaleGenerate">アップスケール生成</button>
 <button class="generate-button cancel-button" id="btnCancelUpscaleLoop" style="margin-top:8px;flex-shrink:0;display:none;" data-i18n="config.cancel">キャンセル</button>
 </div>
+<div id="t2aModeConfig" class="mode-config-content">
+<div class="form-section" style="margin-top:0;">
+<div class="form-group">
+<label data-i18n="config.workflowT2A">ワークフロー (T2A)</label>
+<div class="workflow-display" id="t2aWorkflowDisplay" data-i18n="config.notSelected">未選択</div>
+</div>
+<div class="form-group">
+<label data-i18n="config.generateCount">生成回数</label>
+<input type="number" id="t2aGenerateCount" value="1" min="1" max="10">
+</div>
+</div>
+<button class="generate-button" id="btnGenerateT2A" data-i18n="config.audioGenerate">音声生成</button>
+<button class="generate-button cancel-button" id="btnCancelT2A" style="margin-top:8px;display:none;" data-i18n="config.cancel">キャンセル</button>
+</div>
 </div>
 <div class="center-container">
 <div class="center-tabs">
-<button class="center-tab active" data-tab="basic" id="btnTabBasic" data-i18n="tabs.basic">基本設定</button>
+<button class="center-tab active" data-tab="basic" id="btnTabBasic" data-i18n="tabs.basic">画像設定</button>
+<button class="center-tab" data-tab="t2a" id="btnTabT2A" data-i18n="tabs.t2a">音楽設定</button>
 <button class="center-tab" data-tab="advanced" id="btnTabAdvanced" data-i18n="tabs.advanced">詳細設定</button>
 <button class="center-tab" data-tab="wildcard" id="btnTabWildcard" data-i18n="tabs.wildcard">WildCard設定</button>
 <button class="center-tab" data-tab="dashboard" id="btnTabDashboard" data-i18n="tabs.dashboard">Dashboard</button>
@@ -356,6 +372,27 @@
 </div>
 </div>
 </div>
+<div id="tabT2aContent" class="tab-content">
+<div class="form-section">
+<div class="form-group">
+<label data-i18n="basic.tags">Tags (プロンプト)</label>
+<textarea id="t2aTags" style="min-height:120px;" data-i18n-placeholder="basic.tagsPlaceholder" placeholder="音楽のジャンル、スタイル等">pop, female vocals, emotional, piano, strings</textarea>
+</div>
+<div class="form-group">
+<label data-i18n="basic.lyrics">Lyrics (歌詞)</label>
+<textarea id="t2aLyrics" style="min-height:150px;" data-i18n-placeholder="basic.lyricsPlaceholder" placeholder="歌詞を入力"></textarea>
+</div>
+</div>
+<div class="form-section">
+<div class="form-section-title" data-i18n="basic.seed">シード</div>
+<div class="form-group">
+<div class="seed-group">
+<input type="number" id="t2aSeed" value="-1">
+<button class="seed-button" id="btnRandomSeedT2A">🔄</button>
+</div>
+</div>
+</div>
+</div>
 <div id="tabDashboardContent" class="tab-content">
 <div class="dashboard-container">
 <div class="dashboard-header">
@@ -400,6 +437,7 @@
 <option value="I2I_Loop">I2I Loop</option>
 <option value="I2I_Angle">I2I Angle</option>
 <option value="Upscale">Upscale</option>
+<option value="T2A">T2A</option>
 </select>
 </div>
 <div class="chart-container">
@@ -615,6 +653,7 @@
 </div>
 
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-t2i-default-workflows.js"></script>
+<script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-t2a-default-workflows.js"></script>
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-rembg-default-workflows.js"></script>
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-upscale-default-workflows.js"></script>
 <script src="js/ai/ComfyUI/v2/comfyui_workflow/comfyui-default-workflows.js"></script>
@@ -631,6 +670,17 @@ tabs.forEach(function(t){t.classList.remove('active')});
 contents.forEach(function(c){c.classList.remove('active')});
 tabWildcardBtn.classList.add('active');
 $('tabWildcardContent').classList.add('active');
+});
+}
+var tabT2ABtn=$('btnTabT2A');
+if(tabT2ABtn){
+tabT2ABtn.addEventListener('click',function(){
+var tabs=document.querySelectorAll('.center-tab');
+var contents=document.querySelectorAll('.tab-content');
+tabs.forEach(function(t){t.classList.remove('active')});
+contents.forEach(function(c){c.classList.remove('active')});
+tabT2ABtn.classList.add('active');
+$('tabT2aContent').classList.add('active');
 });
 }
 var tabDashboardBtn=$('btnTabDashboard');

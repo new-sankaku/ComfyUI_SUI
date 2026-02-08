@@ -140,7 +140,11 @@ metadataFont: $('metadataFont').value,
 metadataFontColor: $('metadataFontColor').value,
 metadataBgColor: $('metadataBgColor').value,
 metadataOpacity: $('metadataOpacity').value,
-metadataFooterText: $('metadataFooterText').value
+metadataFooterText: $('metadataFooterText').value,
+t2aTags: $('t2aTags').value,
+t2aLyrics: $('t2aLyrics').value,
+t2aSeed: $('t2aSeed').value,
+t2aGenerateCount: $('t2aGenerateCount').value
 };
 await settingsStore.setItem('formSettings', settings);
 }
@@ -170,9 +174,13 @@ if (settings.metadataFontColor) $('metadataFontColor').value = settings.metadata
 if (settings.metadataBgColor) $('metadataBgColor').value = settings.metadataBgColor;
 if (settings.metadataOpacity) { $('metadataOpacity').value = settings.metadataOpacity; $('metadataOpacityValue').textContent = settings.metadataOpacity + '%'; }
 if (settings.metadataFooterText) $('metadataFooterText').value = settings.metadataFooterText;
+if (settings.t2aTags) $('t2aTags').value = settings.t2aTags;
+if (settings.t2aLyrics) $('t2aLyrics').value = settings.t2aLyrics;
+if (settings.t2aSeed) $('t2aSeed').value = settings.t2aSeed;
+if (settings.t2aGenerateCount) $('t2aGenerateCount').value = settings.t2aGenerateCount;
 }
 function setupAutoSave() {
-const inputs = ['prompt', 'negative_prompt', 'width', 'height', 'seed', 'comfyUIPageUrl', 'normalGenerateCount', 'loopPositivePrompts', 'loopNegativePrompts', 'wildcardGenerateCount', 'i2iGenerateCount', 'i2iloopPositivePrompts', 'i2iloopNegativePrompts', 'i2ianglePrompts', 'metadataEnabled', 'metadataFirstLineOnly', 'metadataPosition', 'metadataFontSize', 'metadataFont', 'metadataFontColor', 'metadataBgColor', 'metadataOpacity', 'metadataFooterText'];
+const inputs = ['prompt', 'negative_prompt', 'width', 'height', 'seed', 'comfyUIPageUrl', 'normalGenerateCount', 'loopPositivePrompts', 'loopNegativePrompts', 'wildcardGenerateCount', 'i2iGenerateCount', 'i2iloopPositivePrompts', 'i2iloopNegativePrompts', 'i2ianglePrompts', 'metadataEnabled', 'metadataFirstLineOnly', 'metadataPosition', 'metadataFontSize', 'metadataFont', 'metadataFontColor', 'metadataBgColor', 'metadataOpacity', 'metadataFooterText', 't2aTags', 't2aLyrics', 't2aSeed', 't2aGenerateCount'];
 inputs.forEach(id => {
 const el = $(id);
 if (el) el.addEventListener('change', saveFormSettings);

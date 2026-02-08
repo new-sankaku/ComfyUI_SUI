@@ -5,6 +5,7 @@ const DashboardUI = (function() {
     let trendChart = null;
     let currentChartMode = 'T2I';
     let currentTrendPeriod = 'daily';
+    let wordcloudResizeObserver = null;
 
     // Mode display names (will use i18n)
     const MODE_LABELS = {
@@ -13,7 +14,8 @@ const DashboardUI = (function() {
         'I2I': 'I2I',
         'I2I_Loop': 'I2I Loop',
         'I2I_Angle': 'I2I Angle',
-        'Upscale': 'Upscale'
+        'Upscale': 'Upscale',
+        'T2A': 'T2A'
     };
 
     // Colors for each mode (dark theme)
@@ -23,7 +25,8 @@ const DashboardUI = (function() {
         'I2I': '#ff9800',
         'I2I_Loop': '#e91e63',
         'I2I_Angle': '#9c27b0',
-        'Upscale': '#607d8b'
+        'Upscale': '#607d8b',
+        'T2A': '#ff5722'
     };
 
     // Colors for each mode (beige theme)
@@ -33,7 +36,8 @@ const DashboardUI = (function() {
         'I2I': '#C4956C',
         'I2I_Loop': '#B85C5C',
         'I2I_Angle': '#8B7355',
-        'Upscale': '#7A756A'
+        'Upscale': '#7A756A',
+        'T2A': '#C47A5C'
     };
 
     // Colors for each mode (light theme)
@@ -43,7 +47,8 @@ const DashboardUI = (function() {
         'I2I': '#f57c00',
         'I2I_Loop': '#c2185b',
         'I2I_Angle': '#7b1fa2',
-        'Upscale': '#455a64'
+        'Upscale': '#455a64',
+        'T2A': '#e64a19'
     };
 
     // Get current theme colors
@@ -165,6 +170,17 @@ const DashboardUI = (function() {
         const downloadBtn = document.getElementById('dashboardDownloadWordcloud');
         if (downloadBtn) {
             downloadBtn.addEventListener('click', downloadWordcloud);
+        }
+
+        // Re-render wordcloud on container resize (zoom/window resize)
+        const wordcloudCanvas = document.getElementById('dashboardWordcloud');
+        if (wordcloudCanvas && wordcloudCanvas.parentElement) {
+            let resizeTimeout;
+            wordcloudResizeObserver = new ResizeObserver(() => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => refreshWordcloud(), 300);
+            });
+            wordcloudResizeObserver.observe(wordcloudCanvas.parentElement);
         }
     }
 
@@ -521,29 +537,32 @@ const DashboardUI = (function() {
         const wordcloudColors = getWordcloudColors();
         const bgColor = themeColors.bgSecondary || themeColors.bgColor;
 
-        // Set canvas size to match container
+        // Set canvas size with HiDPI support
+        const dpr = window.devicePixelRatio || 1;
         const container = canvas.parentElement;
-        if (container) {
-            const rect = container.getBoundingClientRect();
-            canvas.width = rect.width - 16; // Subtract padding
-            canvas.height = 300;
-        }
+        const cssWidth = container ? (container.getBoundingClientRect().width - 16) : canvas.width;
+        const cssHeight = 300;
+        canvas.width = cssWidth * dpr;
+        canvas.height = cssHeight * dpr;
+        canvas.style.width = cssWidth + 'px';
+        canvas.style.height = cssHeight + 'px';
 
         if (topTags.length === 0) {
             const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
             ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, cssWidth, cssHeight);
             ctx.fillStyle = themeColors.textColor;
             ctx.font = '14px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(I18nManager.t('dashboard.noTags') || 'No tags recorded', canvas.width / 2, canvas.height / 2);
+            ctx.fillText(I18nManager.t('dashboard.noTags') || 'No tags recorded', cssWidth / 2, cssHeight / 2);
             return;
         }
 
         // Find max count for scaling
         const maxCount = topTags[0]?.count || 1;
-        const minSize = 12;
-        const maxSize = 60;
+        const minSize = 12 * dpr;
+        const maxSize = 60 * dpr;
 
         // Prepare word list for wordcloud2.js: [[word, size], ...]
         const wordList = topTags.map(({ tag, count }) => {
@@ -559,7 +578,7 @@ const DashboardUI = (function() {
         // Generate wordcloud
         WordCloud(canvas, {
             list: wordList,
-            gridSize: 8,
+            gridSize: Math.round(8 * dpr),
             weightFactor: 1,
             fontFamily: 'sans-serif',
             color: function() {

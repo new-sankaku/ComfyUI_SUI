@@ -376,7 +376,7 @@ return null;
 }
 
 async function comfyui_track_prompt_progress_v2(promptId) {
-if (!socket) comfyuiConnect();
+if (!socket) Comfyui_connect();
 
 return new Promise((resolve,reject)=>{
 socket.onmessage=(event)=>{

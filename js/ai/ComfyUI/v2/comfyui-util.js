@@ -1,5 +1,5 @@
 // Workflow type definitions
-const comfyuiTypes = ["T2I", "I2I", "I2I_Inpaint", "I2I_Outpaint", "I2I_Text", "I2I_Angle", "REMBG", "Upscaler"];
+const comfyuiTypes = ["T2I", "I2I", "I2I_Inpaint", "I2I_Outpaint", "I2I_Text", "I2I_Angle", "REMBG", "Upscaler", "T2A"];
 
 // Types that require image upload before processing
 const comfyuiImageUploadTypes = new Set(["I2I", "I2I_Inpaint", "I2I_Outpaint", "I2I_Text", "I2I_Angle", "REMBG", "Upscaler"]);
@@ -31,6 +31,9 @@ builder.updateValueByTargetValue("%prompt%",requestData["prompt"]);
 builder.updateValueByTargetValue("%negative%",requestData["negative_prompt"]);
 if(requestData["anglePrompt"]) {
 builder.updateValueByTargetValue("%AnglePrompt%",requestData["anglePrompt"]);
+}
+if(requestData["lyrics_prompt"]) {
+builder.updateValueByTargetValue("%lyrics_prompt%",requestData["lyrics_prompt"]);
 }
 builder.replaceDatePlaceholders();
 

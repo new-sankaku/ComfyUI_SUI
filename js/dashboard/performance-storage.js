@@ -16,7 +16,7 @@ const PerformanceStorage = (function() {
     });
 
     // Mode types matching the generation modes
-    const MODES = ['T2I', 'T2I_Loop', 'I2I', 'I2I_Loop', 'I2I_Angle', 'Upscale'];
+    const MODES = ['T2I', 'T2I_Loop', 'I2I', 'I2I_Loop', 'I2I_Angle', 'Upscale', 'T2A'];
     const MAX_HISTORY_PER_MODE = 100;
     const MAX_DAILY_RECORDS = 90; // Keep 90 days of data
 

@@ -156,7 +156,7 @@ const ThemeManager = (function() {
     // Set language and update all UI
     function setLanguage(lang) {
         if (typeof I18nManager !== 'undefined') {
-            I18nManager.setLanguage(lang);
+            I18nManager.changeLanguage(lang);
         }
         updateLanguageUI();
     }

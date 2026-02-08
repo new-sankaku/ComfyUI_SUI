@@ -604,6 +604,148 @@ $('generationStatus').textContent = I18nManager.t('status.error');
 $('generationStatus').style.color = '#f44336';
 } finally { isGenerating = false; isCancelled = false; hideCancelButton('i2IAngle'); setGenerateButtonGenerating('i2IAngle', false); }
 }
+function generateImageT2A() { generateImageT2AExec(parseInt($('t2aGenerateCount').value) || 1); }
+async function generateImageT2AExec(count) {
+if (isGenerating) return;
+isGenerating = true;
+isCancelled = false;
+count = count || 1;
+showCancelButton('t2A');
+setGenerateButtonGenerating('t2A', true);
+try {
+const baseWorkflow = await comfyUIWorkflowRepository.getEnabledWorkflowByType("T2A");
+if (!baseWorkflow) {
+ErrorGuideDialog.show(ErrorGuideDialog.ERROR_TYPES.WORKFLOW_NOT_FOUND, { workflowType: 'T2A' });
+$('generationStatus').textContent = I18nManager.t('status.workflowNotSet');
+$('generationStatus').style.color = '#f44336';
+return;
+}
+const tags = $('t2aTags').value.trim();
+const lyrics = $('t2aLyrics').value.trim();
+const baseSeed = parseInt($('t2aSeed').value);
+$('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', 1).replace('{total}', count);
+$('generationStatus').style.color = '#ff9800';
+resetGenerationTimeStats();
+for (let i = 0; i < count; i++) {
+if (isCancelled) { $('generationStatus').textContent = I18nManager.t('status.cancelled'); $('generationStatus').style.color = '#ff9800'; break; }
+const currentSeed = baseSeed === -1 ? Math.floor(Math.random() * 0xFFFFFFFF) : baseSeed + i;
+$('generationStatus').textContent = I18nManager.t('status.generatingProgress').replace('{current}', i + 1).replace('{total}', count);
+const requestData = { prompt: tags, negative_prompt: '', seed: currentSeed, lyrics_prompt: lyrics };
+const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'T2A');
+generatorLogger.debug('Generated T2A Workflow JSON:', JSON.stringify(workflow, null, 2));
+const startTime = performance.now();
+const result = await executeWorkflowAudio(workflow);
+const endTime = performance.now();
+const genTime = Math.round(endTime - startTime);
+updateGenerationTimeStats(genTime);
+DashboardUI.recordGeneration('T2A', genTime, tags);
+if (result && result.audio) {
+displayGeneratedAudio(result.audio, i + 1, tags);
+if (typeof promptHistoryManager !== 'undefined') {
+const historyFields = [
+{ fieldId: 't2aTags', text: $('t2aTags')?.value?.trim() },
+{ fieldId: 't2aLyrics', text: $('t2aLyrics')?.value?.trim() }
+];
+for (const cfg of historyFields) {
+if (cfg.text) {
+await promptHistoryManager.saveToHistory(cfg.fieldId, cfg.text);
+await promptHistoryManager.addAudioToHistory(cfg.fieldId, cfg.text, result.audio);
+}
+}
+}
+}
+}
+if (!isCancelled) { $('generationStatus').textContent = I18nManager.t('status.completed'); $('generationStatus').style.color = '#4caf50'; }
+} catch (error) {
+ErrorGuideDialog.showForError(error, { errorDetail: error.message });
+$('generationStatus').textContent = I18nManager.t('status.error');
+$('generationStatus').style.color = '#f44336';
+} finally { isGenerating = false; isCancelled = false; hideCancelButton('t2A'); setGenerateButtonGenerating('t2A', false); }
+}
+async function executeWorkflowAudio(workflow) {
+if (!socket) Comfyui_connect();
+const fixedWorkflow = await comfyui_fixWorkflowTypes_v2(workflow);
+const response = await fetch(comfyUIUrls.prompt, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ prompt: fixedWorkflow, client_id: comfyUIuuid })
+});
+if (!response.ok) {
+const errorText = await response.text();
+createToastError(I18nManager.t('toast.comfyuiError'), errorText);
+throw new Error(`HTTP error! status: ${response.status}`);
+}
+const data = await response.json();
+const promptId = data.prompt_id;
+await waitForCompletion(promptId);
+const history = await fetch(comfyUIUrls.history + promptId);
+const historyData = await history.json();
+const outputs = historyData[promptId]?.outputs || {};
+for (const nodeId in outputs) {
+const nodeOutput = outputs[nodeId];
+if (nodeOutput.audio && nodeOutput.audio.length > 0) {
+const audioData = nodeOutput.audio[0];
+const params = new URLSearchParams({ filename: audioData.filename, subfolder: audioData.subfolder || '', type: audioData.type || 'output' });
+return { audio: comfyUIUrls.view + '?' + params.toString() };
+}
+if (nodeOutput.images && nodeOutput.images.length > 0) {
+const imgData = nodeOutput.images[0];
+if (imgData.filename && (imgData.filename.endsWith('.mp3') || imgData.filename.endsWith('.wav') || imgData.filename.endsWith('.flac'))) {
+const params = new URLSearchParams({ filename: imgData.filename, subfolder: imgData.subfolder || '', type: imgData.type || 'output' });
+return { audio: comfyUIUrls.view + '?' + params.toString() };
+}
+}
+}
+throw new Error('No audio output found');
+}
+function displayGeneratedAudio(audioUrl, index, prompt) {
+var container = $('generatedImageContainer');
+var placeholder = $('noImagePlaceholder');
+if (placeholder) placeholder.style.display = 'none';
+var item = document.createElement('div');
+item.className = 'generated-audio-item';
+var audioLabel = document.createElement('div');
+audioLabel.className = 'generated-audio-label';
+audioLabel.textContent = '#' + (index || 1) + ' - ' + prompt.substring(0, 80) + (prompt.length > 80 ? '...' : '');
+var audio = document.createElement('audio');
+audio.controls = true;
+audio.className = 'generated-audio-player';
+audio.src = audioUrl;
+var bottomRow = document.createElement('div');
+bottomRow.className = 'generated-audio-bottom';
+var timestamp = new Date().toLocaleTimeString('ja-JP');
+var info = document.createElement('span');
+info.className = 'generated-audio-time';
+info.textContent = timestamp;
+var downloadBtn = document.createElement('button');
+downloadBtn.className = 'generated-audio-dl';
+downloadBtn.textContent = 'DL';
+downloadBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+downloadAudio(audioUrl, index);
+});
+bottomRow.appendChild(info);
+bottomRow.appendChild(downloadBtn);
+item.appendChild(audioLabel);
+item.appendChild(audio);
+item.appendChild(bottomRow);
+container.insertBefore(item, container.firstChild);
+}
+async function downloadAudio(audioUrl, index) {
+try {
+var response = await fetch(audioUrl);
+var blob = await response.blob();
+var url = URL.createObjectURL(blob);
+var a = document.createElement('a');
+a.href = url;
+var timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+a.download = 'generated_audio_' + timestamp + '_' + (index || 1) + '.mp3';
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+} catch (error) { console.error('Audio download error:', error); }
+}
 function generateImageUpscaleLoop() {
 if (upscaleloopUploadedFileNames.length === 0) { createToastError(I18nManager.t('toast.inputError'), I18nManager.t('toast.uploadImage')); return; }
 generateImageUpscaleLoopExec();

@@ -15,12 +15,13 @@ const I18nManager = (function() {
                 generationMode: "生成モード"
             },
             modes: {
-                t2i: "T2I",
-                t2iLoop: "T2Iプロンプトループ",
-                i2i: "I2I",
-                i2iLoop: "I2Iプロンプトループ",
-                i2iAngle: "I2Iアングル",
-                upscaleLoop: "Upscaleループ"
+                t2i: "Text2Image",
+                t2iLoop: "Text2Imageループ",
+                i2i: "Image2Image",
+                i2iLoop: "Image2Imageループ",
+                i2iAngle: "Image2Imageアングル",
+                upscaleLoop: "Upscaleループ",
+                t2a: "Text2Audio"
             },
             config: {
                 normalGeneration: "通常生成",
@@ -36,6 +37,8 @@ const I18nManager = (function() {
                 loopGenerate: "ループ生成",
                 angleGenerate: "アングル生成",
                 upscaleGenerate: "アップスケール生成",
+                audioGenerate: "音声生成",
+                workflowT2A: "ワークフロー (T2A)",
                 promptPosition: "追加プロンプト位置",
                 positionStart: "Start（先頭に追加）",
                 positionEnd: "End（末尾に追加）",
@@ -49,10 +52,11 @@ const I18nManager = (function() {
                 sendToAngle: "Angle↑送信"
             },
             tabs: {
-                basic: "基本設定",
+                basic: "画像設定",
                 advanced: "詳細設定",
                 wildcard: "WildCard設定",
-                dashboard: "ダッシュボード"
+                dashboard: "ダッシュボード",
+                t2a: "音楽設定"
             },
             basic: {
                 prompt: "プロンプト",
@@ -63,7 +67,11 @@ const I18nManager = (function() {
                 imageSettings: "画像設定",
                 width: "幅",
                 height: "高さ",
-                seed: "シード"
+                seed: "シード",
+                tags: "Tags (プロンプト)",
+                tagsPlaceholder: "音楽のジャンル、スタイル等",
+                lyrics: "Lyrics (歌詞)",
+                lyricsPlaceholder: "歌詞を入力"
             },
             advanced: {
                 connectionSettings: "接続設定",
@@ -355,12 +363,13 @@ const I18nManager = (function() {
                 generationMode: "Generation Mode"
             },
             modes: {
-                t2i: "T2I",
-                t2iLoop: "T2I Prompt Loop",
-                i2i: "I2I",
-                i2iLoop: "I2I Prompt Loop",
-                i2iAngle: "I2I Angle",
-                upscaleLoop: "Upscale Loop"
+                t2i: "Text2Image",
+                t2iLoop: "Text2Image Loop",
+                i2i: "Image2Image",
+                i2iLoop: "Image2Image Loop",
+                i2iAngle: "Image2Image Angle",
+                upscaleLoop: "Upscale Loop",
+                t2a: "Text2Audio"
             },
             config: {
                 normalGeneration: "Normal Generation",
@@ -376,6 +385,8 @@ const I18nManager = (function() {
                 loopGenerate: "Loop Generate",
                 angleGenerate: "Angle Generate",
                 upscaleGenerate: "Upscale Generate",
+                audioGenerate: "Generate Audio",
+                workflowT2A: "Workflow (T2A)",
                 promptPosition: "Additional Prompt Position",
                 positionStart: "Start (Add to beginning)",
                 positionEnd: "End (Add to end)",
@@ -389,10 +400,11 @@ const I18nManager = (function() {
                 sendToAngle: "Send to Angle"
             },
             tabs: {
-                basic: "Basic Settings",
+                basic: "Image Settings",
                 advanced: "Advanced Settings",
                 wildcard: "WildCard Settings",
-                dashboard: "Dashboard"
+                dashboard: "Dashboard",
+                t2a: "Music Settings"
             },
             basic: {
                 prompt: "Prompt",
@@ -403,7 +415,11 @@ const I18nManager = (function() {
                 imageSettings: "Image Settings",
                 width: "Width",
                 height: "Height",
-                seed: "Seed"
+                seed: "Seed",
+                tags: "Tags (Prompt)",
+                tagsPlaceholder: "Music genre, style, etc.",
+                lyrics: "Lyrics",
+                lyricsPlaceholder: "Enter lyrics"
             },
             advanced: {
                 connectionSettings: "Connection Settings",
@@ -695,12 +711,13 @@ const I18nManager = (function() {
                 generationMode: "生成模式"
             },
             modes: {
-                t2i: "T2I",
-                t2iLoop: "T2I提示词循环",
-                i2i: "I2I",
-                i2iLoop: "I2I提示词循环",
-                i2iAngle: "I2I角度",
-                upscaleLoop: "Upscale循环"
+                t2i: "Text2Image",
+                t2iLoop: "Text2Image循环",
+                i2i: "Image2Image",
+                i2iLoop: "Image2Image循环",
+                i2iAngle: "Image2Image角度",
+                upscaleLoop: "Upscale循环",
+                t2a: "Text2Audio"
             },
             config: {
                 normalGeneration: "普通生成",
@@ -716,6 +733,8 @@ const I18nManager = (function() {
                 loopGenerate: "循环生成",
                 angleGenerate: "角度生成",
                 upscaleGenerate: "放大生成",
+                audioGenerate: "生成音频",
+                workflowT2A: "工作流 (T2A)",
                 promptPosition: "附加提示词位置",
                 positionStart: "Start（添加到开头）",
                 positionEnd: "End（添加到末尾）",
@@ -729,10 +748,11 @@ const I18nManager = (function() {
                 sendToAngle: "发送到角度"
             },
             tabs: {
-                basic: "基本设置",
+                basic: "图像设置",
                 advanced: "高级设置",
                 wildcard: "WildCard设置",
-                dashboard: "仪表板"
+                dashboard: "仪表板",
+                t2a: "音乐设置"
             },
             basic: {
                 prompt: "提示词",
@@ -743,7 +763,11 @@ const I18nManager = (function() {
                 imageSettings: "图片设置",
                 width: "宽度",
                 height: "高度",
-                seed: "种子"
+                seed: "种子",
+                tags: "Tags (提示词)",
+                tagsPlaceholder: "音乐类型、风格等",
+                lyrics: "歌词",
+                lyricsPlaceholder: "输入歌词"
             },
             advanced: {
                 connectionSettings: "连接设置",

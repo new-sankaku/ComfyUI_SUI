@@ -151,6 +151,33 @@ const promptHistoryManager = {
         }
     },
 
+    async addAudioToHistory(fieldId, text, audioUrl) {
+        if (!text || !text.trim() || !audioUrl) return false;
+
+        const trimmedText = text.trim();
+
+        try {
+            let history = await this.getHistory(fieldId);
+            const existingIndex = history.findIndex(item => item.text === trimmedText);
+
+            if (existingIndex !== -1) {
+                if (history[existingIndex].audio) {
+                    return false;
+                }
+                history[existingIndex].audio = {
+                    url: audioUrl,
+                    timestamp: Date.now()
+                };
+                await this.store.setItem(fieldId, history);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Failed to add audio to history:", error);
+            return false;
+        }
+    },
+
     async deleteImageFromHistory(fieldId, index) {
         try {
             let history = await this.getHistory(fieldId);
@@ -389,7 +416,13 @@ const promptHistoryManager = {
             item.querySelector('.prompt-history-text')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const text = history[index].text;
-                textarea.value = text;
+                if (typeof promptTagify !== 'undefined' && promptTagify && promptTagify.DOM && promptTagify.DOM.input && textarea.id === 'prompt') {
+                    const tagifyText = text.replace(/(__\S+?__)/g, '[[$1]]');
+                    textarea.value = tagifyText;
+                    promptTagify.loadOriginalValues();
+                } else {
+                    textarea.value = text;
+                }
                 textarea.dispatchEvent(new Event('input', { bubbles: true }));
                 dropdown.style.display = 'none';
                 this.dropdownVisible = null;
@@ -475,12 +508,14 @@ const promptHistoryManager = {
         const textClass = isExpanded ? 'prompt-history-text expanded' : 'prompt-history-text';
         const fullTextTooltip = this.escapeHtml(item.text).replace(/"/g, '&quot;');
 
-        let imageHtml = `<div class="prompt-history-image-area prompt-history-no-image"><span class="prompt-history-no-image-text">${I18nManager.t('history.imageAddedOnGenerate')}</span></div>`;
-        if (item.image) {
-            imageHtml = `<div class="prompt-history-image-area"><img src="${item.image.thumbnail}" class="prompt-history-thumbnail" data-fullurl="${item.image.fullUrl || item.image.thumbnail}" title="${new Date(item.image.timestamp).toLocaleString()}"><button class="prompt-history-image-delete" title="${I18nManager.t('history.deleteImage')}">×</button></div>`;
+        let mediaHtml = `<div class="prompt-history-image-area prompt-history-no-image"><span class="prompt-history-no-image-text">${I18nManager.t('history.imageAddedOnGenerate')}</span></div>`;
+        if (item.audio) {
+            mediaHtml = `<div class="prompt-history-audio-area"><audio controls class="prompt-history-audio-player" src="${item.audio.url}"></audio></div>`;
+        } else if (item.image) {
+            mediaHtml = `<div class="prompt-history-image-area"><img src="${item.image.thumbnail}" class="prompt-history-thumbnail" data-fullurl="${item.image.fullUrl || item.image.thumbnail}" title="${new Date(item.image.timestamp).toLocaleString()}"><button class="prompt-history-image-delete" title="${I18nManager.t('history.deleteImage')}">×</button></div>`;
         }
 
-        return `<div class="prompt-history-item" data-index="${index}">${imageHtml}<div class="prompt-history-content">${displayName}<div class="${textClass}" title="${fullTextTooltip}">${textContent}</div><div class="prompt-history-meta"><span class="prompt-history-time">${this.formatTimestamp(item.timestamp)}</span><span class="prompt-history-actions"><button class="prompt-history-expand">${expandText}</button><button class="prompt-history-edit">${I18nManager.t('history.edit')}</button><button class="prompt-history-pin">${pinText}</button><button class="prompt-history-delete">${I18nManager.t('history.delete')}</button></span></div></div></div>`;
+        return `<div class="prompt-history-item" data-index="${index}">${mediaHtml}<div class="prompt-history-content">${displayName}<div class="${textClass}" title="${fullTextTooltip}">${textContent}</div><div class="prompt-history-meta"><span class="prompt-history-time">${this.formatTimestamp(item.timestamp)}</span><span class="prompt-history-actions"><button class="prompt-history-expand">${expandText}</button><button class="prompt-history-edit">${I18nManager.t('history.edit')}</button><button class="prompt-history-pin">${pinText}</button><button class="prompt-history-delete">${I18nManager.t('history.delete')}</button></span></div></div></div>`;
     },
 
     escapeHtml(text) {
@@ -497,7 +532,9 @@ const promptHistoryManager = {
             'loopNegativePrompts',
             'i2iloopPositivePrompts',
             'i2iloopNegativePrompts',
-            'i2ianglePrompts'
+            'i2ianglePrompts',
+            't2aTags',
+            't2aLyrics'
         ];
 
         targetFields.forEach(fieldId => {
