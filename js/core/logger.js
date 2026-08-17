@@ -5,7 +5,7 @@ const LogLevel = {
     INFO: 2,
     WARN: 3,
     ERROR: 4,
-    SILENT: 5
+    SILENT: 5,
 };
 
 function SimpleLogger(moduleName, defaultLevel = LogLevel.INFO) {
@@ -43,52 +43,63 @@ function SimpleLogger(moduleName, defaultLevel = LogLevel.INFO) {
     }
 
     function argsToString(args) {
-        return args.map(arg =>
-            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-        ).join(' ');
+        return args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg))).join(' ');
     }
 
     return {
-        trace: function(...args) {
+        trace: function (...args) {
             if (currentLevel <= LogLevel.TRACE) {
                 console.log(formatMessage('TRACE', argsToString(args)));
             }
         },
 
-        debug: function(...args) {
+        debug: function (...args) {
             if (currentLevel <= LogLevel.DEBUG) {
                 console.log(formatMessage('DEBUG', argsToString(args)));
             }
         },
 
-        info: function(...args) {
+        info: function (...args) {
             if (currentLevel <= LogLevel.INFO) {
                 console.info(formatMessage('INFO', argsToString(args)));
             }
         },
 
-        warn: function(...args) {
+        warn: function (...args) {
             if (currentLevel <= LogLevel.WARN) {
                 console.warn(formatMessage('WARN', argsToString(args)));
             }
         },
 
-        error: function(...args) {
+        error: function (...args) {
             if (currentLevel <= LogLevel.ERROR) {
                 console.error(formatMessage('ERROR', argsToString(args)));
             }
         },
 
-        setLevel: function(level) {
+        setLevel: function (level) {
             if (typeof level === 'string') {
                 switch (level.toLowerCase()) {
-                    case 'trace': currentLevel = LogLevel.TRACE; break;
-                    case 'debug': currentLevel = LogLevel.DEBUG; break;
-                    case 'info': currentLevel = LogLevel.INFO; break;
-                    case 'warn': currentLevel = LogLevel.WARN; break;
-                    case 'error': currentLevel = LogLevel.ERROR; break;
-                    case 'silent': currentLevel = LogLevel.SILENT; break;
-                    default: currentLevel = LogLevel.INFO;
+                    case 'trace':
+                        currentLevel = LogLevel.TRACE;
+                        break;
+                    case 'debug':
+                        currentLevel = LogLevel.DEBUG;
+                        break;
+                    case 'info':
+                        currentLevel = LogLevel.INFO;
+                        break;
+                    case 'warn':
+                        currentLevel = LogLevel.WARN;
+                        break;
+                    case 'error':
+                        currentLevel = LogLevel.ERROR;
+                        break;
+                    case 'silent':
+                        currentLevel = LogLevel.SILENT;
+                        break;
+                    default:
+                        currentLevel = LogLevel.INFO;
                 }
             } else {
                 currentLevel = level;
@@ -96,17 +107,24 @@ function SimpleLogger(moduleName, defaultLevel = LogLevel.INFO) {
             return currentLevel;
         },
 
-        getLevel: function() {
+        getLevel: function () {
             switch (currentLevel) {
-                case LogLevel.TRACE: return 'trace';
-                case LogLevel.DEBUG: return 'debug';
-                case LogLevel.INFO: return 'info';
-                case LogLevel.WARN: return 'warn';
-                case LogLevel.ERROR: return 'error';
-                case LogLevel.SILENT: return 'silent';
-                default: return 'unknown';
+                case LogLevel.TRACE:
+                    return 'trace';
+                case LogLevel.DEBUG:
+                    return 'debug';
+                case LogLevel.INFO:
+                    return 'info';
+                case LogLevel.WARN:
+                    return 'warn';
+                case LogLevel.ERROR:
+                    return 'error';
+                case LogLevel.SILENT:
+                    return 'silent';
+                default:
+                    return 'unknown';
             }
-        }
+        },
     };
 }
 

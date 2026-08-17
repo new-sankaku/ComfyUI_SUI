@@ -1,22 +1,22 @@
 // Performance Statistics Storage using localforage
-const PerformanceStorage = (function() {
+const PerformanceStorage = (function () {
     const store = localforage.createInstance({
         name: 'ComfyUISUI_Performance',
-        storeName: 'performanceStats'
+        storeName: 'performanceStats',
     });
 
     const historyStore = localforage.createInstance({
         name: 'ComfyUISUI_Performance',
-        storeName: 'generationHistory'
+        storeName: 'generationHistory',
     });
 
     const timeStore = localforage.createInstance({
         name: 'ComfyUISUI_Performance',
-        storeName: 'timeBasedStats'
+        storeName: 'timeBasedStats',
     });
 
     // Mode types matching the generation modes
-    const MODES = ['T2I', 'T2I_Loop', 'I2I', 'I2I_Loop', 'I2I_Angle', 'Upscale', 'T2A'];
+    const MODES = ['T2I', 'T2I_Loop', 'I2I', 'I2I_Loop', 'I2I_Angle', 'Upscale', 'Rembg', 'T2A'];
     const MAX_HISTORY_PER_MODE = 100;
     const MAX_DAILY_RECORDS = 90; // Keep 90 days of data
 
@@ -28,7 +28,7 @@ const PerformanceStorage = (function() {
             avg: 0,
             min: null,
             max: null,
-            lastUpdated: null
+            lastUpdated: null,
         };
     }
 
@@ -85,11 +85,11 @@ const PerformanceStorage = (function() {
     // Add to history (for graph)
     async function addToHistory(mode, timeMs) {
         try {
-            let history = await historyStore.getItem(`history_${mode}`) || [];
+            let history = (await historyStore.getItem(`history_${mode}`)) || [];
 
             history.push({
                 time: timeMs,
-                timestamp: Date.now()
+                timestamp: Date.now(),
             });
 
             // Keep only last MAX_HISTORY_PER_MODE entries for performance
@@ -112,7 +112,7 @@ const PerformanceStorage = (function() {
             const hour = date.getHours();
             const dayOfWeek = date.getDay(); // 0 = Sunday
 
-            let hourlyData = await timeStore.getItem('hourlyStats') || {};
+            const hourlyData = (await timeStore.getItem('hourlyStats')) || {};
 
             // Initialize if needed
             if (!hourlyData[dayOfWeek]) {
@@ -135,7 +135,7 @@ const PerformanceStorage = (function() {
     // Get hourly statistics for heatmap
     async function getHourlyStats() {
         try {
-            return await timeStore.getItem('hourlyStats') || {};
+            return (await timeStore.getItem('hourlyStats')) || {};
         } catch (error) {
             console.error('Error getting hourly stats:', error);
             return {};
@@ -148,7 +148,7 @@ const PerformanceStorage = (function() {
             const date = new Date(timestamp);
             const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-            let dailyData = await timeStore.getItem('dailyStats') || {};
+            const dailyData = (await timeStore.getItem('dailyStats')) || {};
 
             if (!dailyData[dateKey]) {
                 dailyData[dateKey] = 0;
@@ -159,7 +159,7 @@ const PerformanceStorage = (function() {
             const keys = Object.keys(dailyData).sort();
             if (keys.length > MAX_DAILY_RECORDS) {
                 const toRemove = keys.slice(0, keys.length - MAX_DAILY_RECORDS);
-                toRemove.forEach(key => delete dailyData[key]);
+                toRemove.forEach((key) => delete dailyData[key]);
             }
 
             await timeStore.setItem('dailyStats', dailyData);
@@ -173,7 +173,7 @@ const PerformanceStorage = (function() {
     // Get daily statistics for trend graph
     async function getDailyStats() {
         try {
-            return await timeStore.getItem('dailyStats') || {};
+            return (await timeStore.getItem('dailyStats')) || {};
         } catch (error) {
             console.error('Error getting daily stats:', error);
             return {};
@@ -232,7 +232,7 @@ const PerformanceStorage = (function() {
     // Get history for a specific mode
     async function getHistory(mode) {
         try {
-            return await historyStore.getItem(`history_${mode}`) || [];
+            return (await historyStore.getItem(`history_${mode}`)) || [];
         } catch (error) {
             console.error('Error getting history:', error);
             return [];
@@ -288,7 +288,7 @@ const PerformanceStorage = (function() {
                 launchInfo = {
                     count: 0,
                     firstLaunchDate: now,
-                    lastLaunchDate: now
+                    lastLaunchDate: now,
                 };
             }
 
@@ -307,17 +307,19 @@ const PerformanceStorage = (function() {
     async function getLaunchInfo() {
         try {
             const launchInfo = await store.getItem('launchInfo');
-            return launchInfo || {
-                count: 0,
-                firstLaunchDate: null,
-                lastLaunchDate: null
-            };
+            return (
+                launchInfo || {
+                    count: 0,
+                    firstLaunchDate: null,
+                    lastLaunchDate: null,
+                }
+            );
         } catch (error) {
             console.error('Error getting launch info:', error);
             return {
                 count: 0,
                 firstLaunchDate: null,
-                lastLaunchDate: null
+                lastLaunchDate: null,
             };
         }
     }
@@ -347,7 +349,7 @@ const PerformanceStorage = (function() {
             totalTime,
             globalAvg: totalCount > 0 ? Math.round(totalTime / totalCount) : 0,
             globalMin,
-            globalMax
+            globalMax,
         };
     }
 
@@ -366,6 +368,6 @@ const PerformanceStorage = (function() {
         clearAllStats,
         getSummary,
         recordLaunch,
-        getLaunchInfo
+        getLaunchInfo,
     };
 })();

@@ -184,6 +184,34 @@ UIの生成モードとワークフロータイプの対応:
 | I2I | I2I | 画像を入力として生成 |
 | I2I Loop | I2I | 画像×プロンプトリストで連続生成 |
 | **I2I Angle** | **I2I** | `%AnglePrompt%`を使用するI2Iワークフローが必要 |
+| Upscaleループ | Upscaler | 複数画像を連続アップスケール |
+| 背景除去ループ | REMBG | 複数画像を連続で背景除去 |
+
+### 背景除去（REMBG）モデルの使い分け
+
+デフォルトで複数のREMBGワークフローを同梱しています。モデルごとに得意分野が異なるため、
+サイドバーの「ComfyUI Workflows」で有効化するワークフローを切り替えて使い分けます。
+（REMBGタイプは常に1つだけが有効になります）
+
+| ワークフロー | モデル | 得意分野 |
+|-------------|--------|---------|
+| `inspyrenet.json` | InspyrenetRembg | 汎用・高速。デフォルトで有効 |
+| `rembg_RMBG-2.0.json` | RMBG-2.0 | 汎用で総合精度が最も高い。実写系に強い |
+| `rembg_BEN2.json` | BEN2 | 速度と精度のバランスが良い。髪などの複雑な境界に強い |
+| `rembg_BiRefNet-toonout.json` | BiRefNet_toonout | **アニメ/イラスト特化**。ToonOutでファインチューンされ、アニメ画像のピクセル精度が95.3%→99.5%に向上 |
+| `rembg_BiRefNet-HR.json` | BiRefNet-HR | 高解像度(2048)処理。毛先などの細部に強いが、稀に過剰補正する |
+| `rembg_BiRefNet-portrait.json` | BiRefNet-portrait | 人物ポートレートのマッティングに最適化 |
+| `rembg_BiRefNet-matting.json` | BiRefNet-matting | 半透明・ソフトエッジ（ガラス、ベール、煙など） |
+
+`inspyrenet.json` 以外は [ComfyUI-RMBG](https://github.com/1038lab/ComfyUI-RMBG) カスタムノードを使用します。
+BiRefNet系のモデルは初回実行時にHuggingFaceから自動ダウンロードされます（各約1GB）。
+
+ノード構成はいずれも `LoadImage` → 背景除去ノード → `SaveImage` の3ノードで、
+出力はアルファチャンネル付きPNG（RGBA）です。
+
+背景除去ノードにも `image` という入力名がありますが、値がリンク配列（`["1", 0]`）のため
+入力名マッチングでは置換されません（型が一致する場合のみ置換される仕様）。
+入力画像名で置換されるのは `LoadImage` の `image`（文字列）だけです。
 
 ### I2I Angleモードについて
 

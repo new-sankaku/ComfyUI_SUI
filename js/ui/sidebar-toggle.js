@@ -1,5 +1,5 @@
 // Sidebar Toggle functionality
-(function() {
+(function () {
     const STORAGE_KEY = 'sidebar-collapsed';
 
     function setupSidebarToggle() {
@@ -31,7 +31,7 @@
 
     function updateTooltips(sidebar) {
         const buttons = sidebar.querySelectorAll('.menu-button');
-        buttons.forEach(btn => {
+        buttons.forEach((btn) => {
             const label = btn.querySelector('.menu-label');
             if (label) {
                 btn.setAttribute('data-tooltip', label.textContent);
@@ -41,9 +41,7 @@
 
     function updateToggleTitle(btn, isCollapsed) {
         if (typeof I18nManager !== 'undefined') {
-            btn.title = isCollapsed
-                ? I18nManager.t('sidebar.expand')
-                : I18nManager.t('sidebar.collapse');
+            btn.title = isCollapsed ? I18nManager.t('sidebar.expand') : I18nManager.t('sidebar.collapse');
         }
     }
 

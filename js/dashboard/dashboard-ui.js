@@ -1,5 +1,5 @@
 // Dashboard UI Component
-const DashboardUI = (function() {
+const DashboardUI = (function () {
     let isInitialized = false;
     let generationTimeChart = null;
     let trendChart = null;
@@ -9,46 +9,50 @@ const DashboardUI = (function() {
 
     // Mode display names (will use i18n)
     const MODE_LABELS = {
-        'T2I': 'T2I',
-        'T2I_Loop': 'T2I Loop',
-        'I2I': 'I2I',
-        'I2I_Loop': 'I2I Loop',
-        'I2I_Angle': 'I2I Angle',
-        'Upscale': 'Upscale',
-        'T2A': 'T2A'
+        T2I: 'T2I',
+        T2I_Loop: 'T2I Loop',
+        I2I: 'I2I',
+        I2I_Loop: 'I2I Loop',
+        I2I_Angle: 'I2I Angle',
+        Upscale: 'Upscale',
+        Rembg: 'Rembg',
+        T2A: 'T2A',
     };
 
     // Colors for each mode (dark theme)
     const MODE_COLORS_DARK = {
-        'T2I': '#00bcd4',
-        'T2I_Loop': '#4caf50',
-        'I2I': '#ff9800',
-        'I2I_Loop': '#e91e63',
-        'I2I_Angle': '#9c27b0',
-        'Upscale': '#607d8b',
-        'T2A': '#ff5722'
+        T2I: '#00bcd4',
+        T2I_Loop: '#4caf50',
+        I2I: '#ff9800',
+        I2I_Loop: '#e91e63',
+        I2I_Angle: '#9c27b0',
+        Upscale: '#607d8b',
+        Rembg: '#8bc34a',
+        T2A: '#ff5722',
     };
 
     // Colors for each mode (beige theme)
     const MODE_COLORS_BEIGE = {
-        'T2I': '#57534A',
-        'T2I_Loop': '#7AAA7A',
-        'I2I': '#C4956C',
-        'I2I_Loop': '#B85C5C',
-        'I2I_Angle': '#8B7355',
-        'Upscale': '#7A756A',
-        'T2A': '#C47A5C'
+        T2I: '#57534A',
+        T2I_Loop: '#7AAA7A',
+        I2I: '#C4956C',
+        I2I_Loop: '#B85C5C',
+        I2I_Angle: '#8B7355',
+        Upscale: '#7A756A',
+        Rembg: '#8A9A6B',
+        T2A: '#C47A5C',
     };
 
     // Colors for each mode (light theme)
     const MODE_COLORS_LIGHT = {
-        'T2I': '#0097a7',
-        'T2I_Loop': '#388e3c',
-        'I2I': '#f57c00',
-        'I2I_Loop': '#c2185b',
-        'I2I_Angle': '#7b1fa2',
-        'Upscale': '#455a64',
-        'T2A': '#e64a19'
+        T2I: '#0097a7',
+        T2I_Loop: '#388e3c',
+        I2I: '#f57c00',
+        I2I_Loop: '#c2185b',
+        I2I_Angle: '#7b1fa2',
+        Upscale: '#455a64',
+        Rembg: '#689f38',
+        T2A: '#e64a19',
     };
 
     // Get current theme colors
@@ -62,7 +66,7 @@ const DashboardUI = (function() {
                 bgColor: '#E8E4D4',
                 bgSecondary: '#DAD5C3',
                 accentColor: '#8B7355',
-                barColor: '#A8A391'
+                barColor: '#A8A391',
             };
         } else if (theme === 'light') {
             return {
@@ -72,7 +76,7 @@ const DashboardUI = (function() {
                 bgColor: '#ffffff',
                 bgSecondary: '#f5f5f5',
                 accentColor: '#0097a7',
-                barColor: '#0097a7'
+                barColor: '#0097a7',
             };
         }
         return {
@@ -82,7 +86,7 @@ const DashboardUI = (function() {
             bgColor: '#1a1a1a',
             bgSecondary: '#2a2a2a',
             accentColor: '#00bcd4',
-            barColor: '#00bcd4'
+            barColor: '#00bcd4',
         };
     }
 
@@ -93,9 +97,27 @@ const DashboardUI = (function() {
     const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     // Wordcloud colors per theme
-    const WORDCLOUD_COLORS_DARK = ['#00bcd4', '#4caf50', '#ff9800', '#e91e63', '#9c27b0', '#607d8b', '#03a9f4', '#8bc34a'];
+    const WORDCLOUD_COLORS_DARK = [
+        '#00bcd4',
+        '#4caf50',
+        '#ff9800',
+        '#e91e63',
+        '#9c27b0',
+        '#607d8b',
+        '#03a9f4',
+        '#8bc34a',
+    ];
     const WORDCLOUD_COLORS_BEIGE = ['#EBE7CF', '#777870', '#8B6F5F', '#6B5D54'];
-    const WORDCLOUD_COLORS_LIGHT = ['#0097a7', '#388e3c', '#f57c00', '#c2185b', '#7b1fa2', '#455a64', '#0288d1', '#689f38'];
+    const WORDCLOUD_COLORS_LIGHT = [
+        '#0097a7',
+        '#388e3c',
+        '#f57c00',
+        '#c2185b',
+        '#7b1fa2',
+        '#455a64',
+        '#0288d1',
+        '#689f38',
+    ];
 
     // Get wordcloud colors based on theme
     function getWordcloudColors() {
@@ -192,7 +214,7 @@ const DashboardUI = (function() {
             refreshHeatmap(),
             refreshTrendChart(),
             refreshTopTags(),
-            refreshWordcloud()
+            refreshWordcloud(),
         ]);
     }
 
@@ -254,35 +276,37 @@ const DashboardUI = (function() {
         }
 
         const labels = history.map((_, i) => i + 1);
-        const data = history.map(h => h.time);
+        const data = history.map((h) => h.time);
 
         generationTimeChart = new Chart(canvas, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: I18nManager.t('dashboard.generationTime') || 'Generation Time (ms)',
-                    data: data,
-                    borderColor: color,
-                    backgroundColor: color + '20',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 3,
-                    pointHoverRadius: 5
-                }]
+                datasets: [
+                    {
+                        label: I18nManager.t('dashboard.generationTime') || 'Generation Time (ms)',
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '20',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    },
+                ],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: false,
                     },
                     tooltip: {
                         callbacks: {
-                            label: (context) => `${context.parsed.y} ms`
-                        }
-                    }
+                            label: (context) => `${context.parsed.y} ms`,
+                        },
+                    },
                 },
                 scales: {
                     x: {
@@ -290,31 +314,31 @@ const DashboardUI = (function() {
                         title: {
                             display: true,
                             text: I18nManager.t('dashboard.recentGenerations') || 'Recent Generations',
-                            color: themeColors.textColor
+                            color: themeColors.textColor,
                         },
                         grid: {
-                            color: themeColors.gridColor
+                            color: themeColors.gridColor,
                         },
                         ticks: {
-                            color: themeColors.textColor
-                        }
+                            color: themeColors.textColor,
+                        },
                     },
                     y: {
                         display: true,
                         title: {
                             display: true,
                             text: 'ms',
-                            color: themeColors.textColor
+                            color: themeColors.textColor,
                         },
                         grid: {
-                            color: themeColors.gridColor
+                            color: themeColors.gridColor,
                         },
                         ticks: {
-                            color: themeColors.textColor
-                        }
-                    }
-                }
-            }
+                            color: themeColors.textColor,
+                        },
+                    },
+                },
+            },
         });
     }
 
@@ -431,33 +455,35 @@ const DashboardUI = (function() {
             type: 'bar',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: chartLabel,
-                    data: data,
-                    backgroundColor: themeColors.barColor + '80',
-                    borderColor: themeColors.barColor,
-                    borderWidth: 1
-                }]
+                datasets: [
+                    {
+                        label: chartLabel,
+                        data: data,
+                        backgroundColor: themeColors.barColor + '80',
+                        borderColor: themeColors.barColor,
+                        borderWidth: 1,
+                    },
+                ],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
-                    }
+                        display: false,
+                    },
                 },
                 scales: {
                     x: {
                         display: true,
                         grid: {
-                            color: themeColors.gridColor
+                            color: themeColors.gridColor,
                         },
                         ticks: {
                             color: themeColors.textColor,
                             maxRotation: 45,
-                            minRotation: 45
-                        }
+                            minRotation: 45,
+                        },
                     },
                     y: {
                         display: true,
@@ -465,18 +491,18 @@ const DashboardUI = (function() {
                         title: {
                             display: true,
                             text: I18nManager.t('dashboard.count') || 'Count',
-                            color: themeColors.textColor
+                            color: themeColors.textColor,
                         },
                         grid: {
-                            color: themeColors.gridColor
+                            color: themeColors.gridColor,
                         },
                         ticks: {
                             color: themeColors.textColor,
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
+                            stepSize: 1,
+                        },
+                    },
+                },
+            },
         });
     }
 
@@ -540,7 +566,7 @@ const DashboardUI = (function() {
         // Set canvas size with HiDPI support
         const dpr = window.devicePixelRatio || 1;
         const container = canvas.parentElement;
-        const cssWidth = container ? (container.getBoundingClientRect().width - 16) : canvas.width;
+        const cssWidth = container ? container.getBoundingClientRect().width - 16 : canvas.width;
         const cssHeight = 300;
         canvas.width = cssWidth * dpr;
         canvas.height = cssHeight * dpr;
@@ -566,7 +592,7 @@ const DashboardUI = (function() {
 
         // Prepare word list for wordcloud2.js: [[word, size], ...]
         const wordList = topTags.map(({ tag, count }) => {
-            const size = minSize + ((count / maxCount) * (maxSize - minSize));
+            const size = minSize + (count / maxCount) * (maxSize - minSize);
             return [tag, size];
         });
 
@@ -581,14 +607,14 @@ const DashboardUI = (function() {
             gridSize: Math.round(8 * dpr),
             weightFactor: 1,
             fontFamily: 'sans-serif',
-            color: function() {
+            color: function () {
                 return wordcloudColors[Math.floor(Math.random() * wordcloudColors.length)];
             },
             backgroundColor: bgColor,
             rotateRatio: 0.3,
             rotationSteps: 2,
             shuffle: true,
-            drawOutOfBound: false
+            drawOutOfBound: false,
         });
     }
 
@@ -639,6 +665,6 @@ const DashboardUI = (function() {
         refresh,
         recordGeneration,
         MODE_LABELS,
-        MODE_COLORS
+        MODE_COLORS,
     };
 })();

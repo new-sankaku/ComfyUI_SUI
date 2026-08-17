@@ -1,5 +1,5 @@
 // Theme Manager - handles dark/light/beige mode switching
-const ThemeManager = (function() {
+const ThemeManager = (function () {
     const STORAGE_KEY = 'comfyui-sui-theme';
     const THEMES = ['beige', 'dark', 'light'];
     const DEFAULT_THEME = 'beige';
@@ -12,7 +12,7 @@ const ThemeManager = (function() {
         if (!store) {
             store = localforage.createInstance({
                 name: 'ComfyUISUI_Settings',
-                storeName: 'themeSettings'
+                storeName: 'themeSettings',
             });
         }
         return store;
@@ -46,7 +46,7 @@ const ThemeManager = (function() {
         document.documentElement.setAttribute('data-theme', theme);
 
         // Update theme option buttons
-        document.querySelectorAll('.theme-option').forEach(btn => {
+        document.querySelectorAll('.theme-option').forEach((btn) => {
             btn.classList.toggle('active', btn.dataset.theme === theme);
         });
     }
@@ -106,14 +106,14 @@ const ThemeManager = (function() {
         }
 
         // Theme buttons
-        document.querySelectorAll('.theme-option').forEach(btn => {
+        document.querySelectorAll('.theme-option').forEach((btn) => {
             btn.addEventListener('click', () => {
                 setTheme(btn.dataset.theme);
             });
         });
 
         // Language buttons in modal
-        document.querySelectorAll('.lang-option').forEach(btn => {
+        document.querySelectorAll('.lang-option').forEach((btn) => {
             btn.addEventListener('click', () => {
                 const lang = btn.dataset.lang;
                 setLanguage(lang);
@@ -132,7 +132,7 @@ const ThemeManager = (function() {
             });
 
             // Handle language option selection
-            sidebarLangDropdown.querySelectorAll('.language-option').forEach(option => {
+            sidebarLangDropdown.querySelectorAll('.language-option').forEach((option) => {
                 option.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const lang = option.dataset.lang;
@@ -165,7 +165,7 @@ const ThemeManager = (function() {
     const LANGUAGE_CONFIG = {
         ja: { flag: 'jp', name: '日本語' },
         en: { flag: 'us', name: 'English' },
-        zh: { flag: 'cn', name: '中文' }
+        zh: { flag: 'cn', name: '中文' },
     };
 
     // Update language UI elements
@@ -176,7 +176,7 @@ const ThemeManager = (function() {
         const config = LANGUAGE_CONFIG[currentLang] || LANGUAGE_CONFIG.ja;
 
         // Update modal buttons
-        document.querySelectorAll('.lang-option').forEach(btn => {
+        document.querySelectorAll('.lang-option').forEach((btn) => {
             btn.classList.toggle('active', btn.dataset.lang === currentLang);
         });
 
@@ -194,7 +194,7 @@ const ThemeManager = (function() {
             }
 
             // Update selected state in options
-            sidebarLangDropdown.querySelectorAll('.language-option').forEach(option => {
+            sidebarLangDropdown.querySelectorAll('.language-option').forEach((option) => {
                 option.classList.toggle('selected', option.dataset.lang === currentLang);
             });
         }
@@ -205,11 +205,11 @@ const ThemeManager = (function() {
         setTheme,
         getTheme,
         toggleTheme,
-        THEMES
+        THEMES,
     };
 })();
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     ThemeManager.init();
 });

@@ -1,8 +1,8 @@
 // Prompt Tag Frequency Storage using localforage
-const PromptFrequencyStorage = (function() {
+const PromptFrequencyStorage = (function () {
     const store = localforage.createInstance({
         name: 'ComfyUISUI_PromptFrequency',
-        storeName: 'tagFrequency'
+        storeName: 'tagFrequency',
     });
 
     const MAX_TAGS = 500; // Maximum unique tags to store
@@ -14,9 +14,9 @@ const PromptFrequencyStorage = (function() {
         // Split by comma, clean up whitespace, filter empty strings
         const tags = prompt
             .split(',')
-            .map(tag => tag.trim().toLowerCase())
-            .map(tag => tag.replace(/\s{2,}/g, ' ')) // Replace 2+ spaces with single space
-            .filter(tag => tag.length > 0 && tag.length < 100); // Filter empty and very long strings
+            .map((tag) => tag.trim().toLowerCase())
+            .map((tag) => tag.replace(/\s{2,}/g, ' ')) // Replace 2+ spaces with single space
+            .filter((tag) => tag.length > 0 && tag.length < 100); // Filter empty and very long strings
 
         // Remove duplicates within same prompt
         return [...new Set(tags)];
@@ -50,7 +50,7 @@ const PromptFrequencyStorage = (function() {
                     frequencies[tag] = {
                         count: 1,
                         firstUsed: now,
-                        lastUsed: now
+                        lastUsed: now,
                     };
                 }
             }
@@ -93,7 +93,7 @@ const PromptFrequencyStorage = (function() {
             return tagList.slice(0, limit).map(([tag, data]) => ({
                 tag,
                 count: data.count,
-                lastUsed: data.lastUsed
+                lastUsed: data.lastUsed,
             }));
         } catch (error) {
             console.error('Error getting top tags:', error);
@@ -113,7 +113,7 @@ const PromptFrequencyStorage = (function() {
             return tagList.slice(0, limit).map(([tag, data]) => ({
                 tag,
                 count: data.count,
-                lastUsed: data.lastUsed
+                lastUsed: data.lastUsed,
             }));
         } catch (error) {
             console.error('Error getting recent tags:', error);
@@ -131,7 +131,7 @@ const PromptFrequencyStorage = (function() {
                 return {
                     totalUniqueTags: 0,
                     totalUsage: 0,
-                    avgUsagePerTag: 0
+                    avgUsagePerTag: 0,
                 };
             }
 
@@ -140,14 +140,14 @@ const PromptFrequencyStorage = (function() {
             return {
                 totalUniqueTags: tagList.length,
                 totalUsage,
-                avgUsagePerTag: Math.round(totalUsage / tagList.length * 10) / 10
+                avgUsagePerTag: Math.round((totalUsage / tagList.length) * 10) / 10,
             };
         } catch (error) {
             console.error('Error getting stats:', error);
             return {
                 totalUniqueTags: 0,
                 totalUsage: 0,
-                avgUsagePerTag: 0
+                avgUsagePerTag: 0,
             };
         }
     }
@@ -175,7 +175,7 @@ const PromptFrequencyStorage = (function() {
                 .slice(0, limit)
                 .map(([tag, data]) => ({
                     tag,
-                    count: data.count
+                    count: data.count,
                 }));
 
             return matches;
@@ -193,6 +193,6 @@ const PromptFrequencyStorage = (function() {
         getStats,
         clearAll,
         searchTags,
-        parsePrompt
+        parsePrompt,
     };
 })();

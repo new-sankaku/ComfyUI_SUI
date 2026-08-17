@@ -9,8 +9,8 @@ const promptHistoryManager = {
 
     init() {
         this.store = localforage.createInstance({
-            name: "promptHistoryStorage",
-            storeName: "promptHistory",
+            name: 'promptHistoryStorage',
+            storeName: 'promptHistory',
         });
     },
 
@@ -19,7 +19,7 @@ const promptHistoryManager = {
             const history = await this.store.getItem(fieldId);
             return history || [];
         } catch (error) {
-            console.error("Failed to get history:", error);
+            console.error('Failed to get history:', error);
             return [];
         }
     },
@@ -32,7 +32,7 @@ const promptHistoryManager = {
         try {
             let history = await this.getHistory(fieldId);
 
-            const existingIndex = history.findIndex(item => item.text === trimmedText);
+            const existingIndex = history.findIndex((item) => item.text === trimmedText);
             if (existingIndex !== -1) {
                 history[existingIndex].timestamp = Date.now();
                 history[existingIndex].useCount = (history[existingIndex].useCount || 1) + 1;
@@ -45,12 +45,12 @@ const promptHistoryManager = {
                     timestamp: Date.now(),
                     useCount: 1,
                     pinned: false,
-                    name: name || ''
+                    name: name || '',
                 });
             }
 
-            const pinned = history.filter(item => item.pinned);
-            const unpinned = history.filter(item => !item.pinned);
+            const pinned = history.filter((item) => item.pinned);
+            const unpinned = history.filter((item) => !item.pinned);
 
             unpinned.sort((a, b) => b.timestamp - a.timestamp);
 
@@ -63,14 +63,14 @@ const promptHistoryManager = {
             await this.store.setItem(fieldId, history);
             return true;
         } catch (error) {
-            console.error("Failed to save history:", error);
+            console.error('Failed to save history:', error);
             return false;
         }
     },
 
     async updateHistoryItem(fieldId, index, updates) {
         try {
-            let history = await this.getHistory(fieldId);
+            const history = await this.getHistory(fieldId);
             if (index >= 0 && index < history.length) {
                 Object.assign(history[index], updates);
                 history[index].timestamp = Date.now();
@@ -78,35 +78,35 @@ const promptHistoryManager = {
             }
             return history;
         } catch (error) {
-            console.error("Failed to update history item:", error);
+            console.error('Failed to update history item:', error);
             return [];
         }
     },
 
     async deleteHistoryItem(fieldId, index) {
         try {
-            let history = await this.getHistory(fieldId);
+            const history = await this.getHistory(fieldId);
             if (index >= 0 && index < history.length) {
                 history.splice(index, 1);
                 await this.store.setItem(fieldId, history);
             }
             return history;
         } catch (error) {
-            console.error("Failed to delete history item:", error);
+            console.error('Failed to delete history item:', error);
             return [];
         }
     },
 
     async togglePin(fieldId, index) {
         try {
-            let history = await this.getHistory(fieldId);
+            const history = await this.getHistory(fieldId);
             if (index >= 0 && index < history.length) {
                 history[index].pinned = !history[index].pinned;
                 await this.store.setItem(fieldId, history);
             }
             return history;
         } catch (error) {
-            console.error("Failed to toggle pin:", error);
+            console.error('Failed to toggle pin:', error);
             return [];
         }
     },
@@ -115,7 +115,7 @@ const promptHistoryManager = {
         try {
             await this.store.setItem(fieldId, []);
         } catch (error) {
-            console.error("Failed to clear history:", error);
+            console.error('Failed to clear history:', error);
         }
     },
 
@@ -125,8 +125,8 @@ const promptHistoryManager = {
         const trimmedText = text.trim();
 
         try {
-            let history = await this.getHistory(fieldId);
-            const existingIndex = history.findIndex(item => item.text === trimmedText);
+            const history = await this.getHistory(fieldId);
+            const existingIndex = history.findIndex((item) => item.text === trimmedText);
 
             if (existingIndex !== -1) {
                 // Only add image if there's no existing image
@@ -138,7 +138,7 @@ const promptHistoryManager = {
                     history[existingIndex].image = {
                         thumbnail: thumbnail,
                         fullUrl: imageUrl,
-                        timestamp: Date.now()
+                        timestamp: Date.now(),
                     };
                     await this.store.setItem(fieldId, history);
                     return true;
@@ -146,7 +146,7 @@ const promptHistoryManager = {
             }
             return false;
         } catch (error) {
-            console.error("Failed to add image to history:", error);
+            console.error('Failed to add image to history:', error);
             return false;
         }
     },
@@ -157,8 +157,8 @@ const promptHistoryManager = {
         const trimmedText = text.trim();
 
         try {
-            let history = await this.getHistory(fieldId);
-            const existingIndex = history.findIndex(item => item.text === trimmedText);
+            const history = await this.getHistory(fieldId);
+            const existingIndex = history.findIndex((item) => item.text === trimmedText);
 
             if (existingIndex !== -1) {
                 if (history[existingIndex].audio) {
@@ -166,28 +166,28 @@ const promptHistoryManager = {
                 }
                 history[existingIndex].audio = {
                     url: audioUrl,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
                 };
                 await this.store.setItem(fieldId, history);
                 return true;
             }
             return false;
         } catch (error) {
-            console.error("Failed to add audio to history:", error);
+            console.error('Failed to add audio to history:', error);
             return false;
         }
     },
 
     async deleteImageFromHistory(fieldId, index) {
         try {
-            let history = await this.getHistory(fieldId);
+            const history = await this.getHistory(fieldId);
             if (index >= 0 && index < history.length && history[index].image) {
                 delete history[index].image;
                 await this.store.setItem(fieldId, history);
             }
             return history;
         } catch (error) {
-            console.error("Failed to delete image from history:", error);
+            console.error('Failed to delete image from history:', error);
             return [];
         }
     },
@@ -209,7 +209,7 @@ const promptHistoryManager = {
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     resolve(canvas.toDataURL('image/jpeg', this.thumbnailQuality));
                 } catch (e) {
-                    console.error("Failed to create thumbnail:", e);
+                    console.error('Failed to create thumbnail:', e);
                     resolve(null);
                 }
             };
@@ -359,8 +359,8 @@ const promptHistoryManager = {
             return;
         }
 
-        const pinned = history.filter(item => item.pinned);
-        const unpinned = history.filter(item => !item.pinned);
+        const pinned = history.filter((item) => item.pinned);
+        const unpinned = history.filter((item) => !item.pinned);
 
         const allExpanded = history.every((_, i) => this.expandedItems.has(`${fieldId}-${i}`));
         const expandAllText = allExpanded ? I18nManager.t('history.collapseAll') : I18nManager.t('history.expandAll');
@@ -410,13 +410,19 @@ const promptHistoryManager = {
             }
         });
 
-        dropdown.querySelectorAll('.prompt-history-item').forEach(item => {
+        dropdown.querySelectorAll('.prompt-history-item').forEach((item) => {
             const index = parseInt(item.dataset.index);
 
             item.querySelector('.prompt-history-text')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const text = history[index].text;
-                if (typeof promptTagify !== 'undefined' && promptTagify && promptTagify.DOM && promptTagify.DOM.input && textarea.id === 'prompt') {
+                if (
+                    typeof promptTagify !== 'undefined' &&
+                    promptTagify &&
+                    promptTagify.DOM &&
+                    promptTagify.DOM.input &&
+                    textarea.id === 'prompt'
+                ) {
                     const tagifyText = text.replace(/(__\S+?__)/g, '[[$1]]');
                     textarea.value = tagifyText;
                     promptTagify.loadOriginalValues();
@@ -485,7 +491,9 @@ const promptHistoryManager = {
 
         modal.querySelector('.prompt-history-modal-close').addEventListener('click', () => modal.remove());
         modal.querySelector('.prompt-history-modal-cancel').addEventListener('click', () => modal.remove());
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
 
         modal.querySelector('.prompt-history-modal-save').addEventListener('click', async () => {
             const newName = document.getElementById('historyEditName').value.trim();
@@ -534,13 +542,13 @@ const promptHistoryManager = {
             'i2iloopNegativePrompts',
             'i2ianglePrompts',
             't2aTags',
-            't2aLyrics'
+            't2aLyrics',
         ];
 
-        targetFields.forEach(fieldId => {
+        targetFields.forEach((fieldId) => {
             this.setupHistoryButton(fieldId);
         });
-    }
+    },
 };
 
 promptHistoryManager.init();

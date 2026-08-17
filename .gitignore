@@ -1,1 +1,3 @@
 .claude/tool-history.jsonl
+node_modules/
+coverage/

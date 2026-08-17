@@ -1,157 +1,153 @@
 class ComfyUIWorkflowBuilder {
-constructor(workflow) {
-this.originalWorkflow=workflow;
-this.hasInitialized=false;
-this.workflowCopy=null;
-}
+    constructor(workflow) {
+        this.originalWorkflow = workflow;
+        this.hasInitialized = false;
+        this.workflowCopy = null;
+    }
 
-initialize() {
-if (!this.hasInitialized) {
-this.workflowCopy=JSON.parse(JSON.stringify(this.originalWorkflow));
-this.hasInitialized=true;
-}
-}
+    initialize() {
+        if (!this.hasInitialized) {
+            this.workflowCopy = JSON.parse(JSON.stringify(this.originalWorkflow));
+            this.hasInitialized = true;
+        }
+    }
 
-updateNodesByType(targetClassType,inputs,metaTitle=null) {
-this.initialize();
+    updateNodesByType(targetClassType, inputs, metaTitle = null) {
+        this.initialize();
 
-const validInputs={};
-Object.entries(inputs).forEach(([key,value])=>{
-if (value!==null&&value!==undefined&&value!=="") {
-validInputs[key]=value;
-}
-});
+        const validInputs = {};
+        Object.entries(inputs).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                validInputs[key] = value;
+            }
+        });
 
-if (Object.keys(validInputs).length>0) {
-Object.entries(this.workflowCopy).forEach(([id,node])=>{
-const classTypeMatch=node.class_type===targetClassType;
-const metaMatch=!metaTitle||(
-node._meta&&node._meta.title===metaTitle
-);
+        if (Object.keys(validInputs).length > 0) {
+            Object.entries(this.workflowCopy).forEach(([id, node]) => {
+                const classTypeMatch = node.class_type === targetClassType;
+                const metaMatch = !metaTitle || (node._meta && node._meta.title === metaTitle);
 
-if (classTypeMatch&&metaMatch) {
-node.inputs={
-...node.inputs,
-...validInputs
-};
-}
-});
-}
+                if (classTypeMatch && metaMatch) {
+                    node.inputs = {
+                        ...node.inputs,
+                        ...validInputs,
+                    };
+                }
+            });
+        }
 
-return this;
-}
+        return this;
+    }
 
-updateNodesByInputName(inputs) {
-this.initialize();
+    updateNodesByInputName(inputs) {
+        this.initialize();
 
-const validInputs={};
-Object.entries(inputs).forEach(([key,value])=>{
-if (value!==null&&value!==undefined&&value!=="") {
-validInputs[key]=value;
-}
-});
-workflowLogger.trace("validInputs, " ,validInputs);
+        const validInputs = {};
+        Object.entries(inputs).forEach(([key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                validInputs[key] = value;
+            }
+        });
+        workflowLogger.trace('validInputs, ', validInputs);
 
-if (Object.keys(validInputs).length>0) {
-Object.entries(this.workflowCopy).forEach(([id,node])=>{
-if (node.inputs) {
-Object.keys(node.inputs).forEach(inputKey=>{
-if (validInputs.hasOwnProperty(inputKey)) {
-const originalValue=typeof node.inputs[inputKey];
-const newValue=typeof validInputs[inputKey];
+        if (Object.keys(validInputs).length > 0) {
+            Object.entries(this.workflowCopy).forEach(([id, node]) => {
+                if (node.inputs) {
+                    Object.keys(node.inputs).forEach((inputKey) => {
+                        if (validInputs.hasOwnProperty(inputKey)) {
+                            const originalValue = typeof node.inputs[inputKey];
+                            const newValue = typeof validInputs[inputKey];
 
-if (originalValue===newValue){
-workflowLogger.trace("validInputs, replase1 " ,originalValue,newValue);
-node.inputs[inputKey]=validInputs[inputKey];
+                            if (originalValue === newValue) {
+                                workflowLogger.trace('validInputs, replase1 ', originalValue, newValue);
+                                node.inputs[inputKey] = validInputs[inputKey];
+                            } else if (isNumericType(node.inputs[inputKey]) && isNumericType(validInputs[inputKey])) {
+                                workflowLogger.trace('validInputs, replase2 ', originalValue, newValue);
+                                node.inputs[inputKey] = validInputs[inputKey];
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
-}else if ((isNumericType(node.inputs[inputKey])&&isNumericType(validInputs[inputKey]))){
-workflowLogger.trace("validInputs, replase2 " ,originalValue,newValue);
-node.inputs[inputKey]=validInputs[inputKey];
+        return this;
+    }
 
-}
-}
-});
-}
-});
-}
+    updateValueByTargetValue(targetValue, replaceValue) {
+        this.initialize();
 
-return this;
-}
+        const replaceValueInObject = (obj) => {
+            for (const key in obj) {
+                if (obj[key] === null || obj[key] === undefined) continue;
 
-updateValueByTargetValue(targetValue,replaceValue) {
-this.initialize();
+                if (typeof obj[key] === 'object') {
+                    replaceValueInObject(obj[key]);
+                } else if (typeof obj[key] === 'string') {
+                    if (obj[key].includes(targetValue)) {
+                        obj[key] = obj[key].replaceAll(targetValue, replaceValue);
+                    }
+                }
+            }
+        };
 
-const replaceValueInObject=(obj)=>{
-for (let key in obj) {
-if (obj[key]===null||obj[key]===undefined) continue;
+        Object.entries(this.workflowCopy).forEach(([id, node]) => {
+            replaceValueInObject(node);
+        });
 
-if (typeof obj[key]==='object') {
-replaceValueInObject(obj[key]);
-} else if (typeof obj[key]==='string') {
-if (obj[key].includes(targetValue)) {
-obj[key]=obj[key].replaceAll(targetValue,replaceValue);
-}
-}
-}
-};
+        return this;
+    }
 
-Object.entries(this.workflowCopy).forEach(([id,node])=>{
-replaceValueInObject(node);
-});
+    replaceDatePlaceholders() {
+        this.initialize();
 
-return this;
-}
+        const formatDate = (format) => {
+            const now = new Date();
+            const pad2 = (n) => String(n).padStart(2, '0');
+            const pad3 = (n) => String(n).padStart(3, '0');
+            return format
+                .replace(/yyyy/g, now.getFullYear())
+                .replace(/yy/g, String(now.getFullYear()).slice(-2))
+                .replace(/MM/g, pad2(now.getMonth() + 1))
+                .replace(/dd/g, pad2(now.getDate()))
+                .replace(/HH/g, pad2(now.getHours()))
+                .replace(/mm/g, pad2(now.getMinutes()))
+                .replace(/ss/g, pad2(now.getSeconds()))
+                .replace(/SSS/g, pad3(now.getMilliseconds()));
+        };
 
-replaceDatePlaceholders() {
-this.initialize();
+        const replaceDateInObject = (obj) => {
+            for (const key in obj) {
+                if (obj[key] === null || obj[key] === undefined) continue;
+                if (typeof obj[key] === 'object') {
+                    replaceDateInObject(obj[key]);
+                } else if (typeof obj[key] === 'string') {
+                    obj[key] = obj[key].replace(/%date:([^%]+)%/g, (match, fmt) => formatDate(fmt));
+                }
+            }
+        };
 
-const formatDate=(format)=>{
-const now=new Date();
-const pad2=(n)=>String(n).padStart(2,'0');
-const pad3=(n)=>String(n).padStart(3,'0');
-return format
-.replace(/yyyy/g,now.getFullYear())
-.replace(/yy/g,String(now.getFullYear()).slice(-2))
-.replace(/MM/g,pad2(now.getMonth()+1))
-.replace(/dd/g,pad2(now.getDate()))
-.replace(/HH/g,pad2(now.getHours()))
-.replace(/mm/g,pad2(now.getMinutes()))
-.replace(/ss/g,pad2(now.getSeconds()))
-.replace(/SSS/g,pad3(now.getMilliseconds()));
-};
+        Object.entries(this.workflowCopy).forEach(([id, node]) => {
+            replaceDateInObject(node);
+        });
 
-const replaceDateInObject=(obj)=>{
-for (let key in obj) {
-if (obj[key]===null||obj[key]===undefined) continue;
-if (typeof obj[key]==='object') {
-replaceDateInObject(obj[key]);
-} else if (typeof obj[key]==='string') {
-obj[key]=obj[key].replace(/%date:([^%]+)%/g,(match,fmt)=>formatDate(fmt));
-}
-}
-};
+        return this;
+    }
 
-Object.entries(this.workflowCopy).forEach(([id,node])=>{
-replaceDateInObject(node);
-});
-
-return this;
-}
-
-build() {
-if (!this.hasInitialized) {
-return this.originalWorkflow;
-}
-return this.workflowCopy;
-}
+    build() {
+        if (!this.hasInitialized) {
+            return this.originalWorkflow;
+        }
+        return this.workflowCopy;
+    }
 }
 
 function isNumericType(value) {
-if (typeof value==='number') return true;
-if (typeof value==='string'&&!isNaN(value)&&value.trim()!=='') return true;
-return false;
+    if (typeof value === 'number') return true;
+    if (typeof value === 'string' && !isNaN(value) && value.trim() !== '') return true;
+    return false;
 }
 
 function createWorkflowBuilder(workflow) {
-return new ComfyUIWorkflowBuilder(workflow);
+    return new ComfyUIWorkflowBuilder(workflow);
 }

@@ -1,5 +1,5 @@
 // Error Guide Dialog - Provides detailed guidance for common errors
-const ErrorGuideDialog = (function() {
+const ErrorGuideDialog = (function () {
     let dialogElement = null;
 
     // Error types with their guides
@@ -8,7 +8,7 @@ const ErrorGuideDialog = (function() {
         WORKFLOW_NOT_FOUND: 'workflowNotFound',
         WORKFLOW_NODE_MISSING: 'workflowNodeMissing',
         NETWORK_ERROR: 'networkError',
-        GENERATION_ERROR: 'generationError'
+        GENERATION_ERROR: 'generationError',
     };
 
     function init() {
@@ -48,14 +48,14 @@ const ErrorGuideDialog = (function() {
         document.body.appendChild(dialogElement);
 
         // Close on overlay click
-        dialogElement.addEventListener('click', function(e) {
+        dialogElement.addEventListener('click', function (e) {
             if (e.target === dialogElement) {
                 close();
             }
         });
 
         // Close on escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && dialogElement.classList.contains('active')) {
                 close();
             }
@@ -96,25 +96,28 @@ const ErrorGuideDialog = (function() {
                     I18nManager.t('errorGuide.comfyuiOfflineStep1'),
                     I18nManager.t('errorGuide.comfyuiOfflineStep2'),
                     I18nManager.t('errorGuide.comfyuiOfflineStep3'),
-                    I18nManager.t('errorGuide.comfyuiOfflineStep4')
+                    I18nManager.t('errorGuide.comfyuiOfflineStep4'),
                 ]);
                 break;
 
             case ERROR_TYPES.WORKFLOW_NOT_FOUND:
                 const workflowType = options.workflowType || 'T2I';
                 title.textContent = I18nManager.t('errorGuide.workflowNotFoundTitle');
-                message.textContent = I18nManager.t('errorGuide.workflowNotFoundMessage').replace('{type}', workflowType);
+                message.textContent = I18nManager.t('errorGuide.workflowNotFoundMessage').replace(
+                    '{type}',
+                    workflowType
+                );
                 cause.textContent = I18nManager.t('errorGuide.workflowNotFoundCause');
                 addSteps(steps, [
                     I18nManager.t('errorGuide.workflowNotFoundStep1'),
                     I18nManager.t('errorGuide.workflowNotFoundStep2').replace('{type}', workflowType),
                     I18nManager.t('errorGuide.workflowNotFoundStep3'),
-                    I18nManager.t('errorGuide.workflowNotFoundStep4')
+                    I18nManager.t('errorGuide.workflowNotFoundStep4'),
                 ]);
                 // Show action button to open workflows
                 actionBtn.textContent = I18nManager.t('errorGuide.openWorkflows');
                 actionBtn.style.display = 'inline-flex';
-                actionBtn.onclick = function() {
+                actionBtn.onclick = function () {
                     close();
                     openWorkflowEditor();
                 };
@@ -129,7 +132,7 @@ const ErrorGuideDialog = (function() {
                     I18nManager.t('errorGuide.workflowNodeMissingStep1'),
                     I18nManager.t('errorGuide.workflowNodeMissingStep2'),
                     I18nManager.t('errorGuide.workflowNodeMissingStep3'),
-                    I18nManager.t('errorGuide.workflowNodeMissingStep4')
+                    I18nManager.t('errorGuide.workflowNodeMissingStep4'),
                 ]);
                 if (missingNodes.length > 0) {
                     detail.textContent = I18nManager.t('errorGuide.missingNodesList') + '\n' + missingNodes.join('\n');
@@ -145,7 +148,7 @@ const ErrorGuideDialog = (function() {
                     I18nManager.t('errorGuide.networkErrorStep1'),
                     I18nManager.t('errorGuide.networkErrorStep2'),
                     I18nManager.t('errorGuide.networkErrorStep3'),
-                    I18nManager.t('errorGuide.networkErrorStep4')
+                    I18nManager.t('errorGuide.networkErrorStep4'),
                 ]);
                 break;
 
@@ -157,12 +160,12 @@ const ErrorGuideDialog = (function() {
                     I18nManager.t('errorGuide.generationErrorStep1'),
                     I18nManager.t('errorGuide.generationErrorStep2'),
                     I18nManager.t('errorGuide.generationErrorStep3'),
-                    I18nManager.t('errorGuide.generationErrorStep4')
+                    I18nManager.t('errorGuide.generationErrorStep4'),
                 ]);
                 // Show action button to open workflows for testing
                 actionBtn.textContent = I18nManager.t('errorGuide.openWorkflows');
                 actionBtn.style.display = 'inline-flex';
-                actionBtn.onclick = function() {
+                actionBtn.onclick = function () {
                     close();
                     openWorkflowEditor();
                 };
@@ -178,7 +181,7 @@ const ErrorGuideDialog = (function() {
                 cause.textContent = I18nManager.t('errorGuide.unknownErrorCause');
                 addSteps(steps, [
                     I18nManager.t('errorGuide.unknownErrorStep1'),
-                    I18nManager.t('errorGuide.unknownErrorStep2')
+                    I18nManager.t('errorGuide.unknownErrorStep2'),
                 ]);
         }
 
@@ -186,7 +189,7 @@ const ErrorGuideDialog = (function() {
     }
 
     function addSteps(container, stepTexts) {
-        stepTexts.forEach(function(text) {
+        stepTexts.forEach(function (text) {
             const li = document.createElement('li');
             li.textContent = text;
             container.appendChild(li);
@@ -201,9 +204,10 @@ const ErrorGuideDialog = (function() {
 
     function openWorkflowEditor() {
         // Try to open workflow editor if available
-        const workflowBtn = document.querySelector('[onclick*="openWorkflowEditor"]') ||
-                           document.querySelector('.workflow-editor-trigger') ||
-                           $('btnOpenWorkflowEditor');
+        const workflowBtn =
+            document.querySelector('[onclick*="openWorkflowEditor"]') ||
+            document.querySelector('.workflow-editor-trigger') ||
+            $('btnOpenWorkflowEditor');
         if (workflowBtn) {
             workflowBtn.click();
         } else if (typeof window.openComfyUIWorkflowEditor === 'function') {
@@ -245,10 +249,12 @@ const ErrorGuideDialog = (function() {
 
         // Check error message for network issues
         const errorMsg = error?.message || error || '';
-        if (errorMsg.includes('NetworkError') ||
+        if (
+            errorMsg.includes('NetworkError') ||
             errorMsg.includes('Failed to fetch') ||
             errorMsg.includes('network') ||
-            errorMsg.includes('CORS')) {
+            errorMsg.includes('CORS')
+        ) {
             show(ERROR_TYPES.NETWORK_ERROR);
             return;
         }
@@ -256,7 +262,7 @@ const ErrorGuideDialog = (function() {
         // Generic generation error
         show(ERROR_TYPES.GENERATION_ERROR, {
             errorMessage: errorMsg,
-            errorDetail: context.errorDetail
+            errorDetail: context.errorDetail,
         });
     }
 
@@ -265,11 +271,11 @@ const ErrorGuideDialog = (function() {
         show: show,
         close: close,
         showForError: showForError,
-        ERROR_TYPES: ERROR_TYPES
+        ERROR_TYPES: ERROR_TYPES,
     };
 })();
 
 // Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     ErrorGuideDialog.init();
 });
