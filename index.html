@@ -439,6 +439,14 @@
                         </div>
                     </div>
                     <div class="form-group" style="flex-shrink: 0">
+                        <label data-i18n="config.upscalerModel">アップスケーラーモデル</label>
+                        <select id="upscalerModelSelect">
+                            <option value="" data-i18n="config.upscalerModelFromWorkflow">
+                                ワークフロー設定に従う
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex-shrink: 0">
                         <label
                             ><span data-i18n="config.inputImage">入力画像</span>
                             <span class="i2i-image-count" id="upscaleloopImageCount"></span
@@ -1163,6 +1171,7 @@ pop, female vocals, emotional, piano, strings</textarea
         <script src="js/ui/workflow-selector.js"></script>
 
         <script src="js/ai/ComfyUI/v2/comfyui-object-info-repository.js"></script>
+        <script src="js/ai/ComfyUI/v2/comfyui-upscaler-model.js"></script>
         <script src="js/ai/ComfyUI/v2/comfyui-workflow-repository.js"></script>
         <script src="js/ai/ComfyUI/v2/comfyui-workflow-editor.js"></script>
         <script src="js/ai/ComfyUI/v2/comfyui-util-v2.js"></script>

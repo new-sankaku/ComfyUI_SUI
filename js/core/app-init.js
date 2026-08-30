@@ -61,6 +61,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await PerformanceStorage.recordLaunch();
     await loadFormSettings();
     setupAutoSave();
+    // ComfyUI未接続でも前回取得したObjectInfoからモデル一覧を復元する
+    await loadUpscalerModelOptionsFromCache();
     $('btnModeNormal').addEventListener('click', () => switchMode('normal'));
     $('btnModeLoop').addEventListener('click', () => switchMode('loop'));
     $('btnModeI2I').addEventListener('click', () => switchMode('i2i'));

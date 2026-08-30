@@ -1,12 +1,14 @@
-const currentMode = 'normal';
+/* eslint-disable prefer-const -- 他ファイル(ui-controller.js / app-init.js)から再代入されるグローバル変数 */
+let currentMode = 'normal';
 let isGenerating = false;
 let isCancelled = false;
-const workflowEditorInitialized = false;
-const i2iUploadedFileNames = [];
-const i2iloopUploadedFileNames = [];
-const i2iangleUploadedFileNames = [];
-const upscaleloopUploadedFileNames = [];
-const rembgloopUploadedFileNames = [];
+let workflowEditorInitialized = false;
+let i2iUploadedFileNames = [];
+let i2iloopUploadedFileNames = [];
+let i2iangleUploadedFileNames = [];
+let upscaleloopUploadedFileNames = [];
+let rembgloopUploadedFileNames = [];
+/* eslint-enable prefer-const */
 function showCancelButton(mode) {
     const btnId = 'btnCancel' + mode.charAt(0).toUpperCase() + mode.slice(1);
     const btn = $(btnId);
@@ -105,6 +107,7 @@ async function loadObjectInfo() {
         const objectInfo = await response.json();
         comfyObjectInfoList = Object.keys(objectInfo);
         await objectInfoRepository.saveObjectInfo(objectInfo);
+        refreshUpscalerModelOptions(objectInfo);
     } catch (error) {
         console.error('ObjectInfo load error:', error);
     }
@@ -967,7 +970,10 @@ async function generateImageUpscaleLoopExec() {
             $('generationStatus').textContent = I18nManager.t('status.generatingProgress')
                 .replace('{current}', imgIdx + 1)
                 .replace('{total}', imageCount);
-            const requestData = { uploadFileName: uploadFileName };
+            const requestData = {
+                uploadFileName: uploadFileName,
+                upscaleModelName: getSelectedUpscalerModel(),
+            };
             const workflow = comfyuiReplacePlaceholders(baseWorkflow, requestData, 'Upscaler');
             generatorLogger.debug('Generated Upscale Loop Workflow JSON:', JSON.stringify(workflow, null, 2));
             const startTime = performance.now();

@@ -145,6 +145,7 @@ async function saveFormSettings() {
         t2aLyrics: $('t2aLyrics').value,
         t2aSeed: $('t2aSeed').value,
         t2aGenerateCount: $('t2aGenerateCount').value,
+        upscalerModelSelect: $('upscalerModelSelect').value,
     };
     await settingsStore.setItem('formSettings', settings);
 }
@@ -185,6 +186,8 @@ async function loadFormSettings() {
     if (settings.t2aLyrics) $('t2aLyrics').value = settings.t2aLyrics;
     if (settings.t2aSeed) $('t2aSeed').value = settings.t2aSeed;
     if (settings.t2aGenerateCount) $('t2aGenerateCount').value = settings.t2aGenerateCount;
+    // ドロップダウンはComfyUI接続後に構築されるため、値の反映は構築時まで持ち越す
+    setPreferredUpscalerModel(settings.upscalerModelSelect);
 }
 function setupAutoSave() {
     const inputs = [
@@ -215,6 +218,7 @@ function setupAutoSave() {
         't2aLyrics',
         't2aSeed',
         't2aGenerateCount',
+        'upscalerModelSelect',
     ];
     inputs.forEach((id) => {
         const el = $(id);

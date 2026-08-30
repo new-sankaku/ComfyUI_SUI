@@ -41,6 +41,14 @@ function comfyuiReplacePlaceholders(workflow, requestData, Type = 'T2I') {
         });
     }
 
+    // model_nameは他のカスタムノードでも使われる入力名のため、
+    // updateNodesByInputNameではなくclass_type指定で絞り込む
+    if (Type === 'Upscaler' && requestData['upscaleModelName']) {
+        builder.updateNodesByType('UpscaleModelLoader', {
+            model_name: requestData['upscaleModelName'],
+        });
+    }
+
     builder.updateValueByTargetValue('%prompt%', requestData['prompt']);
     builder.updateValueByTargetValue('%negative%', requestData['negative_prompt']);
     if (requestData['anglePrompt']) {

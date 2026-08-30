@@ -267,7 +267,6 @@ const projectGlobals = {
     comfyuiApiHeartbeat: 'readonly',
     comfyuiHandleProcessQueue: 'readonly',
     comfyuiUploadImage: 'readonly',
-    extractComboOptions: 'readonly',
     comfyuiFetchSampler: 'readonly',
     comfyuiFetchUpscaler: 'readonly',
     comfyuiFetchModels: 'readonly',
@@ -275,6 +274,16 @@ const projectGlobals = {
     comfyuiVaeLoader: 'readonly',
     comfyuiFetchObjectInfo: 'readonly',
     comfyuiFetchObjectInfoOnly: 'readonly',
+
+    // js/ai/ComfyUI/v2/comfyui-upscaler-model.js
+    UPSCALER_MODEL_SELECT_ID: 'readonly',
+    preferredUpscalerModelName: 'writable',
+    extractComboOptions: 'readonly',
+    setPreferredUpscalerModel: 'readonly',
+    getSelectedUpscalerModel: 'readonly',
+    updateUpscalerDropdown: 'readonly',
+    refreshUpscalerModelOptions: 'readonly',
+    loadUpscalerModelOptionsFromCache: 'readonly',
 
     // js/ai/ComfyUI/v2/comfyui-workflow-builder.js
     ComfyUIWorkflowBuilder: 'readonly',
@@ -352,7 +361,6 @@ const legacyGlobals = {
     replaceImageObject: 'readonly',
     imageObject2Base64ImageEffectKeep: 'readonly',
     updateSamplerDropdown: 'readonly',
-    updateUpscalerDropdown: 'readonly',
     updateModelDropdown: 'readonly',
     updateTagifyDropdown: 'readonly',
     updateVaeDropdown: 'readonly',
